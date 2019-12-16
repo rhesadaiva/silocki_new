@@ -1,0 +1,108 @@
+body {
+	background-image: url('../img/kantor.jpg');
+	background-size: cover;
+	background-position: top center;
+}
+
+/* .btn-submit {
+	margin: 20px 100px 80px;
+}
+
+.btn-forget {
+	margin: 20px 140px 100px;
+} */
+
+.btn-row-submit {
+	margin-left: 130px;
+	margin-top: 20px;
+}
+
+.btn-row-forget {
+	margin-left: 100px;
+}
+
+.btn-row-reset {
+	margin-left: 100px;
+}
+
+.btn-row-request {
+	margin-left: 105px;
+}
+
+.form-login {
+	padding-top: 30px !important;
+}
+
+.alert.alert-danger {
+	background-color: #f55145;
+	color: #fff;
+	text-align: center;
+	margin-bottom: -2px;
+	padding: 15px
+}
+
+.alert.alert-danger-sm {
+	background-color: #f55145;
+	color: #fff;
+	text-align: center;
+	margin-bottom: 5px;
+	padding: 8px;
+}
+
+.alert.alert-success {
+	background-color: #4caf50;
+	color: #fff;
+	text-align: center;
+	margin-bottom: -2px;
+	padding: 15px
+}
+
+.alert.alert-success-sm {
+	background-color: #4caf50;
+	color: #fff;
+	text-align: center;
+	margin-bottom: 5px;
+	padding: 8px;
+}
+
+h4.card-title {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+b.alert-message {
+	font-weight: 1000px;
+	font-size: 14px;
+}
+
+.card-login {
+	height: 450px;
+	width: 380px;
+	background-color: rgba(255, 255, 255, 0.8)
+}
+
+.card-reset {
+	height: 400px;
+	width: 380px;
+	background-color: rgba(255, 255, 255, 0.8)
+}
+
+.card-form {
+	margin-top: -10px;
+}
+
+::-webkit-input-placeholder {
+	color: #616161 !important;
+}
+
+::-moz-placeholder {
+	color: #616161 !important;
+}
+
+::-ms-placeholder {
+	color: #616161 !important;
+}
+
+::placeholder {
+	color: #616161 !important;
+}

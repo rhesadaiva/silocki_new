@@ -1,0 +1,43 @@
+/* Global CSS */
+
+/* TOP BORDER */
+.border-top-primary {
+	border-top: .25rem solid #4e73df !important;
+}
+
+.border-top-success {
+	border-top: .25rem solid #1cc88a !important;
+}
+
+.border-top-info {
+	border-top: .25rem solid #36b9cc !important;
+}
+
+.border-top-warning {
+	border-top: .25rem solid #f6c23e !important;
+}
+
+.border-top-danger {
+	border-top: .25rem solid #e74a3b !important;
+}
+
+/* LEFT BORDER */
+.border-left-primary {
+	border-left: .25rem solid #4e73df !important;
+}
+
+.border-left-success {
+	border-left: .25rem solid #1cc88a !important;
+}
+
+.border-left-info {
+	border-left: .25rem solid #36b9cc !important;
+}
+
+.border-left-warning {
+	border-left: .25rem solid #f6c23e !important;
+}
+
+.border-top-danger {
+	border-left: .25rem solid #e74a3b !important;
+}
