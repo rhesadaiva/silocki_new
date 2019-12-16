@@ -38,11 +38,10 @@ class Admin extends CI_Controller
 
         helper_log("access", "Mengakses menu Manajemen User");
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar_admin');
-        $this->load->view('templates/topbar');
-        $this->load->view('admin/manajemen_user', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/v_manajemenUser');
+        $this->load->view('templates/main_footer');
     }
 
     //Fungsi tambah pegawai

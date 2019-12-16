@@ -53,4 +53,8 @@ $route['default_controller'] = 'auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['logbook/(:any)'] = 'Iku/logbook/$1';
+// $route['logbook/(:any)'] = 'Iku/logbook/$1';
+
+// Route Admin
+$route['index-admin'] = 'admin/index';
+$route['manajemen-user'] = 'admin/manajemenUser';

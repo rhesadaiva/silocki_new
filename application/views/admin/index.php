@@ -140,7 +140,6 @@
 										<?php endforeach; ?>
 									</ul>
 								</div>
-								<div class="margin-top-30 text-center"><a href="#" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Lihat semua aktivitas saya</a></div>
 							</div>
 						</div>
 						<!-- END TABBED CONTENT -->
@@ -149,23 +148,7 @@
 				</div>
 			</div>
 		</div>
-		<!-- MODAL ALL ACTIVITY BERDASARKAN USER-->
-		<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h1 class="modal-title">Modal title</h1>
-					</div>
-					<div class="modal-body allUserActivity">
-						<p>Modal body text goes here.</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary">Save changes</button>
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
+
 	</div>
 	<!-- END MAIN CONTENT -->
 </div>

@@ -34,13 +34,30 @@ $(".pengumumanDashboard").ready(function () {
 
 
 // FUNGSI AMBIL DATA AKTIVITAS SEMUA
-let loadActivity =
-	function () {
-		$.ajax({
-			url: 'welcome/getAllActivity',
-			dataTyoe: 'JSON',
-			success: function (data) {
-				let activityContent = '';
-			}
-		})
-	}
+// let loadActivity =
+// 	function () {
+// 		$.ajax({
+// 			url: 'welcome/getAllActivity',
+// 			dataTyoe: 'JSON',
+// 			success: function (data) {
+// 				let activityContent = '';
+// 				let i = 0;
+// 				for (i = 0; i < data.length; i++) {
+// 					activityContent += '<table>' +
+// 						'<tr>' +
+// 						'<th>#</th>' +
+// 						'<th>Aktivitas</th>' +
+// 						'<th>Waktu Aktivitas</th>' +
+// 						'</tr>' +
+// 						'<tr>' +
+// 						'<td>' + '</td>' +
+// 						'<td>' + data[i].log_desc + '</td>' +
+// 						'<td>' + data[i].log_time + '</td>' +
+// 						'</tr>' +
+// 						'</table>'
+
+// 					$('.allUserActivity').html(activityContent);
+// 				}
+// 			}
+// 		});
+// 	}
