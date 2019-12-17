@@ -13,57 +13,48 @@
 								<img src="assets/img/default.jpg" class="img-circle" alt="Avatar">
 								<h3 class="name"><?= strtoupper($user['nama']); ?></h3>
 								<span><?= $user['nip']; ?></span>
-
 							</div>
-
 						</div>
 						<!-- END PROFILE HEADER -->
 						<!-- PROFILE DETAIL -->
 						<div class="profile-detail">
-
 							<div class="panel panel-headline">
 								<div class="panel-heading">
 									<h2 class="panel-title"><b>PROFIL PEGAWAI</b></h2>
 									<hr style="margin-bottom: -10px;">
-									<!-- <p class="panel-subtitle">Panel to display most important information</p> -->
 								</div>
 								<div class="panel-body">
 									<!-- Pangkat / Golongan -->
-									<div class="panel border-left-primary">
-										<div class="panel-heading">
-											<h3 class="panel-title"><b>PANGKAT/GOLONGAN</b></h3>
-											<hr style="margin-bottom: -10px;">
+									<div>
+										<div class="panel panel-primary">
+											<div class="panel-heading">
+												<h3 style="margin-top: -10px; margin-bottom: -10px;"><b>PANGKAT/GOLONGAN</b></h3>
+											</div>
+											<div class="panel-body">
+												<h4><?= $user['pangkat']; ?></h4>
+											</div>
 										</div>
-										<div class="panel-body">
-											<p><?= $user['pangkat']; ?></p>
+										<!-- Unit Organisasi -->
+										<div class="panel panel-success" style="margin-top: -10px;">
+											<div class="panel-heading">
+												<h3 style="margin-top: -10px; margin-bottom: -10px;"><b>UNIT ORGANISASI</b></h3>
+											</div>
+											<div class="panel-body">
+												<h4><?= $user['level']; ?> pada <?= $user['seksi'] ?></h4>
+											</div>
 										</div>
-									</div>
-
-									<!-- Unit Organisasi -->
-									<div class="panel" style="margin-top: -10px;">
-										<div class="panel-heading">
-											<h3 class="panel-title"><b>UNIT ORGANISASI</b></h3>
-											<hr style="margin-bottom: -10px;">
-										</div>
-										<div class="panel-body">
-											<p><?= $user['level']; ?> pada <?= $user['seksi'] ?></p>
-										</div>
-									</div>
-
-									<!-- Atasan -->
-									<div class="panel" style="margin-top: -10px;">
-										<div class="panel-heading">
-											<h3 class="panel-title"><b>ATASAN</b></h3>
-											<hr style="margin-bottom: -10px;">
-										</div>
-										<div class="panel-body">
-											<p><?= $user['atasan']; ?> </p>
+										<!-- Atasan -->
+										<div class="panel panel-warning" style="margin-top: -10px;">
+											<div class="panel-heading">
+												<h3 style="margin-top: -10px; margin-bottom: -10px;"><b>ATASAN</b></h3>
+											</div>
+											<div class="panel-body">
+												<h4><?= $user['atasan']; ?> </h4>
+											</div>
 										</div>
 									</div>
-
 								</div>
 							</div>
-
 						</div>
 						<!-- END PROFILE DETAIL -->
 					</div>
