@@ -5,9 +5,12 @@ class Admin_model extends CI_Model
 {
 
     //Ambil data user
-    public function getUsersData()
+    public function getAllUsers()
     {
-        return $this->db->get('user')->result_array();
+        $query =  $this->db->query("SELECT `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`atasan`,`user`.`telegram`, `user_role`.* 
+                                    FROM `user` JOIN `user_role` WHERE `user`.`role_id` = `user_role`.`id`");
+
+        return $query->result_array();
     }
 
     // Ambil status data login

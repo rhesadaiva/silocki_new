@@ -5,7 +5,6 @@
 // ANIMASI LOADING
 let loadingAnimation = '<i class="fas fa-cog fa-spin"> Loading</i>'
 
-
 // FUNGSI AMBIL DATA PENGUMUMAN
 let loadPengumuman =
 	function () {
@@ -32,32 +31,40 @@ $(".pengumumanDashboard").ready(function () {
 	loadPengumuman();
 })
 
+var loadAllUsers =
+	function () {
+		$.ajax({
+			url: 'admin/getAllUsers',
+			dataType: 'JSON',
+			success: function (data) {
+				let usersData = '';
+				let i;
+				for (i = 1; i < data.length; i++) {
+					usersData += '<tr>' +
+						'<th scope="row">' + i + '</th>' +
+						'<td>' + data[i].nama + '</td>' +
+						'<td>' + data[i].nip + '</td>' +
+						'<td>' + data[i].pangkat + '</td>' +
+						'<td>' + data[i].level + '</td>' +
+						'<td>' + data[i].seksi + '</td>' +
+						'<td>' + data[i].atasan + '</td>' +
+						'<td>' +
+						'<button class="btn btn-primary btn-xs"> Edit Data</button>' +
+						'<button class="btn btn-danger btn-xs"> Hapus Data</button>' +
+						'</td>';
+				}
+				$("#usersData").html(usersData);
+			}
+		})
+	}
 
-// FUNGSI AMBIL DATA AKTIVITAS SEMUA
-// let loadActivity =
-// 	function () {
-// 		$.ajax({
-// 			url: 'welcome/getAllActivity',
-// 			dataTyoe: 'JSON',
-// 			success: function (data) {
-// 				let activityContent = '';
-// 				let i = 0;
-// 				for (i = 0; i < data.length; i++) {
-// 					activityContent += '<table>' +
-// 						'<tr>' +
-// 						'<th>#</th>' +
-// 						'<th>Aktivitas</th>' +
-// 						'<th>Waktu Aktivitas</th>' +
-// 						'</tr>' +
-// 						'<tr>' +
-// 						'<td>' + '</td>' +
-// 						'<td>' + data[i].log_desc + '</td>' +
-// 						'<td>' + data[i].log_time + '</td>' +
-// 						'</tr>' +
-// 						'</table>'
+// DataTables manajemen user
+$(document).ready(function () {
+	loadAllUsers();
 
-// 					$('.allUserActivity').html(activityContent);
-// 				}
-// 			}
-// 		});
-// 	}
+	$('#manajemenUserTable').DataTable({
+		"info": false,
+		"ordering": false,
+		"lengthChange": false
+	});
+})

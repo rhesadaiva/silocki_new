@@ -14,6 +14,7 @@
 <script src="assets/vendor/chartist/js/chartist.min.js"></script>
 <script src="assets/scripts/klorofil-common.js"></script>
 <script src="assets/js/silocki-script.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/v/bs/dt-1.10.20/r-2.2.3/sc-2.0.1/datatables.min.js"></script>
 
 </body>
 
