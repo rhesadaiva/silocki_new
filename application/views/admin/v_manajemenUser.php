@@ -26,7 +26,7 @@
                             </tr>
                         </thead>
                         <tbody id="usersData">
-                            <!-- <?php $i = 1; ?>
+                            <?php $i = 1; ?>
                             <?php foreach ($user_data as $user) : ?>
                                 <tr>
                                     <th scope="row"><?= $i; ?></th>
@@ -42,7 +42,7 @@
                                     </td>
                                 </tr>
                                 <?php $i++; ?>
-                            <?php endforeach; ?> -->
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -50,19 +50,73 @@
         </div>
         <!-- MODAL ADD USER -->
         <div class="modal fade" id="newUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
                         <h4 class="modal-title text-primary" id="myModalLabel"><b>Tambah Data Pegawai</b></h4>
                     </div>
                     <div class="modal-body">
-                        ...
+                        <form class="form-horizontal" action="" id="newPegawaiForm">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="namaPegawai">Nama Pegawai</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="namaPegawai" name="namaPegawai" placeholder="Masukkan nama pegawai">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="nipPegawai">NIP</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="nipPegawai" name="nipPegawai" placeholder="Masukkan NIP Pegawai">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="pangkatPegawai">Pangkat/Golongan</label>
+                                <div class="col-sm-8">
+                                    <select class="selectpicker" name="pangkatPegawai" data-live-search="true">
+                                        <?php foreach ($pangkat as $pangkats) : ?>
+                                            <option value="<?= $pangkats['pangkat/golongan'] ?>"><?= $pangkats['pangkat/golongan'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="levelPegawai">Hak Akses</label>
+                                <div class="col-sm-8">
+                                    <select class="selectpicker" name="levelPegawai" data-live-search="true">
+                                        <?php foreach ($role as $roles) : ?>
+                                            <option value="<?= $roles['id'] ?>"><?= $roles['level'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="organisasiPegawai">Unit Organisasi</label>
+                                <div class="col-sm-8">
+                                    <select class="selectpicker" name="levelPegawai" data-live-search="true" data-width="68%">
+                                        <?php foreach ($seksi as $unor) : ?>
+                                            <option value="<?= $unor['seksi/subseksi'] ?>"><?= $unor['seksi/subseksi'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="pejabatPegawai">Hak Akses</label>
+                                <div class="col-sm-8">
+                                    <select class="selectpicker" name="pejabatPegawai" data-live-search="true" data-width="60%">
+                                        <?php foreach ($pejabat as $atasan) : ?>
+                                            <option value="<?= $atasan['nama'] ?>"><?= $atasan['nama'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
+                                <button type="button" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
+
                 </div>
             </div>
         </div>

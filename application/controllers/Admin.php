@@ -34,7 +34,11 @@ class Admin extends CI_Controller
     {
         $data['title'] = 'Manajemen User';
         $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        // $data['user_data'] = $this->Admin_model->getAllUsers();
+        $data['user_data'] = $this->Admin_model->getAllUsers();
+        $data['pangkat'] = $this->Admin_model->getPangkat();
+        $data['role'] = $this->Admin_model->getRole();
+        $data['seksi'] = $this->Admin_model->getSeksi();
+        $data['pejabat'] = $this->Admin_model->getAllPejabat();
 
         helper_log("access", "Mengakses menu Manajemen User");
 
@@ -42,13 +46,6 @@ class Admin extends CI_Controller
         $this->load->view('templates/main_sidebar');
         $this->load->view('admin/v_manajemenUser');
         $this->load->view('templates/main_footer');
-    }
-
-    // AMBIL DATA PEGAWAI
-    public function getAllUsers()
-    {
-        $users = $this->Admin_model->getAllUsers();
-        echo json_encode($users);
     }
 
     //Fungsi tambah pegawai

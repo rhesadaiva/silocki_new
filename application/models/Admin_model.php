@@ -8,7 +8,7 @@ class Admin_model extends CI_Model
     public function getAllUsers()
     {
         $query =  $this->db->query("SELECT `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`atasan`,`user`.`telegram`, `user_role`.* 
-                                    FROM `user` JOIN `user_role` WHERE `user`.`role_id` = `user_role`.`id`");
+                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id` ORDER BY `user`.`role_id` ASC");
 
         return $query->result_array();
     }
@@ -21,6 +21,16 @@ class Admin_model extends CI_Model
                                     WHERE `user`.`nip` = '$loggedNIP'");
 
         return $query->row_array();
+    }
+
+    // Ambil data pejabat
+    public function getAllPejabat()
+    {
+        $query = $this->db->query("SELECT `user`.nama, `user`.`role_id`, `user`.`seksi`, `user_role`.* 
+                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id`
+                                    WHERE `user`.`role_id` >= 2 AND `user`.`role_id` <=4 ORDER BY `user`.`role_id` ASC");
+
+        return $query->result_array();
     }
 
     //Ammbil data pangkat
