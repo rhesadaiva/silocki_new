@@ -226,7 +226,6 @@ $('.button-kirimlogbook').on('click', function (e) {
         }
     })
 });
-
 // rekam logbok baru
 $('.inputlogbookbaru').on('submit', function (e) {
 

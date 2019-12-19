@@ -37,8 +37,8 @@
                                     <td><?= $user['seksi'] ?></td>
                                     <td><?= $user['atasan'] ?></td>
                                     <td>
-                                        <button class="btn btn-primary btn-xs"> Edit Data</button>
-                                        <button class="btn btn-danger btn-xs"> Hapus Data</button>
+                                        <button class="btn btn-primary btn-xs"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                        <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUserModal"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
                                     </td>
                                 </tr>
                                 <?php $i++; ?>
@@ -53,11 +53,10 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
                         <h4 class="modal-title text-primary" id="myModalLabel"><b>Tambah Data Pegawai</b></h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" action="" id="newPegawaiForm">
+                        <form class="form-horizontal" action="" id="newPegawaiForm" method="POST">
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="namaPegawai">Nama Pegawai</label>
                                 <div class="col-sm-8">
@@ -73,7 +72,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="pangkatPegawai">Pangkat/Golongan</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="pangkatPegawai" data-live-search="true">
+                                    <select class="selectpicker" name="pangkatPegawai" data-live-search="true" id="pangkatPegawai">
                                         <?php foreach ($pangkat as $pangkats) : ?>
                                             <option value="<?= $pangkats['pangkat/golongan'] ?>"><?= $pangkats['pangkat/golongan'] ?></option>
                                         <?php endforeach; ?>
@@ -83,9 +82,9 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="levelPegawai">Hak Akses</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="levelPegawai" data-live-search="true">
+                                    <select class="selectpicker" name="levelPegawai" data-live-search="true" id="levelPegawai">
                                         <?php foreach ($role as $roles) : ?>
-                                            <option value="<?= $roles['id'] ?>"><?= $roles['level'] ?></option>
+                                            <option value="<?= $roles['id_role'] ?>"><?= $roles['level'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -93,7 +92,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="organisasiPegawai">Unit Organisasi</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="levelPegawai" data-live-search="true" data-width="68%">
+                                    <select class="selectpicker" name="organisasiPegawai" data-live-search="true" data-width="68%" id="organisasiPegawai">
                                         <?php foreach ($seksi as $unor) : ?>
                                             <option value="<?= $unor['seksi/subseksi'] ?>"><?= $unor['seksi/subseksi'] ?></option>
                                         <?php endforeach; ?>
@@ -101,22 +100,47 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="pejabatPegawai">Hak Akses</label>
+                                <label class="control-label col-sm-3" for="atasanPegawai">Atasan</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="pejabatPegawai" data-live-search="true" data-width="60%">
+                                    <select class="selectpicker" name="atasanPegawai" data-live-search="true" data-width="60%" id="atasanPegawai">
                                         <?php foreach ($pejabat as $atasan) : ?>
                                             <option value="<?= $atasan['nama'] ?>"><?= $atasan['nama'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="telegramPegawai">Telegram</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="telegramPegawai" name="telegramPegawai" placeholder="Masukkan ID Telegram">
+                                </div>
+                                <div class="col-sm-2">
+                                    <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a>
+                                </div>
+                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
-                                <button type="button" class="btn btn-primary">Simpan</button>
+                                <button type="button" class="btn btn-success hidden" id="btnNewPegawai" onclick="savePegawaiBaru()"><i class="fa fa-save"></i> Simpan</button>
                             </div>
                         </form>
                     </div>
-
+                </div>
+            </div>
+        </div>
+        <!-- MODAL CONFIRM DELETE USER -->
+        <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title text-primary" id="exampleModalLongTitle"><b>Konfirmasi hapus data pegawai</b></h3>
+                    </div>
+                    <div class="modal-body">
+                        Apakah anda yakin ingin menghapus data user ini?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
+                        <button class="btn btn-danger" id="btnDeletePegawai"><i class="fas fa-fw fa-trash" idUser="<?= $user['id'] ?>" onclick=" deletePegawai()"></i> Hapus data</button>
+                    </div>
                 </div>
             </div>
         </div>

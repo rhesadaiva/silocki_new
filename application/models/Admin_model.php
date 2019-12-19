@@ -7,8 +7,8 @@ class Admin_model extends CI_Model
     //Ambil data user
     public function getAllUsers()
     {
-        $query =  $this->db->query("SELECT `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`atasan`,`user`.`telegram`, `user_role`.* 
-                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id` ORDER BY `user`.`role_id` ASC");
+        $query =  $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`atasan`,`user`.`telegram`, `user_role`.* 
+                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role` ORDER BY `user`.`role_id` ASC");
 
         return $query->result_array();
     }
@@ -16,8 +16,8 @@ class Admin_model extends CI_Model
     // Ambil status data login
     public function getLoggedUser($loggedNIP)
     {
-        $query = $this->db->query(" SELECT `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`atasan`,`user`.`telegram`, `user_role`.* 
-                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id`
+        $query = $this->db->query(" SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`atasan`,`user`.`telegram`, `user_role`.* 
+                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role`
                                     WHERE `user`.`nip` = '$loggedNIP'");
 
         return $query->row_array();
@@ -27,7 +27,7 @@ class Admin_model extends CI_Model
     public function getAllPejabat()
     {
         $query = $this->db->query("SELECT `user`.nama, `user`.`role_id`, `user`.`seksi`, `user_role`.* 
-                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id`
+                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role`
                                     WHERE `user`.`role_id` >= 2 AND `user`.`role_id` <=4 ORDER BY `user`.`role_id` ASC");
 
         return $query->result_array();
@@ -105,14 +105,14 @@ class Admin_model extends CI_Model
     public function tambahUser()
     {
         $data = [
-            'nama' => $this->input->post('nama', true),
-            'nip' => $this->input->post('nip', true),
-            'pangkat' => $this->input->post('pangkat'),
+            'nama' => $this->input->post('namaPegawai', true),
+            'nip' => $this->input->post('nipPegawai', true),
+            'pangkat' => $this->input->post('pangkatPegawai'),
             'password' => md5(123456),
-            'role_id' => $this->input->post('role'),
-            'seksi' => $this->input->post('seksisub'),
-            'atasan' => $this->input->post('atasan'),
-            'telegram' => $this->input->post('telegram', true),
+            'role_id' => $this->input->post('levelPegawai'),
+            'seksi' => $this->input->post('organisasiPegawai'),
+            'atasan' => $this->input->post('atasanPegawai'),
+            'telegram' => $this->input->post('telegramPegawai', true),
 
         ];
         return $this->db->insert('user', $data);

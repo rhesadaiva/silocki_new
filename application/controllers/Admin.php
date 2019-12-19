@@ -39,6 +39,7 @@ class Admin extends CI_Controller
         $data['role'] = $this->Admin_model->getRole();
         $data['seksi'] = $this->Admin_model->getSeksi();
         $data['pejabat'] = $this->Admin_model->getAllPejabat();
+        $data['tlinks'] = "https://api.telegram.org/bot905076968:AAG8sNGqlABcYAw6PuUL6eSuFn1-pmSGUpU/getUpdates";
 
         helper_log("access", "Mengakses menu Manajemen User");
 
@@ -49,35 +50,12 @@ class Admin extends CI_Controller
     }
 
     //Fungsi tambah pegawai
-    public function tambahpegawai()
+    public function tambahPegawai()
     {
-        $data['title'] = 'Tambah Pegawai';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        $data['user_data'] = $this->Admin_model->getUsersData();
-        $data['pangkat'] = $this->Admin_model->getPangkat();
-        $data['role'] = $this->Admin_model->getRole();
-        $data['seksi'] = $this->Admin_model->getSeksi();
-
-        //Validasi Tambah User
-        $this->form_validation->set_rules('nama', 'Nama', 'required|trim|is_unique[user.nama]');
-        $this->form_validation->set_rules('nip', 'Nomor Induk Pegawai', 'required|trim|is_unique[user.nip]|numeric');
-        $this->form_validation->set_rules('telegram', 'ID Telegram', 'required|numeric');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar_admin');
-            $this->load->view('templates/topbar');
-            $this->load->view('admin/tambah_user', $data);
-            $this->load->view('templates/footer');
-        } else {
-
-            $this->Admin_model->tambahUser();
-
-            helper_log("add", "Menambah data pegawai baru");
-
-            $this->session->set_flashdata('user', 'ditambahkan dengan password 123456');
-            redirect('admin/manajemen_user');
-        }
+        $newPegawai = $this->Admin_model->tambahUser();
+        helper_log("add", "Menambah data pegawai baru");
+        $this->session->set_flashdata('user', 'ditambahkan dengan password 123456');
+        echo json_encode($newPegawai);
     }
 
     //Fitur Edit User
