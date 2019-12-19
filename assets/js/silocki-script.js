@@ -30,7 +30,6 @@ $(".pengumumanDashboard").ready(function () {
 // DataTables manajemen user
 $(document).ready(function () {
 	$('#manajemenUserTable').DataTable({
-		"info": false,
 		"ordering": false,
 		"lengthChange": false,
 	});
@@ -49,10 +48,9 @@ $('#namaPegawai,#nipPegawai,#telegramPegawai').change(function () {
 let savePegawaiBaru =
 	function () {
 		let dataPegawai = $('#newPegawaiForm').serialize();
-
 		$.ajax({
 			type: "POST",
-			url: "admin/tambahPegawai",
+			url: "admin/addPegawai",
 			dataType: "JSON",
 			data: dataPegawai,
 			beforeSend: function () {
@@ -67,8 +65,30 @@ let savePegawaiBaru =
 					timeOut: "5000",
 				});
 			}
-
 		})
 	}
 
 // AJAX Menghapus Data User
+$('#btnDeletePegawai').click(function () {
+	let url = $('#btnDeletePegawaiModal').data('url');
+	$.ajax({
+		type: "POST",
+		url: url,
+		dataType: "JSON",
+		beforeSend: function () {
+			$('#btnDeletePegawai').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
+		},
+		success: function () {
+			$('#deleteUserModal').modal('hide');
+			toastr["success"]("Data berhasil dihapus!", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "5000",
+			});
+		}
+	})
+})
+
+// AJAX Ambil Data berdasarkan ID
+{}

@@ -50,52 +50,35 @@ class Admin extends CI_Controller
     }
 
     //Fungsi tambah pegawai
-    public function tambahPegawai()
+    public function addPegawai()
     {
         $newPegawai = $this->Admin_model->tambahUser();
         helper_log("add", "Menambah data pegawai baru");
-        $this->session->set_flashdata('user', 'ditambahkan dengan password 123456');
         echo json_encode($newPegawai);
     }
 
+    // Ambil user berdasarkan ID
+    public function getUserByID($idPegawai)
+    {
+        $idPegawai = $this->input->get('idPegawai');
+        $getPegawaiByID = $this->Admin_model->getUserByID($idPegawai);
+        echo json_encode($getPegawaiByID);
+    }
     //Fitur Edit User
     public function editpegawai($id)
     {
-        $data['title'] = 'Ubah Data Pegawai';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        $data['user_data'] = $this->Admin_model->getUsersData();
-        $data['userdetail'] = $this->Admin_model->getUserByID($id);
-        $data['pangkat'] = $this->Admin_model->getPangkat();
-        $data['role'] = $this->Admin_model->getRole();
-        $data['seksi'] = $this->Admin_model->getSeksi();
-
-        //Validasi EDIT User
-        $this->form_validation->set_rules('nama', 'Nama', 'required|trim|is_unique[user.nama]');
-        $this->form_validation->set_rules('nip', 'Nomor Induk Pegawai', 'required|trim|is_unique[user.nip]|numeric');
-        $this->form_validation->set_rules('telegram', 'ID Telegram', 'required|numeric');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->load->view('templates/header', $data);
-            $this->load->view('templates/sidebar_admin');
-            $this->load->view('templates/topbar');
-            $this->load->view('admin/edituser', $data);
-            $this->load->view('templates/footer');
-        } else {
-            //Validasi
-            $this->Admin_model->editUser($id);
-            helper_log("edit", "Mengubah data pegawai (id-pegawai = $id)");
-            $this->session->set_flashdata('user', 'berhasil diubah, silahkan melanjutkan kegiatan anda!');
-            redirect('admin/manajemen_user');
-        }
+        $this->Admin_model->editUser($id);
+        helper_log("edit", "Mengubah data pegawai (id-pegawai = $id)");
+        $this->session->set_flashdata('user', 'berhasil diubah, silahkan melanjutkan kegiatan anda!');
+        redirect('admin/manajemen_user');
     }
 
     //Hapus User
-    public function hapuspegawai($id)
+    public function deletePegawai($idPegawai)
     {
-        $this->Admin_model->deleteUser($id);
-        helper_log("delete", "Menghapus data pegawai (id-pegawai = $id)");
-        $this->session->set_flashdata('user', 'berhasil dihapus. Silahkan melanjutkan kegiatan anda!');
-        redirect('admin/manajemen_user');
+        $deletePegawai = $this->Admin_model->deleteUser($idPegawai);
+        helper_log("delete", "Menghapus data pegawai (id-pegawai = $idPegawai)");
+        echo json_encode($deletePegawai);
     }
 
     //Halaman Pencarian Logbook belum disetujui

@@ -14,7 +14,7 @@
 					</div>
 				</li>
 				<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Persetujuan Atasan</span></a></li>
-				<li><a href="<?= base_url('manajemen-user'); ?>" class=""><i class="lnr lnr-chart-bars"></i> <span>Manajemen User</span></a></li>
+				<li><a href="manajemen-user" class=""><i class="lnr lnr-chart-bars"></i> <span>Manajemen User</span></a></li>
 				<li><a href="panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
 				<li><a href="notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a></li>
 
