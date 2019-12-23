@@ -37,8 +37,9 @@
                                     <td><?= $user['seksi'] ?></td>
                                     <td><?= $user['atasan'] ?></td>
                                     <td>
-                                        <button class="btn btn-primary btn-xs" id="btnEditPegawaiModal" data-toggle="modal" data-target="editUserModal" data-iduser="<?= $user['id'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
-                                        <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteUserModal" data-url="admin/deletePegawai/<?= $user['id'] ?>" id="btnDeletePegawaiModal"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
+                                        <button class="btn btn-primary btn-xs btnEditPegawai" id="btnEditPegawaiModal" user-id="<?= $user['id'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+
+                                        <button class="btn btn-danger btn-xs btnDeletePegawai" data-toggle="modal" data-target="#deleteUserModal" userid="<?= $user['id'] ?>" name="btnDeletePegawai"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
                                     </td>
                                 </tr>
                                 <?php $i++; ?>
@@ -128,7 +129,7 @@
             </div>
         </div>
         <!-- MODAL CONFIRM DELETE USER -->
-        <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -139,7 +140,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
-                        <button class="btn btn-danger" id="btnDeletePegawai"><i class="fas fa-fw fa-trash"></i> Hapus data</button>
+                        <button class="btn btn-danger btnConfirmDeletePegawai"><i class="fas fa-fw fa-trash"></i> Hapus data</button>
                     </div>
                 </div>
             </div>
@@ -154,21 +155,21 @@
                     <div class="modal-body">
                         <form class="form-horizontal" action="" id="editPegawaiForm" method="POST">
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="namaPegawai">Nama Pegawai</label>
+                                <label class="control-label col-sm-3" for="editNamaPegawai">Nama Pegawai</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="namaPegawai" name="namaPegawai" placeholder="Masukkan nama pegawai">
+                                    <input type="text" class="form-control" id="editNamaPegawai" name="editNamaPegawai" placeholder="Masukkan nama pegawai">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="nipPegawai">NIP</label>
+                                <label class="control-label col-sm-3" for="editNIPPegawai">NIP</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="nipPegawai" name="nipPegawai" placeholder="Masukkan NIP Pegawai">
+                                    <input type="text" class="form-control" id="editNIPPegawai" name="editNIPPegawai" placeholder="Masukkan NIP Pegawai">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="pangkatPegawai">Pangkat/Golongan</label>
+                                <label class="control-label col-sm-3" for="editPangkatPegawai">Pangkat/Golongan</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="pangkatPegawai" data-live-search="true" id="pangkatPegawai">
+                                    <select class="selectpicker" name="editPangkatPegawai" data-live-search="true" id="editPangkatPegawai">
                                         <?php foreach ($pangkat as $pangkats) : ?>
                                             <option value="<?= $pangkats['pangkat/golongan'] ?>"><?= $pangkats['pangkat/golongan'] ?></option>
                                         <?php endforeach; ?>
@@ -176,9 +177,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="levelPegawai">Hak Akses</label>
+                                <label class="control-label col-sm-3" for="editLevelPegawai">Hak Akses</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="levelPegawai" data-live-search="true" id="levelPegawai">
+                                    <select class="selectpicker" name="editLevelPegawai" data-live-search="true" id="editLevelPegawai">
                                         <?php foreach ($role as $roles) : ?>
                                             <option value="<?= $roles['id_role'] ?>"><?= $roles['level'] ?></option>
                                         <?php endforeach; ?>
@@ -186,9 +187,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="organisasiPegawai">Unit Organisasi</label>
+                                <label class="control-label col-sm-3" for="editOrganisasiPegawai">Unit Organisasi</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="organisasiPegawai" data-live-search="true" data-width="68%" id="organisasiPegawai">
+                                    <select class="selectpicker" name="editOrganisasiPegawai" data-live-search="true" data-width="68%" id="editOrganisasiPegawai">
                                         <?php foreach ($seksi as $unor) : ?>
                                             <option value="<?= $unor['seksi/subseksi'] ?>"><?= $unor['seksi/subseksi'] ?></option>
                                         <?php endforeach; ?>
@@ -196,9 +197,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="atasanPegawai">Atasan</label>
+                                <label class="control-label col-sm-3" for="editAtasanPegawai">Atasan</label>
                                 <div class="col-sm-8">
-                                    <select class="selectpicker" name="atasanPegawai" data-live-search="true" data-width="60%" id="atasanPegawai">
+                                    <select class="selectpicker" name="editAtasanPegawai" data-live-search="true" data-width="60%" id="editAtasanPegawai">
                                         <?php foreach ($pejabat as $atasan) : ?>
                                             <option value="<?= $atasan['nama'] ?>"><?= $atasan['nama'] ?></option>
                                         <?php endforeach; ?>
@@ -206,9 +207,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-sm-3" for="telegramPegawai">Telegram</label>
+                                <label class="control-label col-sm-3" for="editTelegramPegawai">Telegram</label>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control" id="telegramPegawai" name="telegramPegawai" placeholder="Masukkan ID Telegram">
+                                    <input type="text" class="form-control" id="editTelegramPegawai" name="editTelegramPegawai" placeholder="Masukkan ID Telegram">
                                 </div>
                                 <div class="col-sm-2">
                                     <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a>

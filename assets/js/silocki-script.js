@@ -1,6 +1,10 @@
 // ====== SILOCKI MAIN-SCRIPT ===== //
 // ====== Required to make SILOCKI work properly ===== //
 
+// CHECK IF LOADED
+$(document).ready(function () {
+	console.log("ready");
+})
 
 // ANIMASI LOADING
 let loadingAnimation = '<i class="fas fa-cog fa-spin"> Loading</i>'
@@ -69,26 +73,65 @@ let savePegawaiBaru =
 	}
 
 // AJAX Menghapus Data User
-$('#btnDeletePegawai').click(function () {
-	let url = $('#btnDeletePegawaiModal').data('url');
-	$.ajax({
-		type: "POST",
-		url: url,
-		dataType: "JSON",
-		beforeSend: function () {
-			$('#btnDeletePegawai').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
-		},
-		success: function () {
-			$('#deleteUserModal').modal('hide');
-			toastr["success"]("Data berhasil dihapus!", "Sukses", {
-				positionClass: "toast-top-right",
-				showDuration: "200",
-				hideDuration: "500",
-				timeOut: "5000",
-			});
-		}
+// $('.btnEditPegawai').click(function () {
+// 	let id = $('.btnDeletePegawai').attr('user_id');
+// 	console.log(id);
+// 	$.ajax({
+// 		type: "POST",
+// 		url: 'admin/deletePegawai/' + id,
+// 		dataType: "JSON",
+// 		beforeSend: function () {
+// 			$('#btnDeletePegawai').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
+// 		},
+// 		success: function () {
+// 			$('#deleteUserModal').modal('hide');
+// 			toastr["success"]("Data berhasil dihapus!", "Sukses", {
+// 				positionClass: "toast-top-right",
+// 				showDuration: "200",
+// 				hideDuration: "500",
+// 				timeOut: "5000",
+// 			});
+// 		}
+// 	})
+// })
+$('button[name="btnDeletePegawai"]').click(function () {
+	let u = $(this).attr('userid');
+
+	$('.btnConfirmDeletePegawai').click(function () {
+		// console.log(a);
+		$.ajax({
+			type: "POST",
+			url: 'admin/deletePegawai/' + u,
+			dataType: "JSON",
+			beforeSend: function () {
+				$('#btnDeletePegawai').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
+			},
+			success: function () {
+				$('#deleteUserModal').modal('hide');
+				toastr["success"]("Data berhasil dihapus!", "Sukses", {
+					positionClass: "toast-top-right",
+					showDuration: "200",
+					hideDuration: "500",
+					timeOut: "5000",
+				});
+			}
+		})
 	})
 })
 
-// AJAX Ambil Data berdasarkan ID
-{}
+// AJAX Get Data User By ID
+$(".btnEditPegawai").click(function () {
+	let u = $(".btnEditPegawai").attr("user_id");
+
+	$.ajax({
+		type: "GET",
+		url: "admin/getUserByID/?u=" + u,
+		dataType: "JSON",
+		data: {
+			u: u
+		},
+		success: function (data) {
+			console.log(data)
+		}
+	})
+})

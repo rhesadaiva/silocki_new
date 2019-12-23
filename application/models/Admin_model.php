@@ -54,7 +54,11 @@ class Admin_model extends CI_Model
     //Ambil data user by ID
     public function getUserByID($id)
     {
-        return $this->db->get_where('user', ['id' => $id])->row_array();
+        $query = $this->db->query(" SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`atasan`,`user`.`telegram`, `user_role`.* 
+                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role`
+                                    WHERE `user`.`id` = '$id'");
+
+        return $query->row_array();
     }
 
     //Hitung jumlah User

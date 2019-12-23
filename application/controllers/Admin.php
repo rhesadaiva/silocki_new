@@ -58,9 +58,9 @@ class Admin extends CI_Controller
     }
 
     // Ambil user berdasarkan ID
-    public function getUserByID($idPegawai)
+    public function getUserByID()
     {
-        $idPegawai = $this->input->get('idPegawai');
+        $idPegawai = $this->input->get('u');
         $getPegawaiByID = $this->Admin_model->getUserByID($idPegawai);
         echo json_encode($getPegawaiByID);
     }
