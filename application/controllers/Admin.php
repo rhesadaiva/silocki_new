@@ -16,7 +16,7 @@ class Admin extends CI_Controller
     public function index()
     {
         $data['title'] = 'Home';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
         $data['jumlahUser'] = $this->Admin_model->countUser();
         $data['jumlahKontrakKinerja'] = $this->Admin_model->countKK();
         $data['jumlahIKU'] = $this->Admin_model->countIKU();
@@ -33,7 +33,7 @@ class Admin extends CI_Controller
     public function manajemenUser()
     {
         $data['title'] = 'Manajemen User';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
         $data['user_data'] = $this->Admin_model->getAllUsers();
         $data['pangkat'] = $this->Admin_model->getPangkat();
         $data['role'] = $this->Admin_model->getRole();
@@ -49,7 +49,7 @@ class Admin extends CI_Controller
         $this->load->view('templates/main_footer');
     }
 
-    //Fungsi tambah pegawai
+    //FUNGSI TAMBAH PEGAWAI
     public function addPegawai()
     {
         $newPegawai = $this->Admin_model->tambahUser();
@@ -57,31 +57,32 @@ class Admin extends CI_Controller
         echo json_encode($newPegawai);
     }
 
-    // Ambil user berdasarkan ID
+    //AMBIL USER BY ID
     public function getUserByID()
     {
         $idPegawai = $this->input->get('u');
         $getPegawaiByID = $this->Admin_model->getUserByID($idPegawai);
         echo json_encode($getPegawaiByID);
     }
-    //Fitur Edit User
-    public function editpegawai($id)
+
+    //UPDATE USER
+    public function updatePegawai()
     {
-        $this->Admin_model->editUser($id);
-        helper_log("edit", "Mengubah data pegawai (id-pegawai = $id)");
-        $this->session->set_flashdata('user', 'berhasil diubah, silahkan melanjutkan kegiatan anda!');
-        redirect('admin/manajemen_user');
+        $u = $this->input->post('u');
+        $editPegawai = $this->Admin_model->updateUser($u);
+        echo json_encode($editPegawai);
+        helper_log("edit", "Mengubah data pegawai (id-pegawai = $u)");
     }
 
-    //Hapus User
+    //HAPUS USER
     public function deletePegawai($idPegawai)
     {
         $deletePegawai = $this->Admin_model->deleteUser($idPegawai);
-        helper_log("delete", "Menghapus data pegawai (id-pegawai = $idPegawai)");
         echo json_encode($deletePegawai);
+        helper_log("delete", "Menghapus data pegawai (id-pegawai = $idPegawai)");
     }
 
-    //Halaman Pencarian Logbook belum disetujui
+    //HALAMAN LOGBOOK BELUM DISETUJUI
     public function logbookbelumdisetujui()
     {
         $data['title'] = 'Logbook Yang Belum Disetujui';

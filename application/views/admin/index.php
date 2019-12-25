@@ -49,7 +49,7 @@
 												<h3 style="margin-top: -10px; margin-bottom: -10px;"><b>ATASAN</b></h3>
 											</div>
 											<div class="panel-body">
-												<h4><?= $user['atasan']; ?> </h4>
+												<h4><?= $user['nama_pejabat']; ?> </h4>
 											</div>
 										</div>
 									</div>

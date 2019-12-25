@@ -72,33 +72,11 @@ let savePegawaiBaru =
 		})
 	}
 
-// AJAX Menghapus Data User
-// $('.btnEditPegawai').click(function () {
-// 	let id = $('.btnDeletePegawai').attr('user_id');
-// 	console.log(id);
-// 	$.ajax({
-// 		type: "POST",
-// 		url: 'admin/deletePegawai/' + id,
-// 		dataType: "JSON",
-// 		beforeSend: function () {
-// 			$('#btnDeletePegawai').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
-// 		},
-// 		success: function () {
-// 			$('#deleteUserModal').modal('hide');
-// 			toastr["success"]("Data berhasil dihapus!", "Sukses", {
-// 				positionClass: "toast-top-right",
-// 				showDuration: "200",
-// 				hideDuration: "500",
-// 				timeOut: "5000",
-// 			});
-// 		}
-// 	})
-// })
+// Delete Pegawai
 $('button[name="btnDeletePegawai"]').click(function () {
-	let u = $(this).attr('userid');
+	let u = $(this).attr('user-id');
 
 	$('.btnConfirmDeletePegawai').click(function () {
-		// console.log(a);
 		$.ajax({
 			type: "POST",
 			url: 'admin/deletePegawai/' + u,
@@ -120,18 +98,76 @@ $('button[name="btnDeletePegawai"]').click(function () {
 })
 
 // AJAX Get Data User By ID
-$(".btnEditPegawai").click(function () {
-	let u = $(".btnEditPegawai").attr("user_id");
-
+$('button[name="btnEditPegawai"]').click(function () {
+	let u = $(this).attr("user-id");
 	$.ajax({
 		type: "GET",
 		url: "admin/getUserByID/?u=" + u,
 		dataType: "JSON",
-		data: {
-			u: u
+		beforeSend: function () {
+			toastr["info"]("Sedang proses mengambil data", "Mengambil data", {
+				"positionClass": "toast-top-right",
+				"showDuration": "300",
+				"hideDuration": "500",
+				"timeOut": "3000",
+			})
 		},
 		success: function (data) {
-			console.log(data)
+			toastr["success"]("Berhasil mengambil data user", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+			$('#idPegawai').val(data.id);
+			$('#editNamaPegawai').val(data.nama);
+			$('#editNIPPegawai').val(data.nip);
+			$('#editPangkatPegawai').selectpicker('val', data.pangkat);
+			$('#editLevelPegawai').selectpicker('val', data.role_id);
+			$('#editOrganisasiPegawai').selectpicker('val', data.seksi);
+			$('#editAtasanPegawai').selectpicker('val', data.pejabat_id);
+			$('#editTelegramPegawai').val(data.telegram);
+		}
+	})
+})
+
+// AJAX Update Data User 
+$('.btnConfirmEditPegawai').click(function () {
+	let u = $('#idPegawai').val();
+	let namaPegawai = $('#editNamaPegawai').val();
+	let nipPegawai = $('#editNIPPegawai').val();
+	let pangkatPegawai = $('#editPangkatPegawai').val();
+	let roleIDPegawai = $('#editLevelPegawai').val();
+	let seksiPegawai = $('#editOrganisasiPegawai').val();
+	let atasanPegawai = $('#editAtasanPegawai').val();
+	let telegramPegawai = $('#editTelegramPegawai').val();
+
+	$.ajax({
+		type: "POST",
+		url: "admin/updatePegawai/",
+		dataType: "JSON",
+		data: {
+			u: u,
+			namaPegawai: namaPegawai,
+			nipPegawai: nipPegawai,
+			pangkatPegawai: pangkatPegawai,
+			roleIDPegawai: roleIDPegawai,
+			seksiPegawai: seksiPegawai,
+			atasanPegawai: atasanPegawai,
+			telegramPegawai: telegramPegawai
+		},
+		beforeSend: function (data) {
+			$('.btnConfirmEditPegawai').html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled");
+		},
+		success: function (data) {
+			$('#editUserModal').modal('hide'),
+				toastr["success"]("Data berhasil diubah!", "Sukses", {
+					positionClass: "toast-top-right",
+					showDuration: "200",
+					hideDuration: "500",
+					timeOut: "5000",
+				});
+
 		}
 	})
 })

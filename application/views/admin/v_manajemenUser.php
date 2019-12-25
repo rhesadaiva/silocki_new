@@ -35,11 +35,10 @@
                                     <td><?= $user['pangkat'] ?></td>
                                     <td><?= $user['level'] ?></td>
                                     <td><?= $user['seksi'] ?></td>
-                                    <td><?= $user['atasan'] ?></td>
+                                    <td><?= $user['nama_pejabat'] ?></td>
                                     <td>
-                                        <button class="btn btn-primary btn-xs btnEditPegawai" id="btnEditPegawaiModal" user-id="<?= $user['id'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
-
-                                        <button class="btn btn-danger btn-xs btnDeletePegawai" data-toggle="modal" data-target="#deleteUserModal" userid="<?= $user['id'] ?>" name="btnDeletePegawai"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
+                                        <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditPegawai" id="btnEditPegawaiModal" data-toggle="modal" data-target="#editUserModal" user-id="<?= $user['id'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                        <button class="btn btn-danger btn-xs btnDeletePegawai" data-toggle="modal" data-target="#deleteUserModal" user-id="<?= $user['id'] ?>" name="btnDeletePegawai"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
                                     </td>
                                 </tr>
                                 <?php $i++; ?>
@@ -105,7 +104,7 @@
                                 <div class="col-sm-8">
                                     <select class="selectpicker" name="atasanPegawai" data-live-search="true" data-width="60%" id="atasanPegawai">
                                         <?php foreach ($pejabat as $atasan) : ?>
-                                            <option value="<?= $atasan['nama'] ?>"><?= $atasan['nama'] ?></option>
+                                            <option value="<?= $atasan['pejabat_id'] ?>"><?= $atasan['nama_pejabat'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -116,7 +115,8 @@
                                     <input type="text" class="form-control" id="telegramPegawai" name="telegramPegawai" placeholder="Masukkan ID Telegram">
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a>
+                                    <!-- <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a> -->
+                                    <a class="label label-info" href="<?= $tlinks ?>" target="_blank">CHECK ID TELEGRAM</a>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -150,10 +150,12 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title text-primary" id="myModalLabel"><b>Tambah Data Pegawai</b></h4>
+                        <h4 class="modal-title text-primary" id="myModalLabel"><b>Ubah Data Pegawai</b></h4>
+                        <input type="hidden" readonly name="" id="idPegawai">
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" action="" id="editPegawaiForm" method="POST">
+                            <input type="hidden" name="" id="idPegawai">
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="editNamaPegawai">Nama Pegawai</label>
                                 <div class="col-sm-8">
@@ -201,7 +203,7 @@
                                 <div class="col-sm-8">
                                     <select class="selectpicker" name="editAtasanPegawai" data-live-search="true" data-width="60%" id="editAtasanPegawai">
                                         <?php foreach ($pejabat as $atasan) : ?>
-                                            <option value="<?= $atasan['nama'] ?>"><?= $atasan['nama'] ?></option>
+                                            <option value="<?= $atasan['pejabat_id'] ?>"><?= $atasan['nama_pejabat'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -212,12 +214,13 @@
                                     <input type="text" class="form-control" id="editTelegramPegawai" name="editTelegramPegawai" placeholder="Masukkan ID Telegram">
                                 </div>
                                 <div class="col-sm-2">
-                                    <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a>
+                                    <!-- <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a> -->
+                                    <span class="label label-info">Info</span>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
-                                <button type="button" class="btn btn-success hidden" id="btnEditPegawai" onclick="savePegawaiBaru()"><i class="fa fa-save"></i> Simpan</button>
+                                <button type=" button" class="btn btn-success btnConfirmEditPegawai"><i class="fa fa-save"></i> Simpan</button>
                             </div>
                         </form>
                     </div>
