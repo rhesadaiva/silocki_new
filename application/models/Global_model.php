@@ -22,12 +22,19 @@ class Global_model extends CI_Model
 
     public function getLoggedUser($loggedNIP)
     {
-        $query = $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`pejabat_id`,`user`.`telegram`,
+        $query = $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, 
+                                    `user`.`pejabat_id`,`user`.`telegram`,
                                     `user_role`.* , `pejabat`.`pejabat_id`, `pejabat`.`nama_pejabat`
                                     FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role` JOIN `pejabat` 
                                     ON `user`.`pejabat_id` = `pejabat`.`pejabat_id`
                                     WHERE `user`.`nip` = '$loggedNIP'");
 
         return $query->row_array();
+    }
+
+    public function getUserList()
+    {
+        $query = $this->db->query('SELECT `nama`, `nip` FROM `user`');
+        return $query->result_array();
     }
 }
