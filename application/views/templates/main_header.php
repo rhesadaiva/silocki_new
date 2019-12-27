@@ -22,8 +22,6 @@
     <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
     <!-- DATATABLES CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.20/r-2.2.3/datatables.min.css" />
-    <!-- SWEETALERT CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
     <!-- BOOTSTRAP SELECTPICKER CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
     <!-- TOASTR CSS-->
@@ -85,7 +83,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-info" data-dismiss="modal">Batal</button>
-                        <a class="btn btn-danger" href="<?= base_url('auth/logout'); ?>"><i class="fa fa-plus-square"></i> Logout</a>
+                        <a class="btn btn-danger" href="<?= base_url('auth/logout'); ?>"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
             </div>
