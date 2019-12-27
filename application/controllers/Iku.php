@@ -10,147 +10,74 @@ class Iku extends CI_Controller
         is_logged_in();
         $this->load->model('Indikator_model');
         $this->load->model('Logbook_model');
+        $this->load->model('Global_model');
     }
 
-    public function browseiku()
+    // Halaman Index
+    public function index()
     {
         $data['title'] = 'Browse Indikator Kinerja Utama';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
+        $data['userList'] = $this->Global_model->getUserList();
+        $data['refAspekTarget'] = $this->Indikator_model->getAspekTarget();
+        $data['refPeriodePelaporan'] = $this->Indikator_model->getPeriodePelaporan();
+        $data['refKonsolidasiPeriode'] = $this->Indikator_model->getKonsolidasiPeriode();
+        $data['refKonversi120'] = $this->Indikator_model->getKonversi120();
+
         $data['role'] = $this->session->userdata('role_id');
+        // Jika Role = Admin, ambil semua data Kontrak Kinerja dan IKU
         if ($data['role'] == 1) {
-            $data['indikator'] = $this->Indikator_model->getIKU();
+            $data['kontrakKinerja'] = $this->Indikator_model->getKontrak();
+            $data['listIKU'] = $this->Indikator_model->getIKU();
         } else {
-            $data['indikator'] = $this->Indikator_model->getIKUbyNIP();
+            $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP();
+            $data['listIKU'] = $this->Indikator_model->getIKUbyNIP();
         }
 
-        $this->load->view('templates/header', $data);
-        cek_sidebar();
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('iku/browseiku', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('iku/v_iku', $data);
+        $this->load->view('templates/main_footer');
     }
 
-    public function rekamiku()
+    // Menambah IKU Baru
+    public function createIKU()
     {
-        $data['title'] = 'Tambah IKU Baru';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
-        $data['nip'] = $this->Indikator_model->user();
-        $data['role'] = $this->session->userdata('role_id');
-
-        if ($data['role'] == 1) {
-            $data['kontrak_kinerja'] = $this->Indikator_model->getKontrak();
-        } else {
-            $data['kontrak_kinerja'] = $this->Indikator_model->getKontrakByNIP();
-        }
-
-        $this->form_validation->set_rules('kodeiku', 'Kode IKU', 'required');
-        $this->form_validation->set_rules('namaiku', 'Nomor Kontrak Kinerja', 'required');
-        $this->form_validation->set_rules('formulaiku', 'Formula IKU', 'required');
-        $this->form_validation->set_rules('targetiku', 'Target IKU', 'required');
-        $this->form_validation->set_rules('nilaitertinggi', 'Nilai Tertinggi', 'required');
-        $this->form_validation->set_rules('aspektarget', 'Aspek Target', 'required');
-        $this->form_validation->set_rules('penanggungjawab', 'Penanggung Jawab', 'required');
-        $this->form_validation->set_rules('penyediadata', 'Penyedia Data', 'required');
-        $this->form_validation->set_rules('sumberdata', 'Sumber Data', 'required');
-        $this->form_validation->set_rules('satuanpengukuran', 'Satuan Pengukuran', 'required');
-        $this->form_validation->set_rules('konsolidasiperiode', 'Konsolidasi Periode', 'required');
-        $this->form_validation->set_rules('periodepelaporan', 'Periode Pelaporan', 'required');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->load->view('templates/header', $data);
-            cek_sidebar();
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('iku/tambahiku', $data);
-            $this->load->view('templates/footer');
-        } else {
-            $this->Indikator_model->rekamikubaru();
-            $this->session->set_flashdata('flash', 'Ditambahkan');
-            helper_log("add", "menambah IKU baru");
-            redirect('iku/browseiku');
-        }
+        $newIKU = $this->Indikator_model->newIKU();
+        helper_log("add", "menambah IKU baru");
+        echo json_encode($newIKU);
     }
 
-    public function hapusiku($idiku)
+    // Menghapus IKU
+    public function deleteIKU($idIKU)
     {
-        $hapusiku = $this->Indikator_model->hapusiku($idiku);
-        helper_log("delete", "menghapus IKU (id-iku = $idiku)");
-        // $this->session->set_flashdata('flash', 'Dihapus');
-        // redirect('iku/browseiku');
-        echo json_encode($hapusiku);
+        $deleteIKU = $this->Indikator_model->deleteIKU($idIKU);
+        helper_log("delete", "menghapus IKU (id-iku = $idIKU)");
+        echo json_encode($deleteIKU);
     }
 
-    public function editiku($idiku)
+    // Mengambil data IKU berdasarkan ID
+    public function getIKUByID()
     {
-        $data['title'] = 'Edit IKU';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
-        $data['nip'] = $this->Indikator_model->user();
-        $data['role'] = $this->session->userdata('role_id');
-        $data['iku'] = $this->Indikator_model->getIKUById($idiku);
-        $data['satuanpengukuran'] = ['Persentase', 'Indeks', 'Satuan', 'Waktu'];
-        $data['konsolidasiperiode'] = ['Sum', 'Average', 'Take Last Known'];
-        $data['aspektarget'] = ['Kuantitas', 'Kualitas', 'Waktu', 'Biaya'];
-        $data['periodepelaporan'] = ['Bulanan', 'Triwulanan', 'Semesteran', 'Tahunan'];
-        $data['konversi'] = ['Ya', 'Tidak'];
-
-        $this->form_validation->set_rules('kodeiku', 'Kode IKU', 'required');
-        $this->form_validation->set_rules('namaiku', 'Nomor Kontrak Kinerja', 'required');
-        $this->form_validation->set_rules('formulaiku', 'Formula IKU', 'required');
-        $this->form_validation->set_rules('targetiku', 'Target IKU', 'required');
-        $this->form_validation->set_rules('nilaitertinggi', 'Nilai Tertinggi', 'required');
-        $this->form_validation->set_rules('satuanpengukuran', 'Satuan Pengukuran', 'required');
-        $this->form_validation->set_rules('konsolidasiperiode', 'Konsolidasi Periode', 'required');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->load->view('templates/header', $data);
-            cek_sidebar();
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('iku/editiku', $data);
-            $this->load->view('templates/footer');
-        } else {
-            $this->Indikator_model->ubahdataIKU($idiku);
-            helper_log("edit", "mengubah IKU (id-iku = $idiku)");
-            $this->session->set_flashdata('flash', 'Diubah');
-            redirect('iku/browseiku');
-        }
+        $id = $this->input->get('id');
+        $getIKU = $this->Indikator_model->getIKUById($id);
+        echo json_encode($getIKU);
     }
 
-    public function adendum($idiku)
+    // Update data IKU berdasarkan ID
+    public function updateIKU()
     {
-        $data['title'] = 'Adendum IKU';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
-        $data['nip'] = $this->Indikator_model->user();
-        $data['role'] = $this->session->userdata('role_id');
-        $data['iku'] = $this->Indikator_model->getIKUById($idiku);
-        $data['satuanpengukuran'] = ['Persentase', 'Indeks', 'Satuan', 'Waktu'];
-        $data['konsolidasiperiode'] = ['Sum', 'Average', 'Take Last Known'];
-        $data['aspektarget'] = ['Kuantitas', 'Kualitas', 'Waktu', 'Biaya'];
-        $data['periodepelaporan'] = ['Bulanan', 'Triwulanan', 'Semesteran', 'Tahunan'];
-        $data['konversi'] = ['Ya', 'Tidak'];
-
-        $this->form_validation->set_rules('kodeiku', 'Kode IKU', 'required');
-        $this->form_validation->set_rules('namaiku', 'Nomor Kontrak Kinerja', 'required');
-        $this->form_validation->set_rules('formulaiku', 'Formula IKU', 'required');
-        $this->form_validation->set_rules('targetiku', 'Target IKU', 'required');
-        $this->form_validation->set_rules('nilaitertinggi', 'Nilai Tertinggi', 'required');
-        $this->form_validation->set_rules('satuanpengukuran', 'Satuan Pengukuran', 'required');
-        $this->form_validation->set_rules('konsolidasiperiode', 'Konsolidasi Periode', 'required');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->load->view('templates/header', $data);
-            cek_sidebar();
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('iku/editiku', $data);
-            $this->load->view('templates/footer');
-        } else {
-            $this->_aksiadendum($idiku);
-        }
+        $idIKU = $this->input->post('idIKU');
+        $editIKU = $this->Indikator_model->editIKU();
+        helper_log("edit", "mengubah IKU (id-iku = $idIKU)");
+        echo json_encode($editIKU);
     }
 
-    private function _aksiadendum($idiku)
+    public function addendumIKU()
     {
-        $this->Indikator_model->adendumIKU($idiku);
-        helper_log("edit", "melakukan adendum IKU (id-iku = $idiku)");
-        $this->session->set_flashdata('flash', 'Diadendum');
-        redirect('iku/browseiku');
+        $idIKU = $this->input->post('idIKU');
+        $editIKU = $this->Indikator_model->editIKU();
+        helper_log("edit", "addendum IKU (id-iku = $idIKU)");
+        echo json_encode($editIKU);
     }
 }

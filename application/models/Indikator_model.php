@@ -4,23 +4,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Indikator_model extends CI_Model
 {
 
-    //Ambil data User
-    public function user()
-    {
-        $query = $this->db->get('user');
-        return $query->result_array();
-    }
-
     //Ambil IKU berdasarkan id
-    public function getIKUById($idiku)
+    public function getIKUById($idIKU)
     {
-        return $this->db->get_where('indikatorkinerjautama', ['id_iku' => $idiku])->row_array();
+
+        return $this->db->get_where('indikatorkinerjautama', ['id_iku' => $idIKU])->row_array();
     }
 
     //Ambil data kontrak khusus admin
     public function getKontrak()
     {
-        $query = $this->db->query('SELECT `kontrakkinerja`.*, `user`.nama from `kontrakkinerja`join `user` using(nip)');
+        $query = $this->db->query('SELECT `kontrakkinerja`.`id_kontrak`,`kontrakkinerja`.`nomorkk`,
+                                    `kontrakkinerja`.`nip`,`user`.`nama` 
+                                    FROM `kontrakkinerja` JOIN `user` USING(nip)');
         return $query->result_array();
     }
 
@@ -32,10 +28,15 @@ class Indikator_model extends CI_Model
         return $query->row_array();
     }
 
-    //Ambil data IKU khusus ADMIN
+    //Ambil semua IKU (admin)
     public function getIKU()
     {
-        $query = $this->db->query("SELECT `kontrakkinerja`.id_kontrak, `kontrakkinerja`.nomorkk,`indikatorkinerjautama`.*,`user`.nama, `user`.nip from `indikatorkinerjautama`join `user` using(nip) join `kontrakkinerja` using (id_kontrak)");
+        $query = $this->db->query("SELECT `kontrakkinerja`.`nomorkk`,`user`.`nama`,
+                                    `indikatorkinerjautama`.`id_iku`,`indikatorkinerjautama`.`kodeiku`,
+                                    `indikatorkinerjautama`.`namaiku`,`indikatorkinerjautama`.`targetiku`,
+                                    `indikatorkinerjautama`.`nilaitertinggi`,`indikatorkinerjautama`.`iku_validated`
+                                    FROM `indikatorkinerjautama`JOIN `user` USING(nip) 
+                                    JOIN `kontrakkinerja` USING(id_kontrak) ORDER BY `nama` ASC");
         return $query->result_array();
     }
 
@@ -43,40 +44,66 @@ class Indikator_model extends CI_Model
     public function getIKUByNIP()
     {
         $role = $this->session->userdata('nip');
-        return $this->db->query("SELECT `kontrakkinerja`.id_kontrak, `kontrakkinerja`.nomorkk, `indikatorkinerjautama`.*
-                                FROM `kontrakkinerja` JOIN `indikatorkinerjautama` using (id_kontrak) where `indikatorkinerjautama`.nip = $role")->result_array();
+        $query =  $this->db->query("SELECT `kontrakkinerja`.id_kontrak, `kontrakkinerja`.nomorkk, `indikatorkinerjautama`.*
+                                    FROM `kontrakkinerja` JOIN `indikatorkinerjautama` using (id_kontrak) 
+                                    where `indikatorkinerjautama`.nip = $role");
+        return $query->result_array();
+    }
+
+    //Ambil Referensi Aspek Target
+    public function getAspekTarget()
+    {
+        return $this->db->get('ref_AspekTarget')->result_array();
+    }
+
+    //Ambil Referensi Periode Pelaporan
+    public function getPeriodePelaporan()
+    {
+        return $this->db->get('ref_PeriodePelaporan')->result_array();
+    }
+
+    //Ambil Referensi Konsolidasi Periode
+    public function getKonsolidasiPeriode()
+    {
+        return $this->db->get('ref_KonsolidasiPeriode')->result_array();
+    }
+
+    //Ambil Referensi Konversi 120
+    public function getKonversi120()
+    {
+        return $this->db->get('ref_Konversi120')->result_array();
     }
 
     //Tambah IKU Baru
-    public function rekamikubaru()
+    public function newIKU()
     {
         $role = $this->session->userdata('nip');
         $login = $this->session->userdata('nama');
         // Ambil Nama Atasan
-        $queryAtasan = $this->db->query("SELECT `user`.nip, `user`.atasan FROM `user` where `user`.nip = '$role' ")->row_array();
-        $namaAtasan = $queryAtasan['atasan'];
+        $queryAtasan = $this->db->query("SELECT `user`.nip, `user`.pejabat_id, `pejabat`.`nama_pejabat`, `pejabat`.`pejabat_id` FROM `user` 
+                                        JOIN `pejabat` USING (pejabat_id) WHERE `user`.nip = '$role'")->row_array();
+        $namaAtasan = $queryAtasan['nama_pejabat'];
         // Ambil ID Telegram Atasan dari nama
         $telegramAtasan = $this->db->query("SELECT `user`.nama, `user`.telegram FROM `user` where `user`.nama = '$namaAtasan'")->row_array();
 
-
         //Ambil data dari form
         $data = [
-            'nip' => $this->input->post('nomorpegawai', true),
+            'nip' => $this->input->post('setIKUPegawai', true),
             'id_iku' => uniqid(),
-            'id_kontrak' => $this->input->post('nomorkk', true),
-            'kodeiku' => $this->input->post('kodeiku', true),
-            'namaiku' => $this->input->post('namaiku', true),
-            'formulaiku' => $this->input->post('formulaiku', true),
-            'targetiku' => $this->input->post('targetiku', true),
-            'nilaitertinggi' => $this->input->post('nilaitertinggi', true),
-            'aspektarget' => $this->input->post('aspektarget', true),
-            'penanggungjawab' => $this->input->post('penanggungjawab', true),
-            'penyediadata' => $this->input->post('penyediadata', true),
-            'sumberdata' => $this->input->post('sumberdata', true),
-            'satuanpengukuran' => $this->input->post('satuanpengukuran', true),
-            'konsolidasiperiodeiku' => $this->input->post('konsolidasiperiode', true),
-            'periodepelaporan' => $this->input->post('periodepelaporan', true),
-            'konversi120' => $this->input->post('konversi', true),
+            'id_kontrak' => $this->input->post('setKontrakPegawai', true),
+            'kodeiku' => $this->input->post('kodeIKU', true),
+            'namaiku' => $this->input->post('namaIKU', true),
+            'formulaiku' => $this->input->post('formulaIKU', true),
+            'targetiku' => $this->input->post('targetIKU', true),
+            'nilaitertinggi' => $this->input->post('nilaiTertinggiIKU', true),
+            'aspektarget' => $this->input->post('aspekTargetIKU', true),
+            'penanggungjawab' => $this->input->post('penanggungJawabIKU', true),
+            'penyediadata' => $this->input->post('penyediaDataIKU', true),
+            'sumberdata' => $this->input->post('sumberDataIKU', true),
+            'satuanpengukuran' => $this->input->post('satuanPengukuranIKU', true),
+            'konsolidasiperiodeiku' => $this->input->post('konsolidasiPeriodeIKU', true),
+            'periodepelaporan' => $this->input->post('periodePelaporanIKU', true),
+            'konversi120' => $this->input->post('konversi120IKU', true),
             'tahun_iku' => date("Y"),
         ];
 
@@ -85,32 +112,38 @@ class Indikator_model extends CI_Model
         // Send notif ke Telegram atasan
         $this->_telegram(
             $telegramAtasan['telegram'],
-            "Halo, *" . $telegramAtasan['nama'] . "*. \n\nBawahan anda: *" . $login . "* telah mengajukan IKU dengan data sebagai berikut: \n\n*Kode IKU*: " . $this->input->post('kodeiku') . "\n*Nama IKU*: " . $this->input->post('namaiku') . "\n\nMohon diperiksa dan diberikan persetujuan apabila data sudah benar, terima kasih."
+            "Halo, *" . $telegramAtasan['nama'] . "*. \n\nBawahan anda: *" . $login . "* telah mengajukan IKU dengan data sebagai berikut: \n\n*Kode IKU*: " . $this->input->post('kodeIKU') . "\n*Nama IKU*: " . $this->input->post('namaIKU') . "\n\nMohon diperiksa dan diberikan persetujuan apabila data sudah benar, terima kasih."
         );
     }
 
     //Hapus IKU
-    public function hapusiku($idiku)
+    public function deleteIKU($idiku)
     {
         $this->db->where('id_iku', $idiku);
         $this->db->delete('indikatorkinerjautama');
     }
 
     //Edit IKU
-    public function ubahdataIKU()
+    public function editIKU()
     {
+        $idIKU = $this->input->post('idIKU');
         $data = [
-            'kodeiku' => $this->input->post('kodeiku', true),
-            'namaiku' => $this->input->post('namaiku', true),
-            'formulaiku' => $this->input->post('formulaiku', true),
-            'targetiku' => $this->input->post('targetiku', true),
-            'nilaitertinggi' => $this->input->post('nilaitertinggi', true),
-            'satuanpengukuran' => $this->input->post('satuanpengukuran', true),
-            'konsolidasiperiodeiku' => $this->input->post('konsolidasiperiode', true),
-            'konversi120' => $this->input->post('konversi', true),
+            'kodeiku' => $this->input->post('kodeIKU', true),
+            'namaiku' => $this->input->post('namaIKU', true),
+            'formulaiku' => $this->input->post('formulaIKU', true),
+            'targetiku' => $this->input->post('targetIKU', true),
+            'nilaitertinggi' => $this->input->post('nilaiTertinggiIKU', true),
+            'aspektarget' => $this->input->post('aspekTargetIKU', true),
+            'penanggungjawab' => $this->input->post('penanggungJawabIKU', true),
+            'penyediadata' => $this->input->post('penyediaDataIKU', true),
+            'sumberdata' => $this->input->post('sumberDataIKU', true),
+            'satuanpengukuran' => $this->input->post('satuanPengukuranIKU', true),
+            'konsolidasiperiodeiku' => $this->input->post('konsolidasiPeriodeIKU', true),
+            'periodepelaporan' => $this->input->post('periodePelaporanIKU', true),
+            'konversi120' => $this->input->post('konversi120IKU', true),
         ];
 
-        $this->db->where('id_iku', $this->input->post('id_iku'));
+        $this->db->where('id_iku', $idIKU);
         $this->db->update('indikatorkinerjautama', $data);
     }
 
