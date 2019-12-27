@@ -58,3 +58,16 @@ $route['translate_uri_dashes'] = FALSE;
 // Route Admin
 $route['index-admin'] = 'admin/index';
 $route['manajemen-user'] = 'admin/manajemenUser';
+
+// Route Kontrak Kinerja
+$route['kontrak-kinerja'] = 'kontrakkinerja/index';
+$route['save-kontrak'] = 'kontrakkinerja/addKontrakKinerja';
+$route['delete-kontrak/(:any)'] = 'kontrakkinerja/deleteKontrak/$1';
+$route['update-kontrak'] = 'kontrakkinerja/updateKontrak';
+
+// Route IKU
+$route['indikator-kinerja-utama'] = 'iku/index';
+$route['save-iku'] = 'iku/createIKU';
+$route['delete-iku/(:any)'] = 'iku/deleteIKU/$1';
+$route['update-iku'] = 'iku/updateIKU';
+$route['addendum-iku'] = 'iku/addendumIKU';
