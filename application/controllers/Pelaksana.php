@@ -20,10 +20,9 @@ class Pelaksana extends CI_Controller
         $data['ikudisetujui'] = $this->Pelaksana_model->countIKUApproved();
         $data['logbookdikirim'] = $this->Pelaksana_model->countLogbookSent();
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar_user');
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('user/index', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/index');
+        $this->load->view('templates/main_footer');
     }
 }

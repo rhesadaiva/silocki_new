@@ -7,7 +7,7 @@ class Pelaksana_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
 
-        $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `user`.nip, `user`.`atasan` from kontrakkinerja join user using (nip) where nip = '$role' and is_validated = 2");
+        $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `user`.nip, `user`.`pejabat_id` from kontrakkinerja join user using (nip) where nip = '$role' and is_validated = 2");
         if ($query->num_rows() > 0) {
             return $query->num_rows();
         } else {
@@ -19,7 +19,7 @@ class Pelaksana_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
 
-        $query = $this->db->query("SELECT `indikatorkinerjautama`.*, `user`.nama, `user`.nip, `user`.atasan from indikatorkinerjautama join user using (nip) where user.nip = '$role' and iku_validated = 1");
+        $query = $this->db->query("SELECT `indikatorkinerjautama`.*, `user`.nama, `user`.nip, `user`.`pejabat_id` from indikatorkinerjautama join user using (nip) where user.nip = '$role' and iku_validated = 1");
         if ($query->num_rows() > 0) {
             return $query->num_rows();
         } else {
@@ -31,7 +31,7 @@ class Pelaksana_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
 
-        $query = $this->db->query("SELECT `user`.`nama`, `user`.`nip`, `user`.`atasan`, `kontrakkinerja`.`id_kontrak`, `kontrakkinerja`.`nip`, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.`nip`,`indikatorkinerjautama`.id_kontrak, `logbook`.* 
+        $query = $this->db->query("SELECT `user`.`nama`, `user`.`nip`, `user`.`pejabat_id`, `kontrakkinerja`.`id_kontrak`, `kontrakkinerja`.`nip`, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.`nip`,`indikatorkinerjautama`.id_kontrak, `logbook`.* 
                                     from `kontrakkinerja` right join `user` using (`nip`) 
                                     join `indikatorkinerjautama` using (`id_kontrak`)
                                     join `logbook` using (`id_iku`) where `is_sent` = 1 and `user`.nip = $role ");
