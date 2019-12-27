@@ -5,16 +5,19 @@ class Kontrak_model extends CI_Model
 {
 
     //Ambil data user
-    public function user()
+    public function getUserList()
     {
-        $query = $this->db->get('user');
+        $query = $this->db->query('SELECT `nama`, `nip` FROM `user`');
         return $query->result_array();
     }
 
     //Ambil semua KK (khusus admin)
     public function getKontrak()
     {
-        $query = $this->db->query('SELECT `kontrakkinerja`.*, `user`.nama from `kontrakkinerja`join `user` using(nip)');
+        $query = $this->db->query('SELECT `kontrakkinerja`.*, `user`.nama, `ref_validasiKK`.* 
+                                    FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
+                                    WHERE `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` 
+                                    ORDER BY `kontrakkinerja`.`is_validated` ASC');
         return $query->result_array();
     }
 
@@ -22,7 +25,9 @@ class Kontrak_model extends CI_Model
     public function getKontrakByNIP()
     {
         $role = $this->session->userdata('nip');
-        $query = $this->db->query("SELECT * from `kontrakkinerja` where nip='$role' ");
+        $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `ref_validasiKK`.* 
+        FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
+        ON `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` WHERE nip='$role' ");
         return $query->result_array();
     }
 
@@ -33,59 +38,62 @@ class Kontrak_model extends CI_Model
     }
 
     //Tambah KK Baru
-    public function tambahkontrakbaru()
+    public function addNewKontrakKinerja()
     {
         $role = $this->session->userdata('nip');
         $login = $this->session->userdata('nama');
 
         // Ambil Nama Atasan
-        $queryAtasan = $this->db->query("SELECT `user`.nip, `user`.atasan FROM `user` where `user`.nip = '$role' ")->row_array();
-        $namaAtasan = $queryAtasan['atasan'];
+        $queryAtasan = $this->db->query("SELECT `user`.nip, `user`.pejabat_id, `pejabat`.`nama_pejabat`, `pejabat`.`pejabat_id` FROM `user` 
+                                        JOIN `pejabat` USING (pejabat_id) WHERE `user`.nip = '$role'")->row_array();
+        $namaAtasan = $queryAtasan['nama_pejabat'];
 
         // Ambil ID Telegram Atasan dari nama
         $telegramAtasan = $this->db->query("SELECT `user`.nama, `user`.telegram FROM `user` where `user`.nama = '$namaAtasan'")->row_array();
 
         $data = [
             'id_kontrak' => uniqid(),
-            'nip' => $this->input->post('nipkk', true),
-            'kontrakkinerjake' => $this->input->post('kontrakkinerjake', true),
-            'nomorkk' => $this->input->post('nomorkontrakkinerja', true),
-            'tanggalmulai' => $this->input->post('tanggalmulai', true),
-            'tanggalselesai' => $this->input->post('tanggalselesai', true),
+            'nip' => $this->input->post('setPegawai', true),
+            'kontrakkinerjake' => $this->input->post('seriKontrakKinerja', true),
+            'nomorkk' => $this->input->post('nomorKontrakKinerja', true),
+            'tanggalmulai' => $this->input->post('tanggalAwalKontrak', true),
+            'tanggalselesai' => $this->input->post('tanggalAkhirKontrak', true),
             'is_validated' => 1,
             'tahun_kontrak' => date("Y")
         ];
 
         $this->db->insert('kontrakkinerja', $data);
 
-        $nomorKontrak = $this->input->post('nomorkontrakkinerja');
-        // Send Notif ke Telegram
+        $nomorKontrak = $this->input->post('nomorKontrakKinerja');
 
+        // Send Notif ke Telegram
         $this->_telegram(
             $telegramAtasan['telegram'],
             "Halo, *" . $telegramAtasan['nama'] . "*. \n\nBawahan anda: *" . $login . "* telah mengajukan Kontrak Kinerja dengan data sebagai berikut: \n\n*Nomor Kontrak Kinerja*: " . $nomorKontrak . "\n\nMohon diperiksa dan diberikan persetujuan apabila data sudah benar, terima kasih."
         );
+        return true;
     }
 
     //Hapus KK 
-    public function hapuskontrak($id)
+    public function deleteKontrak($id)
     {
         $this->db->where('id_kontrak', $id);
         $this->db->delete('kontrakkinerja');
     }
 
     //Edit KK
-    public function editkontrak()
+    public function editKontrak()
     {
+        $idKontrak =  $this->input->post('idKontrak');
         $data = [
-            'kontrakkinerjake' => $this->input->post('kontrakkinerjake'),
-            'nomorkk' => $this->input->post('nomorkontrakkinerja'),
-            'tanggalmulai' => $this->input->post('tanggalmulai'),
-            'tanggalselesai' => $this->input->post('tanggalselesai'),
+            'kontrakkinerjake' => $this->input->post('SeriKontrakKinerja'),
+            'nomorkk' => $this->input->post('NomorKontrakKinerja'),
+            'tanggalmulai' => $this->input->post('TanggalAwalKontrak'),
+            'tanggalselesai' => $this->input->post('TanggalAkhirKontrak'),
             'is_validated' => 1,
         ];
 
-        $this->db->where('id_kontrak', $this->input->post('id_kontrak'));
+        $this->db->where('id_kontrak', $idKontrak);
         $this->db->update('kontrakkinerja', $data);
     }
 
