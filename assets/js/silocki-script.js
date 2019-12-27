@@ -1,13 +1,6 @@
 // ====== SILOCKI MAIN-SCRIPT ===== //
 // ====== Required to make SILOCKI work properly ===== //
 
-// CHECK IF LOADED
-$(document).ready(function () {
-	console.log("ready");
-})
-
-// ANIMASI LOADING
-let loadingAnimation = '<i class="fas fa-cog fa-spin"> Loading</i>'
 
 // FUNGSI AMBIL DATA PENGUMUMAN
 let loadPengumuman =
@@ -66,13 +59,13 @@ let savePegawaiBaru =
 					positionClass: "toast-top-right",
 					showDuration: "200",
 					hideDuration: "500",
-					timeOut: "5000",
+					timeOut: "3000",
 				});
 			}
 		})
 	}
 
-// Delete Pegawai
+// AJAX Delete Pegawai
 $('button[name="btnDeletePegawai"]').click(function () {
 	let u = $(this).attr('user-id');
 
@@ -90,7 +83,7 @@ $('button[name="btnDeletePegawai"]').click(function () {
 					positionClass: "toast-top-right",
 					showDuration: "200",
 					hideDuration: "500",
-					timeOut: "5000",
+					timeOut: "3000",
 				});
 			}
 		})
@@ -102,7 +95,7 @@ $('button[name="btnEditPegawai"]').click(function () {
 	let u = $(this).attr("user-id");
 	$.ajax({
 		type: "GET",
-		url: "admin/getUserByID/?u=" + u,
+		url: "admin/getUserByID?u=" + u,
 		dataType: "JSON",
 		beforeSend: function () {
 			toastr["info"]("Sedang proses mengambil data", "Mengambil data", {
@@ -157,17 +150,416 @@ $('.btnConfirmEditPegawai').click(function () {
 			telegramPegawai: telegramPegawai
 		},
 		beforeSend: function (data) {
-			$('.btnConfirmEditPegawai').html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled");
+			$('.btnConfirmEditPegawai').html('<i class="fa fa-cog fa-spin"></i> Proses Update..').attr("disabled", "disabled");
 		},
 		success: function (data) {
-			$('#editUserModal').modal('hide'),
-				toastr["success"]("Data berhasil diubah!", "Sukses", {
+			$('#editUserModal').modal('hide');
+			toastr["success"]("Data berhasil diubah!", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+		}
+	})
+})
+
+// DataTable Kontrak Kinerja
+$(document).ready(function () {
+	$('#kontrakKinerjaTable').DataTable({
+		"ordering": false,
+		"lengthChange": false,
+	});
+})
+
+// Sembunyikan tombol simpan Kontrak Kinerja apabila form belum diisi lengkap
+$('#nomorKontrak,#tanggalAwalKontrak,#tanggalAkhirKontrak').change(function () {
+	if ($('#nomorKontrak').val() !== "" && $('#tanggalAwalKontrak').val() !== "" && $('#tanggalAkhirKontrak').val() !== "") {
+		$("#btnNewKontrak").removeClass("hidden")
+	} else {
+		$("#btnNewKontrak").addClass("hidden");
+	}
+})
+
+// AJAX Menambah Kontrak Kinerja Baru
+$("#btnNewKontrak").click(function () {
+	let dataKontrak = $('#newKontrakKinerjaForm').serialize();
+
+	$.ajax({
+		type: "POST",
+		url: "save-kontrak",
+		dataType: "JSON",
+		data: dataKontrak,
+		beforeSend: function (data) {
+			$('#btnNewKontrak').html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled");
+		},
+		success: function (data) {
+			$('#newKontrakModal').modal('hide');
+			toastr["success"]("Kontrak Kinerja berhasil disimpan", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+		}
+	})
+})
+
+// AJAX Delete Kontrak Kinerja Pegawai
+$('button[name="btnDeleteKontrak"]').click(function () {
+	let idKontrak = $(this).attr('kontrak-id');
+
+	$('.btnConfirmDeleteKontrak').click(function () {
+
+		$.ajax({
+			type: "POST",
+			url: 'delete-kontrak/' + idKontrak,
+			dataType: "JSON",
+			beforeSend: function () {
+				$('.btnConfirmDeleteKontrak').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
+			},
+			success: function () {
+				$('#deleteKontrakModal').modal('hide');
+				toastr["success"]("Kontrak Kinerja berhasil dihapus!", "Sukses", {
 					positionClass: "toast-top-right",
 					showDuration: "200",
 					hideDuration: "500",
-					timeOut: "5000",
+					timeOut: "3000",
 				});
+			}
+		})
+	})
+})
 
+// AJAX Get Kontrak By ID
+$('button[name="btnEditKontrak"]').click(function () {
+	let id = $(this).attr('kontrak-id');
+
+	$.ajax({
+		type: "GET",
+		url: "kontrakkinerja/getKontrakByID?id=" + id,
+		dataType: "JSON",
+		beforeSend: function (data) {
+			toastr["info"]("Sedang proses mengambil data", "Mengambil data", {
+				"positionClass": "toast-top-right",
+				"showDuration": "300",
+				"hideDuration": "500",
+				"timeOut": "3000",
+			})
+		},
+		success: function (data) {
+			toastr["success"]("Berhasil mengambil data kontrak kinerja", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+			$('#idKontrakKinerja').val(data.id_kontrak);
+			$('#editSeriKontrakKinerja').selectpicker('val', data.kontrakkinerjake);
+			$('#editNomorKontrakKinerja').val(data.nomorkk);
+			$('#editTanggalAwalKontrak').val(data.tanggalmulai);
+			$('#editTanggalAkhirKontrak').val(data.tanggalselesai);
+		}
+	})
+})
+
+// AJAX Update Kontrak Kinerja
+$('.btnConfirmEditKontrak').click(function () {
+	let idKontrak = $('#idKontrakKinerja').val();
+	let SeriKontrakKinerja = $('#editSeriKontrakKinerja').val();
+	let NomorKontrakKinerja = $('#editNomorKontrakKinerja').val();
+	let TanggalAwalKontrak = $('#editTanggalAwalKontrak').val();
+	let TanggalAkhirKontrak = $('#editTanggalAkhirKontrak').val();
+
+	$.ajax({
+		type: "POST",
+		url: 'update-kontrak',
+		dataType: "JSON",
+		data: {
+			idKontrak: idKontrak,
+			SeriKontrakKinerja: SeriKontrakKinerja,
+			NomorKontrakKinerja: NomorKontrakKinerja,
+			TanggalAwalKontrak: TanggalAwalKontrak,
+			TanggalAkhirKontrak: TanggalAkhirKontrak
+		},
+		beforeSend: function (data) {
+			$('.btnConfirmEditKontrak').html('<i class="fa fa-cog fa-spin"></i> Proses Update..').attr("disabled", "disabled");
+		},
+		success: function (data) {
+			$('#editUserModal').modal('hide');
+			toastr["success"]("Kontrak Kinerja berhasil diubah!", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+		}
+	})
+})
+
+// DataTable IKU
+$(document).ready(function () {
+	$('#ikuTable').DataTable({
+		"ordering": false,
+		"lengthChange": false,
+	});
+})
+
+// Sembunyikan Tombol Simpan apabila Form IKU belum lengkap
+$('#kodeIKU,#namaIKU,#formulaIKU,#targetIKU,#nilaiTertinggiIKU,#satuanPengukuranIKU,#penanggungJawabIKU,#penyediaDataIKU,#sumberDataIKU').change(function () {
+	if ($('#kodeIKU').val() !== "" && $('#namaIKU').val() !== "" && $('#formulaIKU').val() !== "" && $('#targetIKU').val() !== "" && $('#nilaiTertinggiIKU').val() !== "" && $('#satuanPengukuranIKU').val() !== "" && $('#penanggungJawabIKU').val() !== "" && $('#penyediaDataIKU').val() !== "" && $('#sumberDataIKU').val() !== "") {
+		$("#btnNewIKU").removeClass("hidden")
+	} else {
+		$("#btnNewIKU").addClass("hidden");
+	}
+})
+
+// AJAX Simpan IKU Baru
+$('#btnNewIKU').click(function () {
+	let dataIKU = $('#newIKUForm').serialize();
+
+	$.ajax({
+		type: "POST",
+		url: "save-iku",
+		dataType: "JSON",
+		data: dataIKU,
+		beforeSend: function () {
+			$('#btnNewIKU').html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled");
+		},
+		success: function () {
+			$('#newIKUModal').modal('hide');
+			toastr["success"]("IKU berhasil disimpan!", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+		}
+	})
+})
+
+// AJAX Hapus IKU
+$('button[name="btnDeleteIKU"]').click(function () {
+	let idIKU = $(this).attr('iku-id');
+
+	// Jalankan Ajax Hapus
+	$('.btnConfirmDeleteIKU').click(function () {
+		$.ajax({
+			type: "POST",
+			url: "delete-iku/" + idIKU,
+			dataType: "JSON",
+			beforeSend: function () {
+				$('.btnConfirmDeleteIKU').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
+			},
+			success: function () {
+				$('#deleteIKUModal').modal('hide');
+				toastr["success"]("IKU berhasil dihapus!", "Sukses", {
+					positionClass: "toast-top-right",
+					showDuration: "200",
+					hideDuration: "500",
+					timeOut: "3000",
+				});
+			}
+		})
+	})
+})
+
+// AJAX Ambil Data IKU
+$('button[name="btnEditIKU"]').click(function () {
+	let idIKU = $(this).attr('iku-id');
+
+	// Jalankan AJAX
+	$.ajax({
+		type: "GET",
+		url: 'iku/getIKUByID?id=' + idIKU,
+		dataType: "JSON",
+		beforeSend: function () {
+			toastr["info"]("Sedang proses mengambil data", "Mengambil data", {
+				"positionClass": "toast-top-right",
+				"showDuration": "300",
+				"hideDuration": "500",
+				"timeOut": "3000",
+			})
+		},
+		success: function (data) {
+			toastr["success"]("Berhasil mengambil data IKU", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+			$('#idIKU').val(idIKU);
+			$('#editKodeIKU').val(data.kodeiku);
+			$('#editNamaIKU').val(data.namaiku);
+			$('#editFormulaIKU').val(data.formulaiku);
+			$('#editTargetIKU').val(data.targetiku);
+			$('#editNilaiTertinggiIKU').val(data.nilaitertinggi);
+			$('#editSatuanPengukuranIKU').val(data.satuanpengukuran);
+			$('#editAspekTargetIKU').selectpicker('val', data.aspektarget);
+			$('#editPenanggungJawabIKU').val(data.penanggungjawab);
+			$('#editPenyediaDataIKU').val(data.penyediadata);
+			$('#editSumberDataIKU').val(data.sumberdata);
+			$('#editKonsolidasiPeriodeIKU').selectpicker('val', data.konsolidasiperiodeiku);
+			$('#editPeriodePelaporanIKU').selectpicker('val', data.periodepelaporan);
+			$('#editKonversi120IKU').selectpicker('val', data.konversi120);
+		}
+	})
+})
+
+// Ajax Update Data IKU
+$('.btnConfirmEditIKU').click(function () {
+	let idIKU = $('#idIKU').val();
+	let kodeIKU = $('#editKodeIKU').val();
+	let namaIKU = $('#editNamaIKU').val();
+	let formulaIKU = $('#editFormulaIKU').val();
+	let targetIKU = $('#editTargetIKU').val();
+	let nilaiTertinggiIKU = $('#editNilaiTertinggiIKU').val();
+	let satuanPengukuranIKU = $('#editSatuanPengukuranIKU').val();
+	let aspekTargetIKU = $('#editAspekTargetIKU').val();
+	let penanggungJawabIKU = $('#editPenanggungJawabIKU').val();
+	let penyediaDataIKU = $('#editPenyediaDataIKU').val();
+	let sumberDataIKU = $('#editSumberDataIKU').val();
+	let konsolidasiPeriodeIKU = $('#editKonsolidasiPeriodeIKU').val();
+	let periodePelaporanIKU = $('#editPeriodePelaporanIKU').val();
+	let konversi120IKU = $('#editKonversi120IKU').val();
+
+	// console.log(penanggungJawabIKU);
+
+	// Jalankan Ajax
+	$.ajax({
+		type: "POST",
+		url: "update-iku",
+		dataType: 'JSON',
+		data: {
+			idIKU: idIKU,
+			kodeIKU: kodeIKU,
+			namaIKU: namaIKU,
+			formulaIKU: formulaIKU,
+			targetIKU: targetIKU,
+			nilaiTertinggiIKU: nilaiTertinggiIKU,
+			satuanPengukuranIKU: satuanPengukuranIKU,
+			aspekTargetIKU: aspekTargetIKU,
+			penanggungJawabIKU: penanggungJawabIKU,
+			penyediaDataIKU: penyediaDataIKU,
+			sumberDataIKU: sumberDataIKU,
+			konsolidasiPeriodeIKU: konsolidasiPeriodeIKU,
+			periodePelaporanIKU: periodePelaporanIKU,
+			konversi120IKU: konversi120IKU,
+		},
+		beforeSend: function () {
+			$('.btnConfirmEditIKU').html('<i class="fa fa-cog fa-spin"></i> Proses Update..').attr("disabled", "disabled");
+		},
+		success: function () {
+
+			$('#editIKUModal').modal('hide');
+			toastr["success"]("IKU berhasil diubah!", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+		}
+	})
+})
+
+// Ajax Ambil Data untuk Addendum IKU
+$('button[name="btnAddendumIKU"]').click(function () {
+	let idIKU = $(this).attr('iku-id');
+
+	$('#btnConfirmEditIKU').addClass('hidden');
+	$('#btnConfirmAddendumIKU').removeClass('hidden');
+
+	// Jalankan AJAX
+	$.ajax({
+		type: "GET",
+		url: 'iku/getIKUByID?id=' + idIKU,
+		dataType: "JSON",
+		beforeSend: function () {
+			toastr["info"]("Sedang proses mengambil data", "Mengambil data", {
+				"positionClass": "toast-top-right",
+				"showDuration": "300",
+				"hideDuration": "500",
+				"timeOut": "3000",
+			})
+		},
+		success: function (data) {
+			toastr["success"]("Berhasil mengambil data IKU", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+			$('#idIKU').val(idIKU);
+			$('#editKodeIKU').val(data.kodeiku);
+			$('#editNamaIKU').val(data.namaiku);
+			$('#editFormulaIKU').val(data.formulaiku);
+			$('#editTargetIKU').val(data.targetiku);
+			$('#editNilaiTertinggiIKU').val(data.nilaitertinggi);
+			$('#editSatuanPengukuranIKU').val(data.satuanpengukuran);
+			$('#editAspekTargetIKU').selectpicker('val', data.aspektarget);
+			$('#editPenanggungJawabIKU').val(data.penanggungjawab);
+			$('#editPenyediaDataIKU').val(data.penyediadata);
+			$('#editSumberDataIKU').val(data.sumberdata);
+			$('#editKonsolidasiPeriodeIKU').selectpicker('val', data.konsolidasiperiodeiku);
+			$('#editPeriodePelaporanIKU').selectpicker('val', data.periodepelaporan);
+			$('#editKonversi120IKU').selectpicker('val', data.konversi120);
+		}
+	})
+})
+
+// AJAX Addendum IKU
+$('.btnConfirmAddendumIKU').click(function () {
+	let idIKU = $('#idIKU').val();
+	let kodeIKU = $('#editKodeIKU').val();
+	let namaIKU = $('#editNamaIKU').val();
+	let formulaIKU = $('#editFormulaIKU').val();
+	let targetIKU = $('#editTargetIKU').val();
+	let nilaiTertinggiIKU = $('#editNilaiTertinggiIKU').val();
+	let satuanPengukuranIKU = $('#editSatuanPengukuranIKU').val();
+	let aspekTargetIKU = $('#editAspekTargetIKU').val();
+	let penanggungJawabIKU = $('#editPenanggungJawabIKU').val();
+	let penyediaDataIKU = $('#editPenyediaDataIKU').val();
+	let sumberDataIKU = $('#editSumberDataIKU').val();
+	let konsolidasiPeriodeIKU = $('#editKonsolidasiPeriodeIKU').val();
+	let periodePelaporanIKU = $('#editPeriodePelaporanIKU').val();
+	let konversi120IKU = $('#editKonversi120IKU').val();
+
+	// console.log(penanggungJawabIKU);
+
+	// Jalankan Ajax
+	$.ajax({
+		type: "POST",
+		url: "addendum-iku",
+		dataType: 'JSON',
+		data: {
+			idIKU: idIKU,
+			kodeIKU: kodeIKU,
+			namaIKU: namaIKU,
+			formulaIKU: formulaIKU,
+			targetIKU: targetIKU,
+			nilaiTertinggiIKU: nilaiTertinggiIKU,
+			satuanPengukuranIKU: satuanPengukuranIKU,
+			aspekTargetIKU: aspekTargetIKU,
+			penanggungJawabIKU: penanggungJawabIKU,
+			penyediaDataIKU: penyediaDataIKU,
+			sumberDataIKU: sumberDataIKU,
+			konsolidasiPeriodeIKU: konsolidasiPeriodeIKU,
+			periodePelaporanIKU: periodePelaporanIKU,
+			konversi120IKU: konversi120IKU,
+		},
+		beforeSend: function () {
+			$('.btnConfirmAddendumIKU').html('<i class="fa fa-cog fa-spin"></i> Proses Update..').attr("disabled", "disabled");
+		},
+		success: function () {
+			$('#editIKUModal').modal('hide');
+			toastr["success"]("IKU berhasil diubah!", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+			$('#btnConfirmEditIKU').removeClass('hidden');
+			$('#btnConfirmAddendumIKU').addClass('hidden');
 		}
 	})
 })
