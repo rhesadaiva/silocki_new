@@ -115,8 +115,7 @@
                                     <input type="text" class="form-control" id="telegramPegawai" name="telegramPegawai" placeholder="Masukkan ID Telegram">
                                 </div>
                                 <div class="col-sm-2">
-                                    <!-- <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a> -->
-                                    <a class="label label-info" href="<?= $tlinks ?>" target="_blank">CHECK ID TELEGRAM</a>
+                                    <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -214,13 +213,13 @@
                                     <input type="text" class="form-control" id="editTelegramPegawai" name="editTelegramPegawai" placeholder="Masukkan ID Telegram">
                                 </div>
                                 <div class="col-sm-2">
-                                    <!-- <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a> -->
-                                    <span class="label label-info">Info</span>
+                                    <a class="btn btn-info" href="<?= $tlinks; ?>" target="_blank">Check Telegram ID</a>
+                                    <!-- <span class="label label-info">Info</span> -->
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
-                                <button type=" button" class="btn btn-success btnConfirmEditPegawai"><i class="fa fa-save"></i> Simpan</button>
+                                <button type=" button" class="btn btn-success btnConfirmEditPegawai"><i class="fa fa-save"></i> Update</button>
                             </div>
                         </form>
                     </div>

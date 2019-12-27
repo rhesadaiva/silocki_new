@@ -3,18 +3,26 @@
 	<div class="sidebar-scroll">
 		<nav>
 			<ul class="nav">
-				<li><a href="<?= base_url('index'); ?>" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+				<?php if ($this->session->userdata('role_id') == 1) : ?>
+					<li><a href="<?= base_url('index-admin'); ?>" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+				<?php elseif ($this->session->userdata('role_id') == 5) : ?>
+					<li><a href="<?= base_url('index-pelaksana'); ?>" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+				<?php else : ?>
+					<li><a href="<?= base_url('index-pejabat'); ?>" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
+				<?php endif; ?>
 				<li>
 					<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>Pengelolaan Kinerja</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
 					<div id="subPages" class="collapse ">
 						<ul class="nav">
-							<li><a href="page-profile.html" class="">Pengelolaan Kontrak Kinerja</a></li>
-							<li><a href="page-login.html" class="">Pengelolaan IKU dan Logbook</a></li>
+							<li><a href="kontrak-kinerja" class="">Pengelolaan Kontrak Kinerja</a></li>
+							<li><a href="indikator-kinerja-utama" class="">Pengelolaan IKU dan Logbook</a></li>
 						</ul>
 					</div>
 				</li>
 				<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Persetujuan Atasan</span></a></li>
-				<li><a href="manajemen-user" class=""><i class="lnr lnr-chart-bars"></i> <span>Manajemen User</span></a></li>
+				<?php if ($user['role_id'] == 1) : ?>
+					<li><a href="manajemen-user" class=""><i class="lnr lnr-chart-bars"></i> <span>Manajemen User</span></a></li>
+				<?php endif; ?>
 				<li><a href="panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
 				<li><a href="notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a></li>
 
