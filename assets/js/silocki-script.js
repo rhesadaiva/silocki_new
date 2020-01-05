@@ -524,8 +524,6 @@ $('.btnConfirmAddendumIKU').click(function () {
 	let periodePelaporanIKU = $('#editPeriodePelaporanIKU').val();
 	let konversi120IKU = $('#editKonversi120IKU').val();
 
-	// console.log(penanggungJawabIKU);
-
 	// Jalankan Ajax
 	$.ajax({
 		type: "POST",
@@ -558,8 +556,112 @@ $('.btnConfirmAddendumIKU').click(function () {
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+			// Kembalikan ke tombol default
 			$('#btnConfirmEditIKU').removeClass('hidden');
 			$('#btnConfirmAddendumIKU').addClass('hidden');
 		}
+	})
+})
+
+// Buat Objek Promise load IKU
+function loadIKU(idIKU) {
+	return new Promise(function (resolve, reject) {
+		let urlIKU = 'iku/getIKUByID?id=' + idIKU
+		$.getJSON(urlIKU, function (data) {
+			let masterIKU =
+				`<tr>
+					<th scope="row">Kode IKU</th>
+					<td>` + data.kodeiku + `</td>
+				<tr>
+				<th scope="row">Nama IKU</th>
+				<td>` + data.namaiku + `</td>
+				</tr>
+				<tr>	
+					<th scope="row">Formula IKU</th>
+					<td>` + data.formulaiku + `</td>
+				</tr>`
+			resolve($('.masterIKU').html(masterIKU))
+		})
+	})
+}
+
+// Buat objek promise load logbook
+function loadLogbook(idIKU) {
+	return new Promise(function (resolve, reject) {
+		let urlLogbook = "logbook/getLogbook?id-iku=" + idIKU
+		$.getJSON(urlLogbook, function (data) {
+			if (data) {
+				$.each(data, function (i, data) {
+					// Jika logbook belum dikirim
+					if (data.is_sent == 0) {
+						let masterLogbook =
+							`<tr>
+								<td class="text-center">` + data.periode + `</td>
+								<td class="text-justify">` + data.perhitungan + `</td>
+								<td class="text-justify">` + data.realisasibulan + `</td>
+								<td class="text-justify">` + data.realisasiterakhir + `</td>
+								<td class="text-justify">` + data.ket + `</td>
+								<td class="text-center">` + moment(data.wakturekam).format('Do MMMM YYYY, HH:mm:ss') + `</td>
+								<td class="aksiLogbook">
+									<button class="btn btn-primary"> Kirim Logbook</button> 
+									<button class="btn btn-danger"> Hapus Logbook</button>
+								</td>
+							</tr>`
+						resolve($('#logbookData').append(masterLogbook))
+					} else {
+						// Jika logbook sudah dikirim
+						let masterLogbook =
+							`<tr>
+								<td class="text-center">` + data.periode + `</td>
+								<td class="text-justify">` + data.perhitungan + `</td>
+								<td class="text-justify">` + data.realisasibulan + `</td>
+								<td class="text-justify">` + data.realisasiterakhir + `</td>
+								<td class="text-justify">` + data.ket + `</td>
+								<td class="text-center">` + moment(data.wakturekam).format('Do MMMM YYYY, HH:mm:ss') + `</td>
+								<td class="aksiLogbook">
+									<button class="btn btn-success" onclick="alert('clicked')"> Cetak Logbook</button>
+								</td>
+							</tr>`
+						resolve($('#logbookData').append(masterLogbook))
+					}
+				})
+			} else {
+				// Jika tidak ada logbook
+				resolve($('#logbookData').html(''))
+			}
+		})
+	})
+}
+
+// Ketika tombol Create Logbook diklik
+$('button[name="btnCreateLogbook"]').click(function () {
+	let idIKU = $(this).attr('iku-id')
+	// Munculkan animasi loading dan sembunyikan content
+	$('.loadingAnimation').removeClass('hidden');
+	$('.ikuLogbookContent').addClass('hidden');
+
+	let a = loadIKU(idIKU);
+	let b = loadLogbook(idIKU);
+
+	// Jalankan Promise
+	Promise.all([a, b]).then(hasil => {
+		// Hasil Promise
+		console.log("Fulfilled promise!")
+		// Nonaktifkan animasi loading dan munculkan content
+		$('.loadingAnimation').addClass('hidden');
+		$('.ikuLogbookContent').removeClass('hidden');
+	}).catch(e => {
+		console.log(e);
+	});
+
+	// Aksi tutup modal
+	$('#closeIKUModal').click(function () {
+		$('#createLogbookModal').modal('hide')
+	})
+	// Apabila modal tertutup, sembunyikan content, hapus isi content, dan munculkan animasi loading
+	$('#createLogbookModal').on('hidden.bs.modal', function () {
+		$('.ikuLogbookContent').addClass('hidden');
+		$('.loadingAnimation').removeClass('hidden');
+		$('#logbookData').empty();
 	})
 })
