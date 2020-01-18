@@ -58,7 +58,6 @@
                 <td class="nomor">No</td>
                 <td class="periodepelaporan">Periode Pelaporan</td>
                 <td class="formula">Formula</td>
-                <!-- <td class="komponendata">Komponen Data</td> -->
                 <td class="perhitungan">Perhitungan</td>
                 <td class="realisasibulanpelaporan">Realisasi Pada Bulan Pelaporan</td>
                 <td class="realisasisdbulanpelaporan">Realisasi s.d Bulan Pelaporan</td>

@@ -24,110 +24,104 @@ class Pejabat extends CI_Controller
         $data['ikubelumdiapprove'] = $this->Pejabat_model->countIKUBawahanNotApproved();
         $data['logbookbelumdiapprove'] = $this->Pejabat_model->countLogbookBawahanNotApproved();
 
-        $this->load->view('templates/header', $data);
-        cek_sidebar();
-        $this->load->view('templates/topbar', $data);
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
         $this->load->view('pejabat/index');
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_footer');
     }
 
     //Ambil Data KK Bawahan
-    public function kontrakkinerjabawahan()
+    public function approvalAtasan()
     {
-        $data['title'] = 'Browse Kontrak Kinerja Bawahan';
+        $data['title'] = 'Pengelolaan Kinerja Bawahan';
         $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
         $data['role'] = $this->session->userdata('role_id');
         if ($data['role'] == 1) {
-            $data['kontrak_kinerja'] = $this->Pejabat_model->getAllKontrak();
+            $data['kontrakKinerjaBawahan'] = $this->Pejabat_model->getAllKontrak();
         } else {
-            $data['kontrak_kinerja'] = $this->Pejabat_model->getKontrakBawahan();
+            $data['kontrakKinerjaBawahan'] = $this->Pejabat_model->getKontrakBawahan();
         }
-
-        $this->load->view('templates/header', $data);
-        cek_sidebar();
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('pejabat/kontrakkinerjabawahan', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('pejabat/v_approval', $data);
+        $this->load->view('templates/main_footer');
     }
 
-    //Approve KK
-    public function approvekontrak($id)
+    // Approve KK
+    public function approveKontrakKinerja()
     {
-        $approvekontrak = $this->Pejabat_model->approvekontrak($id);
-        helper_log("approval", "memberikan persetujuan Kontrak Kinerja (id-kontrak-kinerja = $id)");
-        echo json_encode($approvekontrak);
+        $idKontrak = $this->input->post('idKontrak');
+        $approveKontrak = $this->Pejabat_model->approveKontrak($idKontrak);
+        helper_log("approval", "memberikan persetujuan Kontrak Kinerja (id-kontrak-kinerja = $idKontrak)");
+        echo json_encode($approveKontrak);
     }
 
-    //Batal Approve KK
-    public function batalapprovekontrak($id)
+    // Batal Approve KK
+    public function rejectKontrakKinerja()
     {
-        $batalapprovekontrak = $this->Pejabat_model->batalapprovekontrak($id);
-        helper_log("unapprove", "membatalkan persetujuan Kontrak Kinerja (id-kontrak-kinerja = $id)");
-        echo json_encode($batalapprovekontrak);
+        $idKontrak = $this->input->post('idKontrak');
+        $rejectKontrak = $this->Pejabat_model->rejectKontrak($idKontrak);
+        helper_log("reject", "membatalkan persetujuan Kontrak Kinerja (id-kontrak-kinerja = $idKontrak)");
+        echo json_encode($rejectKontrak);
     }
 
-    //Get Data KK
-    public function detailkontrak($id)
+    // Get Data Kontrak Kinerja
+    public function getDetailKontrak()
     {
-        $data['detailkontrak'] = $this->Pejabat_model->getdetailkontrak($id);
-        $data['title'] = 'Detail Kontrak Kinerja';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
-        $data['listiku'] = $this->Pejabat_model->getIKUFromKontrak($id);
+        $idKontrak = $this->input->get('id');
+        $detailKontrak = $this->Pejabat_model->getDetailKontrak($idKontrak);
+        echo json_encode($detailKontrak);
+    }
 
-        $this->load->view('templates/header', $data);
-        cek_sidebar();
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('pejabat/detailkontrak', $data);
-        $this->load->view('templates/footer');
+    // Get Data IKU berdasarkan Kontrak Kinerja
+    public function getIKUFromKontrakKinerja()
+    {
+        $idKontrak = $this->input->get('kk');
+        $listIKU = $this->Pejabat_model->getListIKUFromKontrak($idKontrak);
+        echo json_encode($listIKU);
     }
 
     //Approve IKU
-    public function approveiku($idiku)
+    public function approveIKU()
     {
-        $approveiku = $this->Pejabat_model->approveiku($idiku);
-        helper_log("approval", "memberikan persetujuan IKU (id-iku = $idiku)");
+        $idIKU = $this->input->post('iku');
+        $approveiku = $this->Pejabat_model->approvalIKU($idIKU);
+        helper_log("approval", "memberikan persetujuan IKU (id-iku = $idIKU)");
         echo json_encode($approveiku);
     }
 
     //Batal Approve IKU
-    public function batalapproveiku($idiku)
+    public function rejectIKU()
     {
-        $batalapproveiku = $this->Pejabat_model->batalapproveiku($idiku);
-        helper_log("unapprove", "membatalkan persetujuan IKU (id-iku = $idiku)");
-        echo json_encode($batalapproveiku);
+        $idIKU = $this->input->post('iku');
+        $rejectIKU = $this->Pejabat_model->rejectIKU($idIKU);
+        helper_log("reject", "membatalkan persetujuan IKU (id-iku = $idIKU)");
+        echo json_encode($rejectIKU);
     }
 
-    //Get Logbook Bawahan
-    public function logbookbawahan($idiku)
+    // Ambil data Logbbok yang sudah dikirim bawahan
+    public function getSentLogbook()
     {
-        $idiku = $this->uri->segment(3);
-        $data['title'] = 'Detail Indikator Kinerja Utama';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
-        $data['role'] = $this->session->userdata('role_id');
-        $data['indikator'] = $this->Indikator_model->getIKUById($idiku);
-        $data['logbookdetail'] = $this->Logbook_model->getsentlogbook($idiku);
-
-
-        $this->load->view('templates/header', $data);
-        cek_sidebar();
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('pejabat/logbookbawahan', $data);
-        $this->load->view('templates/footer');
+        $idIKU = $this->input->get('id-iku');
+        $getLogbook = $this->Pejabat_model->getLogbookIsSent($idIKU);
+        echo json_encode($getLogbook);
     }
 
     //Approve Logbook
-    public function approvelogbook($idlogbook)
+    public function approveLogbook()
     {
-        $approvelogbook =  $this->Pejabat_model->approvelogbook($idlogbook);
-        helper_log("approval", "memberikan persetujuan Logbook bawahan (id-logbook = $idlogbook)");
-        echo json_encode($approvelogbook);
+        $idLogbook = $this->input->post('idlb');
+        $approvalLogbook =  $this->Pejabat_model->approvalLogbook($idLogbook);
+        helper_log("approval", "memberikan persetujuan Logbook bawahan (id-logbook = $idLogbook)");
+        echo json_encode($approvalLogbook);
     }
 
     //Batal approve logbook
-    public function batalapprovelogbook($idlogbook)
+    public function rejectLogbook()
     {
-        $batalapprovelogbook = $this->Pejabat_model->batalapprovelogbook($idlogbook);
-        helper_log("unapproval", "membatalkan persetujuan Logbook bawahan (id-logbook = $idlogbook)");
-        echo json_encode($batalapprovelogbook);
+        $idLogbook = $this->input->post('idlb');
+        $rejectLogbook = $this->Pejabat_model->rejectLogbook($idLogbook);
+        helper_log("reject", "membatalkan persetujuan Logbook bawahan (id-logbook = $idLogbook)");
+        echo json_encode($rejectLogbook);
     }
 }

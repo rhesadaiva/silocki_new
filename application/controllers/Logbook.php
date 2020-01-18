@@ -12,59 +12,53 @@ class Logbook extends CI_Controller
         $this->load->model('Logbook_model');
     }
 
-    public function showlogbook($idiku)
+    // Ambil semua data Logbook berdasarkan ID IKU
+    public function getLogbook()
     {
-
-        $idiku = $this->uri->segment(3);
-        $data['idiku'] = $this->uri->segment(3);
-
-        $data['title'] = 'Detail Indikator Kinerja Utama';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
-        $data['role'] = $this->session->userdata('role_id');
-        $data['indikator'] = $this->Indikator_model->getIKUById($idiku);
-        $data['logbookdetail'] = $this->Logbook_model->getlogbook($idiku);
-
-        $this->load->view('templates/header', $data);
-        cek_sidebar();
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('iku/logbook', $data);
-        $this->load->view('templates/footer');
+        $idIKU = $this->input->get('id-iku');
+        $Logbook = $this->Logbook_model->getLogbook($idIKU);
+        echo json_encode($Logbook);
     }
 
-    public function rekamlogbook($idiku)
+    // Membuat Logbook baru
+    public function createLogbook()
     {
-
-        $idiku = $this->uri->segment(3);
-        // $data['idiku'] = $this->uri->segment(3);
-
-        //VALIDATION DATA LOGBOOK
-        $this->form_validation->set_rules('periodepelaporan', 'Periode Pelaporan', 'required');
-        $this->form_validation->set_rules('perhitungan', 'Perhitungan', 'required');
-        $this->form_validation->set_rules('realisasipadabulan', 'Realisasi Pada Bulan Pelaporan', 'required');
-        $this->form_validation->set_rules('realisasisdbulan', 'Realisasi s.d Bulan Pelaporan', 'required');
-        $this->form_validation->set_rules('keterangan', 'Keterangan', 'required');
-        //END VALIDATION DATA LOGBOOK
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->showlogbook($idiku);
-        } else {
-            $newLogbook = $this->Logbook_model->newlogbook();
-            helper_log("add", "menambah Logbook baru");
-            echo json_encode($newLogbook);
-        }
+        $newLogbook = $this->Logbook_model->newLogbook();
+        helper_log("add", "menambah Logbook baru");
+        echo json_encode($newLogbook);
     }
 
-    public function hapuslogbook($idlogbook)
+    // Hapus Logbook
+    public function deleteLogbook($idLogbook)
     {
-        $hapuslogbook = $this->Logbook_model->deletelogbook($idlogbook);
-        helper_log("delete", "menghapus Logbook (id-logbook = $idlogbook)");
-        echo json_encode($hapuslogbook);
+        $hapusLogbook = $this->Logbook_model->deleteLogbook($idLogbook);
+        helper_log("delete", "menghapus Logbook (id-logbook = $idLogbook)");
+        echo json_encode($hapusLogbook);
     }
 
-    public function kirimkeatasan($idlogbook)
+    // Ambil data Logbook berdasarkan ID Logbook
+    public function getLogbookByID()
     {
-        $kirimlogbook = $this->Logbook_model->kirimlogbook($idlogbook);
-        helper_log("send", "mengirim Logbook ke atasan (id-logbook = $idlogbook)");
+        $idLogbook = $this->input->get('id');
+        $getLogbook = $this->Logbook_model->getLogbookByID($idLogbook);
+        echo json_encode($getLogbook);
+    }
+
+    // Update data Logbook
+    public function updateLogbook()
+    {
+        $idLogbook = $this->input->post("idLogbook");
+        $editLogbook = $this->Logbook_model->editLogbook();
+        helper_log("edit", "mengubah Logbook (id-logbook = $idLogbook)");
+        echo json_encode($editLogbook);
+    }
+
+
+    public function kirimLogbookKeAtasan()
+    {
+        $idLogbook = $this->input->post('idLogbook');
+        $kirimlogbook = $this->Logbook_model->kirimLogbook();
+        helper_log("send", "mengirim Logbook ke atasan (id-logbook = $idLogbook)");
         echo json_encode($kirimlogbook);
     }
 

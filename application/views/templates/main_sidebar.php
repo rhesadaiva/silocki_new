@@ -19,7 +19,9 @@
 						</ul>
 					</div>
 				</li>
-				<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Persetujuan Atasan</span></a></li>
+				<?php if ($user['role_id'] != 5) : ?>
+					<li><a href="approval-atasan" class=""><i class="lnr lnr-code"></i> <span>Persetujuan Atasan</span></a></li>
+				<?php endif; ?>
 				<?php if ($user['role_id'] == 1) : ?>
 					<li><a href="manajemen-user" class=""><i class="lnr lnr-chart-bars"></i> <span>Manajemen User</span></a></li>
 				<?php endif; ?>

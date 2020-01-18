@@ -53,8 +53,6 @@ $route['default_controller'] = 'auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// $route['logbook/(:any)'] = 'Iku/logbook/$1';
-
 // Route Admin
 $route['index-admin'] = 'admin/index';
 $route['manajemen-user'] = 'admin/manajemenUser';
@@ -71,3 +69,18 @@ $route['save-iku'] = 'iku/createIKU';
 $route['delete-iku/(:any)'] = 'iku/deleteIKU/$1';
 $route['update-iku'] = 'iku/updateIKU';
 $route['addendum-iku'] = 'iku/addendumIKU';
+
+// Route Logbook
+$route['save-logbook'] = 'logbook/createLogbook';
+$route['delete-logbook/(:any)'] = 'logbook/deleteLogbook/$1';
+$route['update-logbook'] = 'logbook/updateLogbook';
+$route['send-logbook'] = 'logbook/kirimLogbookKeAtasan/';
+
+// Route Approval Atasan
+$route['approval-atasan'] = 'pejabat/approvalAtasan';
+$route['approve-kontrak-kinerja'] = 'pejabat/approveKontrakKinerja';
+$route['reject-kontrak-kinerja'] = 'pejabat/rejectKontrakKinerja';
+$route['approve-iku'] = 'pejabat/approveIKU';
+$route['reject-iku'] = 'pejabat/rejectIKU';
+$route['approve-logbook'] = 'pejabat/approveLogbook';
+$route['reject-logbook'] = 'pejabat/rejectLogbook';

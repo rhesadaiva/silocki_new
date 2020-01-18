@@ -74,6 +74,12 @@ class Indikator_model extends CI_Model
         return $this->db->get('ref_Konversi120')->result_array();
     }
 
+    //Ambil Referensi Bulan
+    public function getBulan()
+    {
+        return $this->db->get('ref_Bulan')->result_array();
+    }
+
     //Tambah IKU Baru
     public function newIKU()
     {

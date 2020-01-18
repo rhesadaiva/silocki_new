@@ -2,6 +2,7 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
         <div class="container-fluid">
+            <!-- Tabel -->
             <div class="panel panel-headline panel-primary">
                 <div class="panel-heading panel-title">
                     <div class="col-sm">
@@ -43,7 +44,7 @@
                                             <button class="btn btn-primary btn-xs btnEditIKU" name="btnEditIKU" id="btnEditIKU" data-toggle="modal" data-target="#editIKUModal" iku-id="<?= $iku['id_iku'] ?>"><i class="fas fa-fw fa-edit"></i> Edit IKU</button>
                                             <button class="btn btn-danger btn-xs btnDeleteIKU" data-toggle="modal" data-target="#deleteIKUModal" iku-id="<?= $iku['id_iku'] ?>" name="btnDeleteIKU"><i class=" fas fa-fw fa-trash"></i> Hapus IKU</button>
                                         <?php else : ?>
-                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createLogbookModal" iku-id="<?= $iku['id_iku'] ?>" name="btnCreateLogbook"><i class="fas fa-fw fa-chart-line"></i> Rekam Logbook</button>
+                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createLogbookModal" iku-id="<?= $iku['id_iku'] ?>" name="btnCreateLogbook"><i class="fas fa-fw fa-chart-line"></i> Logbook </button>
                                             <button class="btn btn-primary btnAddendumIKU" name="btnAddendumIKU" id="btnAddendumIKU" data-toggle="modal" data-target="#editIKUModal" iku-id="<?= $iku['id_iku'] ?>"><i class="fas fa-fw fa-edit"></i> Addendum IKU</button>
                                         <?php endif; ?>
                                     </td>
@@ -330,46 +331,91 @@
                 </div>
             </div>
         </div>
-        <!-- MODAL REKAM LOGBOOK -->
-        <div class="modal fade" id="createLogbookModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-            <div class="modal-dialog modal-lg" role="document" style="width: 1280px;">
+        <!-- MODAL LOGBOOK -->
+        <div class="modal fade" id="createLogbookModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog modal-lg" role="document" style="width: 1366px;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title text-primary"><b>Rekam Logbook Pegawai</b></h4>
+                        <h4 class="modal-title text-primary"><b>Logbook Pegawai</b></h4>
                     </div>
-                    <div class="ikuLogbookContent">
-                        <div class="modal-body">
+                    <div class="modal-body">
+                        <div class="loadingAnimation hidden">
+                            <h2><i class="fa fa-cog fa-spin"></i> Loading...</h2>
+                        </div>
+                        <div class="ikuLogbookContent">
+                            <!-- PANEL MASTER IKU -->
                             <div class="panel panel-default panel-primary" id="panelIKU" style="margin-bottom: 20px;">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title" style="margin-top: -10px; margin-bottom: -10px;"><b>Master Indikator Kinerja Utama</b></h3>
-                                    <input type="hidden" readonly id="idIKU">
+                                    <h3 class="panel-title" style="margin-top: -10px; margin-bottom: -10px;"><b>Data Indikator Kinerja Utama</b></h3>
+                                    <input type="hidden" id="idIKULogbook">
                                 </div>
                                 <div class="panel-body">
                                     <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row">Kode IKU</th>
-                                                <td class="kodeIKUContent">Kode IKU</th>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Nama IKU</th>
-                                                <td class="namaIKUContent">Nama IKU</th>
-                                            </tr>
-                                            <tr class="margin-bottom: 5px;">
-                                                <th scope="row">Formula IKU</th>
-                                                <td class="formulaIKUContent">Formula IKU</th>
-                                            </tr>
+                                        <tbody class="masterIKU">
+
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <!-- PANEL FORM NEW LOGBOOK -->
+                            <div class="formLogbook hidden">
+                                <div class="panel panel-default panel-info">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title newLogbookTitle" style="margin-top: -10px; margin-bottom: -10px;"><b>Rekam Logbook</b></h3>
+                                        <h3 class="panel-title hidden editLogbookTitle" style="margin-top: -10px; margin-bottom: -10px;"><b>Edit Logbook</b></h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" action="" method="POST" id="newLogbookForm">
+                                            <div class="form-group">
+                                                <label for="periodePelaporanLogbook" class="col-md-3 control-label">Periode Pelaporan</label>
+                                                <div class="col-md-8">
+                                                    <select class="selectpicker" name="periodePelaporanLogbook" data-live-search="true" id="periodePelaporanLogbook">
+                                                        <?php foreach ($refBulanLogbook as $bulanPelaporan) : ?>
+                                                            <option value="<?= $bulanPelaporan['Bulan_ket'] ?>"><?= $bulanPelaporan['Bulan_ket'] ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="perhitunganLogbook" class="col-md-3 control-label">Perhitungan</label>
+                                                <div class="col-md-8">
+                                                    <textarea class="form-control" id="perhitunganLogbook" rows="3" placeholder="Perhitungan Logbook"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="realisasiBulanPelaporanLogbook" class="col-md-3 control-label">Realisasi pada Bulan Pelaporan</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="realisasiBulanPelaporanLogbook" placeholder="Realisasi pada Bulan Pelaporan">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="realisasiTerakhirLogbook" class="col-md-3 control-label">Realisasi s.d Bulan Pelaporan</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" id="realisasiTerakhirLogbook" placeholder="Realisasi s.d Bulan Pelaporan">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="keteranganLogbook" class="col-md-3 control-label">Keterangan</label>
+                                                <div class="col-md-8">
+                                                    <textarea class="form-control" id="keteranganLogbook" rows="3" placeholder="Keterangan Logbook"></textarea>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-default pull-right closeFormLogbook"><i class="fas fa-undo-alt"></i> Tutup Form</button>
+                                            <button type="button" class="btn btn-info pull-right ml-2 saveNewLogbook"><i class="fas fa-fw fa-save"></i> Simpan Logbook</button>
+                                            <button type="button" class="btn btn-info pull-right ml-2 btnConfirmEditLogbook hidden"><i class="fas fa-fw fa-save"></i> Simpan Perubahan Logbook</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PANEL LOGBOOK -->
                             <div class="panel panel-default panel-success" id="panelLogbook">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title" style="margin-top: -10px; margin-bottom: -10px;"><b>Logbook Pegawai</b></h3>
+                                    <h3 class="panel-title" style="margin-top: -10px; margin-bottom: -10px;"><b>Data Logbook Pegawai</b></h3>
+                                    <a type="button" class="btn btn-success btn-sm pull-right" id="btnOpenFormLogbook" style="margin-top: -15px;"><i class="fas fa-fw fa-chart-line"></i> Rekam Logbook</a>
                                 </div>
                                 <div class="panel-body">
-                                    <!-- Table Logbook -->
-                                    <table class="table table-striped table-hover table-bordered" id="kontrakKinerjaTable">
+                                    <!-- Logbook -->
+                                    <table class="table table-striped table-hover table-bordered">
                                         <thead>
                                             <tr class="success">
                                                 <th scope="col" class="text-center">Periode Pelaporan</th>
@@ -390,8 +436,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-default" id="closeIKUModal">Tutup</button>
                     </div>
                 </div>
             </div>

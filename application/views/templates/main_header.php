@@ -35,6 +35,7 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="brand">
                 <!-- <a href="index.html"><img src="assets/img/logo-dark.png" alt="Klorofil Logo" class="img-responsive logo"></a> -->
+                <img src="assets/img/logo1.png" style="width: 140px;" alt="" srcset="">
             </div>
             <div class="container-fluid">
                 <div class="navbar-btn">

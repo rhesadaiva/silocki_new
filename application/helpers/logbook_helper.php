@@ -255,20 +255,6 @@ function cek_pelaksana()
     }
 }
 
-function cek_sidebar()
-{
-    $ci = get_instance();
-    $role_id = $ci->session->userdata('role_id');
-
-    if ($role_id == 1) {
-        $ci->load->view('templates/sidebar_admin');
-    } elseif ($role_id == 5) {
-        $ci->load->view('templates/sidebar_user');
-    } else {
-        $ci->load->view('templates/sidebar_pejabat');
-    }
-}
-
 //Fungsi Tanggal Indonesia
 function indonesian_date($timestamp = '', $date_format = 'l, j F Y \P\u\k\u\l H:i', $suffix = 'WIB')
 {

@@ -26,8 +26,8 @@ class Kontrak_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
         $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `ref_validasiKK`.* 
-        FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
-        ON `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` WHERE nip='$role' ");
+                                    FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
+                                    ON `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` WHERE nip='$role' ");
         return $query->result_array();
     }
 

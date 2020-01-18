@@ -34,7 +34,8 @@ class Auth extends CI_Controller
                 $data = [
                     'nama' => $user['nama'],
                     'nip' => $user['nip'],
-                    'role_id' => $user['role_id']
+                    'role_id' => $user['role_id'],
+                    'pegawai_id' => $user['id']
                 ];
                 $this->session->set_userdata($data);
                 helper_log("login", "Masuk ke aplikasi SiLocki");

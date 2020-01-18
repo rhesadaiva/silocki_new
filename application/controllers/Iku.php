@@ -9,7 +9,6 @@ class Iku extends CI_Controller
         parent::__construct();
         is_logged_in();
         $this->load->model('Indikator_model');
-        $this->load->model('Logbook_model');
         $this->load->model('Global_model');
     }
 
@@ -23,6 +22,7 @@ class Iku extends CI_Controller
         $data['refPeriodePelaporan'] = $this->Indikator_model->getPeriodePelaporan();
         $data['refKonsolidasiPeriode'] = $this->Indikator_model->getKonsolidasiPeriode();
         $data['refKonversi120'] = $this->Indikator_model->getKonversi120();
+        $data['refBulanLogbook'] = $this->Indikator_model->getBulan();
 
         $data['role'] = $this->session->userdata('role_id');
         // Jika Role = Admin, ambil semua data Kontrak Kinerja dan IKU
@@ -33,7 +33,6 @@ class Iku extends CI_Controller
             $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP();
             $data['listIKU'] = $this->Indikator_model->getIKUbyNIP();
         }
-
         $this->load->view('templates/main_header', $data);
         $this->load->view('templates/main_sidebar');
         $this->load->view('iku/v_iku', $data);
@@ -73,6 +72,7 @@ class Iku extends CI_Controller
         echo json_encode($editIKU);
     }
 
+    // Fungsi addendum IKU
     public function addendumIKU()
     {
         $idIKU = $this->input->post('idIKU');
