@@ -23,14 +23,26 @@ class Iku extends CI_Controller
         $data['refKonsolidasiPeriode'] = $this->Indikator_model->getKonsolidasiPeriode();
         $data['refKonversi120'] = $this->Indikator_model->getKonversi120();
         $data['refBulanLogbook'] = $this->Indikator_model->getBulan();
-
         $data['role'] = $this->session->userdata('role_id');
+
+        // Ambil Jumlah Kontrak Kinerja dalam angka
+        $data['getKontrak'] = $this->Indikator_model->getKontrakByNIP()->num_rows();
+
+        // Masukkan array multidimensi ke variabel
+        $getKontrak = $data['getKontrak'];
+
         // Jika Role = Admin, ambil semua data Kontrak Kinerja dan IKU
         if ($data['role'] == 1) {
-            $data['kontrakKinerja'] = $this->Indikator_model->getKontrak();
+            $data['kontrakKinerjaAdmin'] = $this->Indikator_model->getKontrak();
             $data['listIKU'] = $this->Indikator_model->getIKU();
         } else {
-            $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP();
+            if ($getKontrak > 1) {
+                // Jika jumlah Kontrak Kinerja >= 1, tampilkan dalam bentuk result_array
+                $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP()->result_array();
+            } else {
+                // Jika hanya 1, tampilkan ke dalam row_array()
+                $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP()->row_array();
+            }
             $data['listIKU'] = $this->Indikator_model->getIKUbyNIP();
         }
         $this->load->view('templates/main_header', $data);

@@ -17,6 +17,7 @@ class Indikator_model extends CI_Model
         $query = $this->db->query('SELECT `kontrakkinerja`.`id_kontrak`,`kontrakkinerja`.`nomorkk`,
                                     `kontrakkinerja`.`nip`,`user`.`nama` 
                                     FROM `kontrakkinerja` JOIN `user` USING(nip)');
+
         return $query->result_array();
     }
 
@@ -24,8 +25,11 @@ class Indikator_model extends CI_Model
     public function getKontrakByNIP()
     {
         $role = $this->session->userdata('nip');
-        $query = $this->db->query("SELECT * from `kontrakkinerja` where nip= $role ");
-        return $query->row_array();
+        $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `ref_validasiKK`.* 
+                                    FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
+                                    ON `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` WHERE nip='$role' ");
+
+        return $query;
     }
 
     //Ambil semua IKU (admin)

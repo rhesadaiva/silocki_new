@@ -16,12 +16,28 @@ class Kontrakkinerja extends CI_Controller
         $data['title'] = 'Browse Kontrak Kinerja';
         $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
         $data['role'] = $this->session->userdata('role_id');
+
+        // Ambil Jumlah Kontrak Kinerja dalam angka
+        $data['getKontrak'] = $this->Kontrak_model->getKontrakByNIP()->num_rows();
+
+        // Masukkan array multidimensi ke variabel
+        $getKontrak = $data['getKontrak'];
+
+        // Jika login = admin, load semua Kontrak Kinerja
         if ($data['role'] == 1) {
-            $data['kontrakKinerja'] = $this->Kontrak_model->getKontrak();
+            $data['kontrakKinerjaAdmin'] = $this->Kontrak_model->getKontrak()->result_array();
+            $data['userList'] = $this->Global_model->getUserList();
+            // Jika bukan admin
         } else {
-            $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIP();
+            // Jika jumlah Kontrak Kinerja > 1 tampilkan ke dalam result_array
+            if ($getKontrak > 1) {
+                $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIP()->result_array();
+                // Jika hanya 1, tampilkan ke dalam row_array()
+            } else {
+                $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIP()->row_array();
+            }
         }
-        $data['userList'] = $this->Global_model->getUserList();
+
         $data['seriKontrak'] = ['Pertama', 'Kedua', 'Ketiga', 'Keempat'];
 
         $this->load->view('templates/main_header', $data);

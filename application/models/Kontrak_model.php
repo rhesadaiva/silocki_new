@@ -18,7 +18,7 @@ class Kontrak_model extends CI_Model
                                     FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
                                     WHERE `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` 
                                     ORDER BY `kontrakkinerja`.`is_validated` ASC');
-        return $query->result_array();
+        return $query;
     }
 
     //Ambil KK berdasarkan NIP login
@@ -28,7 +28,8 @@ class Kontrak_model extends CI_Model
         $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `ref_validasiKK`.* 
                                     FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
                                     ON `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` WHERE nip='$role' ");
-        return $query->result_array();
+
+        return $query;
     }
 
     //ambil KK berdasarkan ID
@@ -71,7 +72,7 @@ class Kontrak_model extends CI_Model
             $telegramAtasan['telegram'],
             "Halo, *" . $telegramAtasan['nama'] . "*. \n\nBawahan anda: *" . $login . "* telah mengajukan Kontrak Kinerja dengan data sebagai berikut: \n\n*Nomor Kontrak Kinerja*: " . $nomorKontrak . "\n\nMohon diperiksa dan diberikan persetujuan apabila data sudah benar, terima kasih."
         );
-        return true;
+        return $data;
     }
 
     //Hapus KK 

@@ -27,28 +27,74 @@
                             </tr>
                         </thead>
                         <tbody id="usersData">
-                            <?php $i = 1; ?>
-                            <?php foreach ($kontrakKinerja as $kontrak) : ?>
+                            <?php if ($role == 1) : ?>
+                                <?php $i = 1; ?>
+                                <?php foreach ($kontrakKinerjaAdmin as $kontrak) : ?>
+                                    <tr>
+                                        <th scope="row"><?= $i; ?></th>
+                                        <td><?= $kontrak['kontrakkinerjake'] ?></td>
+                                        <?php if ($user['role_id'] == 1) : ?>
+                                            <td><?= $kontrak['nama'] ?></td>
+                                        <?php endif; ?>
+                                        <td><?= $kontrak['nomorkk'] ?></td>
+                                        <td><?= indonesian_date3($kontrak['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrak['tanggalselesai']); ?></td>
+                                        <td><?= $kontrak['validasi_ket'] ?></td>
+                                        <td>
+                                            <?php if ($kontrak['is_validated'] == 1) : ?>
+                                                <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editUserModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                                <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
+                                            <?php else : ?>
+                                                <button type="button" class="btn btn-warning"><i class="fas fa-fw fa-lock"></i> Kontrak Kinerja Terkunci</button>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            <?php if ($getKontrak >= 2) : ?>
+                                <?php $i = 1; ?>
+                                <?php foreach ($kontrakKinerja as $kontrak) : ?>
+                                    <tr>
+                                        <th scope="row"><?= $i; ?></th>
+                                        <td><?= $kontrak['kontrakkinerjake'] ?></td>
+                                        <?php if ($user['role_id'] == 1) : ?>
+                                            <td><?= $kontrak['nama'] ?></td>
+                                        <?php endif; ?>
+                                        <td><?= $kontrak['nomorkk'] ?></td>
+                                        <td><?= indonesian_date3($kontrak['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrak['tanggalselesai']); ?></td>
+                                        <td><?= $kontrak['validasi_ket'] ?></td>
+                                        <td>
+                                            <?php if ($kontrak['is_validated'] == 1) : ?>
+                                                <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editUserModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                                <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
+                                            <?php else : ?>
+                                                <button type="button" class="btn btn-warning"><i class="fas fa-fw fa-lock"></i> Kontrak Kinerja Terkunci</button>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <?php $i = 1; ?>
                                 <tr>
                                     <th scope="row"><?= $i; ?></th>
-                                    <td><?= $kontrak['kontrakkinerjake'] ?></td>
+                                    <td><?= $kontrakKinerja['kontrakkinerjake'] ?></td>
                                     <?php if ($user['role_id'] == 1) : ?>
-                                        <td><?= $kontrak['nama'] ?></td>
+                                        <td><?= $kontrakKinerja['nama'] ?></td>
                                     <?php endif; ?>
-                                    <td><?= $kontrak['nomorkk'] ?></td>
-                                    <td><?= indonesian_date3($kontrak['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrak['tanggalselesai']); ?></td>
-                                    <td><?= $kontrak['validasi_ket'] ?></td>
+                                    <td><?= $kontrakKinerja['nomorkk'] ?></td>
+                                    <td><?= indonesian_date3($kontrakKinerja['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrakKinerja['tanggalselesai']); ?></td>
+                                    <td><?= $kontrakKinerja['validasi_ket'] ?></td>
                                     <td>
-                                        <?php if ($kontrak['is_validated'] == 1) : ?>
-                                            <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editUserModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
-                                            <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
+                                        <?php if ($kontrakKinerja['is_validated'] == 1) : ?>
+                                            <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editUserModal" kontrak-id="<?= $kontrakKinerja['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                            <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrakKinerja['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
                                         <?php else : ?>
                                             <button type="button" class="btn btn-warning"><i class="fas fa-fw fa-lock"></i> Kontrak Kinerja Terkunci</button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
-                                <?php $i++; ?>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -75,7 +121,7 @@
                                     </div>
                                 <?php else : ?>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" id="setPegawai" name="setPegawai" value="<? $user['nip']; ?>">
+                                        <input type="hidden" readonly class="form-control" id="setPegawai" name="setPegawai" value="<?= $user['nip'] ?>">
                                     </div>
                                 <?php endif; ?>
                             </div>

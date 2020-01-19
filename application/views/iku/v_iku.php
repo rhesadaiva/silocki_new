@@ -85,9 +85,19 @@
                                 <label class="control-label col-sm-3" for="setKontrakPegawai">Seri Kontrak Kinerja</label>
                                 <div class="col-sm-8">
                                     <select class="selectpicker" name="setKontrakPegawai" data-live-search="true" data-width="80%" id="setKontrakPegawai">
-                                        <?php foreach ($kontrakKinerja as $kontrak) : ?>
-                                            <option value="<?= $kontrak['id_kontrak'] ?>"><?= $kontrak['nomorkk']; ?> - <?= $kontrak['nama']; ?></option>
-                                        <?php endforeach; ?>
+                                        <?php if ($user['role_id'] == 1) : ?>
+                                            <?php foreach ($kontrakKinerjaAdmin as $kontrakKinerja) : ?>
+                                                <option value="<?= $kontrakKinerja['id_kontrak'] ?>"><?= $kontrakKinerja['nomorkk']; ?></option>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <?php if ($getKontrak >= 2) : ?>
+                                                <?php foreach ($kontrakKinerja as $kontrakKinerja) : ?>
+                                                    <option value="<?= $kontrakKinerja['id_kontrak'] ?>"><?= $kontrakKinerja['nomorkk']; ?></option>
+                                                <?php endforeach; ?>
+                                            <?php else : ?>
+                                                <option value="<?= $kontrakKinerja['id_kontrak'] ?>"><?= $kontrakKinerja['nomorkk']; ?></option>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                     </select>
                                 </div>
                             </div>
