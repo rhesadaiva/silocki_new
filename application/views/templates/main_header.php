@@ -34,12 +34,12 @@
         <!-- NAVBAR -->
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="brand">
-                <!-- <a href="index.html"><img src="assets/img/logo-dark.png" alt="Klorofil Logo" class="img-responsive logo"></a> -->
                 <img src="assets/img/logo1.png" style="width: 140px;" alt="" srcset="">
             </div>
             <div class="container-fluid">
-                <div class="navbar-btn">
-                    <button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
+                <div class="navbar-form navbar-left" style="padding-bottom: 3px; padding-top: 3px; padding-left: 40px;">
+                    <h4><b>Sistem Pelaporan Capaian Kinerja KPPBC Tanjungpinang</b></h4>
+                    <h5 style="margin-bottom: 5px;">Versi 2.0</h5>
                 </div>
                 <div id="navbar-menu">
                     <ul class="nav navbar-nav navbar-right">
