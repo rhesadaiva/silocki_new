@@ -37,7 +37,12 @@ class Pejabat_model extends CI_Model
     //Ambil IKU dari Kontrak
     public function getListIKUFromKontrak($idKontrak)
     {
-        return $this->db->get_where('indikatorkinerjautama', ['id_kontrak' => $idKontrak])->result_array();
+        $query = $this->db->get_where('indikatorkinerjautama', ['id_kontrak' => $idKontrak]);
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return null;
+        };
     }
 
     // Ambil Logbook yang telah dikirim
@@ -227,7 +232,7 @@ class Pejabat_model extends CI_Model
     //Fungsi Hitung Bawahan
     public function countBawahan()
     {
-        $role = $this->session->userdata('id');
+        $role = $this->session->userdata('pegawai_id');
 
         $query = $this->db->query("SELECT `user`.nip FROM user where pejabat_id = '$role' ");
         if ($query->num_rows() > 0) {
@@ -240,7 +245,7 @@ class Pejabat_model extends CI_Model
     //Fungsi hitung KK Bawahan yang belum diapprove
     public function countKKBawahanNotApproved()
     {
-        $role = $this->session->userdata('id');
+        $role = $this->session->userdata('pegawai_id');
 
         $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `user`.`pejabat_id` from kontrakkinerja  join user using (nip) where pejabat_id = '$role' and is_validated != 2");
         if ($query->num_rows() > 0) {
@@ -253,7 +258,7 @@ class Pejabat_model extends CI_Model
     //Fungsi hitung IKU Bawahan yang belum diapprove
     public function countIKUBawahanNotApproved()
     {
-        $role = $this->session->userdata('id');
+        $role = $this->session->userdata('pegawai_id');
 
         $query = $this->db->query("SELECT `indikatorkinerjautama`.id_iku, `user`.nama, `user`.pejabat_id from indikatorkinerjautama join user using (nip) where pejabat_id = '$role' and iku_validated != 1");
         if ($query->num_rows() > 0) {
@@ -266,7 +271,7 @@ class Pejabat_model extends CI_Model
     //Fungsi hitung Logbook Bawahan yang belum diapprove
     public function countLogbookBawahanNotApproved()
     {
-        $role = $this->session->userdata('nama');
+        $role = $this->session->userdata('pegawai_id');
 
         $query = $this->db->query("SELECT `user`.`nama`, `user`.`nip`, `user`.`pejabat_id`, `kontrakkinerja`.`id_kontrak`, `kontrakkinerja`.`nip`, `indikatorkinerjautama`.id_iku,
                                     `indikatorkinerjautama`.`nip`, `indikatorkinerjautama`.id_kontrak, `logbook`.* 

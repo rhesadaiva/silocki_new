@@ -149,7 +149,7 @@
                                                 <th scope="col" class="text-center" style="width:10%;">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="logbookData">
+                                        <tbody id="logbookBawahanData">
 
                                         </tbody>
                                     </table>

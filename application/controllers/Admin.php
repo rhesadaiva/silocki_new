@@ -82,20 +82,20 @@ class Admin extends CI_Controller
         helper_log("delete", "Menghapus data pegawai (id-pegawai = $idPegawai)");
     }
 
-    //HALAMAN LOGBOOK BELUM DISETUJUI
-    public function logbookbelumdisetujui()
+    //Halaman Logbook Belum Disetujui
+    public function unapprovedLogbook()
     {
         $data['title'] = 'Logbook Yang Belum Disetujui';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        $data['periode'] = $this->input->get('periodepelaporan');
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
+        $data['refBulan'] = $this->Global_model->getBulanRef();
 
-        $data['belumlogbook'] = $this->Admin_model->pegawainotvalidatedlogbook();
+        // Query data yang belum divalidasi
+        $data['notValidated'] = $this->Admin_model->notValidatedLogbook();
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar_admin');
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('admin/belumapprovelogbook', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/v_unapproved', $data);
+        $this->load->view('templates/main_footer');
     }
 
     //Halaman Filter Logbook belum disetujui
@@ -192,38 +192,49 @@ class Admin extends CI_Controller
         exit();
     }
 
-    public function getDetailLogbookBelumDisetujui()
+    public function getDetailLogbookUnapproved()
     {
-        $namabelum = $this->input->get('namabelum');
-        $periodebelum = $this->input->get('periodebelum');
+        $nama = $this->input->get('nama');
+        $periode = $this->input->get('periode');
 
-        $get_logbookbelum = $this->Admin_model->detaillogbookdatabelumdisetujui($namabelum, $periodebelum);
-        echo json_encode($get_logbookbelum);
-        exit();
+        $getLogbookUnapproved = $this->Admin_model->detailLogbookUnapproved($nama, $periode);
+        echo json_encode($getLogbookUnapproved);
     }
 
-    public function ketepatanwaktu()
+    // public function ketepatanwaktu()
+    // {
+    //     $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
+    //     $data['title'] = "Test Ketepatan Waktu";
+
+    //     $data['logbookall'] = $this->Admin_model->getAllLogbook();
+
+    //     foreach ($data['logbookall'] as $logbook) {
+    //         $wakturekam = $logbook['wakturekam'];
+    //         $tgl_approve = $logbook['tgl_approve'];
+
+    //         $selisih = selisihwkatu($wakturekam, $tgl_approve);
+    //         return $selisih;
+    //     }
+
+    //     var_dump($wakturekam);
+    //     die;
+
+    //     $this->load->view('templates/header', $data);
+    //     $this->load->view('templates/sidebar_admin');
+    //     $this->load->view('templates/topbar', $data);
+    //     $this->load->view('admin/ketepatanwaktu', $data);
+    //     $this->load->view('templates/footer');
+    // }
+
+    // Konfigurasi Aplikasi
+    public function konfigurasiAplikasi()
     {
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        $data['title'] = "Test Ketepatan Waktu";
+        $data['title'] = 'Home';
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
 
-        $data['logbookall'] = $this->Admin_model->getAllLogbook();
-
-        foreach ($data['logbookall'] as $logbook) {
-            $wakturekam = $logbook['wakturekam'];
-            $tgl_approve = $logbook['tgl_approve'];
-
-            $selisih = selisihwkatu($wakturekam, $tgl_approve);
-            return $selisih;
-        }
-
-        var_dump($wakturekam);
-        die;
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar_admin');
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('admin/ketepatanwaktu', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/index', $data);
+        $this->load->view('templates/main_footer');
     }
 }

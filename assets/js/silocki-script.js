@@ -23,12 +23,17 @@ $(".pengumumanDashboard").ready(function () {
 	loadPengumuman();
 })
 
-// DataTables manajemen user
-$(document).ready(function () {
-	$('#manajemenUserTable').DataTable({
+// Fungsi init Datatables
+function initDataTable(idDocument) {
+	$(idDocument).DataTable({
 		"ordering": false,
 		"lengthChange": false,
-	});
+	})
+}
+
+// DataTables manajemen user
+$(document).ready(function () {
+	initDataTable('#manajemenUserTable');
 })
 
 // Sembunyikan button ketika form user belum diisi, dan munculkan button ketika telah diisi
@@ -164,10 +169,7 @@ $('.btnConfirmEditPegawai').click(function () {
 
 // DataTable Kontrak Kinerja
 $(document).ready(function () {
-	$('#kontrakKinerjaTable').DataTable({
-		"ordering": false,
-		"lengthChange": false,
-	});
+	initDataTable('#kontrakKinerjaTable');
 })
 
 // Sembunyikan tombol simpan Kontrak Kinerja apabila form belum diisi lengkap
@@ -297,10 +299,7 @@ $('.btnConfirmEditKontrak').click(function () {
 
 // DataTable IKU
 $(document).ready(function () {
-	$('#ikuTable').DataTable({
-		"ordering": false,
-		"lengthChange": false,
-	});
+	initDataTable('#ikuTable');
 })
 
 // Sembunyikan Tombol Simpan apabila Form IKU belum lengkap
@@ -599,27 +598,19 @@ function loadLogbook(idIKU) {
 					// Jika logbook belum dikirim
 					if (data.is_sent == 0) {
 						let masterLogbook =
-							` < tr >
-						<
-						td class = "text-center" > ` + data.periode + ` < /td> <
-						td class = "text-justify" > ` + data.perhitungan + ` < /td> <
-						td class = "text-justify" > ` + data.realisasibulan + ` < /td> <
-						td class = "text-justify" > ` + data.realisasiterakhir + ` < /td> <
-						td class = "text-justify" > ` + data.ket + ` < /td> <
-						td class = "text-center" > ` + moment(data.wakturekam).format('Do MMMM YYYY, HH:mm:ss') + ` < /td> <
-						td class = "aksiLogbook" >
-						<
-						button class = "btn btn-primary btn-sm"
-					onclick = "sendLogbook('` + data.id_logbook + `');" > < i class = "fas fa-paper-plane" > < /i> Kirim Logbook</button >
-						<
-						button class = "btn btn-info btn-sm"
-					onclick = "getLogbook('` + data.id_logbook + `');" > < i class = "fas fa-edit" > < /i> Edit Logbook</button >
-						<
-						button class = "btn btn-danger btn-sm"
-					onclick = "deleteLogbook('` + data.id_logbook + `');" > < i class = "fas fa-trash" > < /i> Hapus Logbook</button >
-						<
-						/td> <
-						/tr>`
+							`<tr>
+							<td class ="text-center">` + data.periode + `</td>
+							<td class ="text-justify">` + data.perhitungan + `</td> 
+							<td class ="text-justify">` + data.realisasibulan + `</td> 
+							<td class ="text-justify">` + data.realisasiterakhir + `</td> 
+							<td class ="text-justify">` + data.ket + `</td> 
+							<td class ="text-center">` + moment(data.wakturekam).format('Do MMMM YYYY, HH:mm:ss') + `</td> 
+							<td class ="aksiLogbook">
+								<button class = "btn btn-primary btn-sm" onclick ="sendLogbook('` + data.id_logbook + `');"><i class ="fas fa-paper-plane"> </i> Kirim Logbook</button>
+								<button class = "btn btn-info btn-sm" onclick="getLogbook('` + data.id_logbook + `');"><i class ="fas fa-edit"></i> Edit Logbook</button>
+								<button class = "btn btn-danger btn-sm" onclick = "deleteLogbook('` + data.id_logbook + `');" > <i class ="fas fa-trash"> </i> Hapus Logbook</button>
+							</td>
+						</tr>`
 						resolve($('#logbookData').append(masterLogbook))
 					} else {
 						// Jika logbook sudah dikirim
@@ -946,10 +937,7 @@ function printLogbook(idLogbook) {
 
 // DataTables untuk Table Kontrak Kinerja Bawahan
 $(document).ready(function () {
-	$('#kinerjaBawahanTable').DataTable({
-		"ordering": false,
-		"lengthChange": false,
-	});
+	initDataTable('#kinerjaBawahanTable');
 });
 
 // Fungsi konfirmasi persetujuan Kontrak Kinerja oleh atasan
@@ -1182,7 +1170,7 @@ function doRejectIKU(idIKU) {
 			data: {
 				iku: idIKU
 			},
-			beforeSend: function (data) {
+			beforeSend: function () {
 				toastr["info"]("Mohon menunggu...", "Persetujuan IKU", {
 					"positionClass": "toast-top-right",
 					"showDuration": "300",
@@ -1191,7 +1179,7 @@ function doRejectIKU(idIKU) {
 					"progressBar": true,
 				})
 			},
-			success: function (data) {
+			success: function () {
 				toastr["success"]("Proses Berhasil", "Persetujuan IKU", {
 					"positionClass": "toast-top-right",
 					"showDuration": "300",
@@ -1231,7 +1219,7 @@ function loadLogbookBawahan(idIKU) {
 									<button class="btn btn-danger btn-sm" onclick="doRejectLogbook('` + data.id_logbook + `');"><i class="fas fa-thumbs-down"></i> Tolak Logbook</button>
 								</td>
 							</tr>`
-						resolve($('#logbookData').append(masterLogbook))
+						resolve($('#logbookBawahanData').append(masterLogbook))
 					} else {
 						// Jika logbook sudah dikirim
 						let masterLogbook =
@@ -1247,12 +1235,12 @@ function loadLogbookBawahan(idIKU) {
 									<button class="btn btn-danger btn-sm" onclick="doRejectLogbook('` + data.id_logbook + `');"><i class="fas fa-thumbs-down"></i> Tolak Logbook</button>
 								</td>
 							</tr>`
-						resolve($('#logbookData').append(masterLogbook))
+						resolve($('#logbookBawahanData').append(masterLogbook))
 					}
 				})
 			} else {
 				// Jika tidak ada logbook
-				resolve($('#logbookData').html(''))
+				resolve($('#logbookBawahanData').html(''))
 			}
 		})
 	})
@@ -1283,14 +1271,14 @@ function detailLogbook(idIKU) {
 function closeModalLogbookBawahan() {
 	// Tutup Modal
 	$('#modalLogbookBawahan').modal('hide')
-
-	// Kosongkan konten dan tampilkan animasi loading
-	$('#modalLogbookBawahan').on('hidden.bs.modal', function () {
-		$('.ikuLogbookContent').addClass('hidden');
-		$('.loadingAnimation').removeClass('hidden');
-		$('#logbookData').empty();
-	})
 }
+
+// Kosongkan konten Logbook Bawahan dan tampilkan animasi loading
+$('#modalLogbookBawahan').on('hidden.bs.modal', function () {
+	$('#logbookBawahanData').empty();
+	$('.ikuLogbookContent').addClass('hidden');
+	$('.loadingAnimation').removeClass('hidden');
+})
 
 // Fungsi konfirmasi persetujuan Logbook
 function doApproveLogbook(idLogbook) {
@@ -1323,7 +1311,7 @@ function doApproveLogbook(idLogbook) {
 					"timeOut": "3000",
 				})
 				// Kosongkan data Logbook
-				$('#logbookData').html('');
+				$('#logbookBawahanData').html('');
 
 				// Ambil data Logbook
 				loadLogbookBawahan(idIKU);
@@ -1363,7 +1351,7 @@ function doRejectLogbook(idLogbook) {
 					"timeOut": "3000",
 				})
 				// Kosongkan data Logbook
-				$('#logbookData').html('');
+				$('#logbookBawahanData').html('');
 
 				// Ambil data Logbook
 				loadLogbookBawahan(idIKU);
@@ -1371,3 +1359,70 @@ function doRejectLogbook(idLogbook) {
 		})
 	}
 }
+
+// Init DataTable Unapproved Logbook
+$(document).ready(function () {
+	$('#unapprovedTable').DataTable({
+		"ordering": false,
+		"lengthChange": false,
+		"searching": false
+	})
+})
+
+// Promise mengambil owner Logbook
+function getOwnerUnapproved(nama, periode) {
+	return new Promise(function (resolve, reject) {
+		let a = $('.pemilik').html(nama);
+		let b = $('.periode').html(periode);
+		resolve(a, b);
+	});
+}
+
+// Promise mengambil detail unapproved
+function getLogbookUnapproved(nama, periode) {
+	return new Promise(function (resolve, reject) {
+		let url = 'admin/getDetailLogbookUnapproved?nama=' + nama + '&periode=' + periode;
+		$.getJSON(url, function (data) {
+			if (data) {
+				$.each(data, function (i, data) {
+					let detailUnapproved =
+						`<tr>
+							<td class="text-center">` + data.kodeiku + `</td>
+							<td class="text-justify">` + data.namaiku + `</td>
+							<td class="text-justify">` + data.perhitungan + `</td>
+							<td class="text-justify">` + data.realisasibulan + `</td>
+							<td class="text-justify">` + data.realisasiterakhir + `</td>
+							<td class="text-justify">` + data.ket + `</td>
+							<td class="text-center">` + moment(data.wakturekam).format('Do MMMM YYYY, HH:mm:ss') + `</td>
+						</tr>`
+					resolve($('.logbookDetailUnapproved').append(detailUnapproved))
+				})
+			}
+		});
+	})
+}
+
+// Tampilkan detail modal Logbook Belum disetujui
+function unapprovedLogbook(id) {
+	$('#detailLogbookUnapproved').modal('show')
+	let nama = document.getElementById(id).getAttribute("data-nama");
+	let periode = document.getElementById(id).getAttribute("data-periode");
+
+	let a = getOwnerUnapproved(nama, periode);
+	let b = getLogbookUnapproved(nama, periode);
+	// Jalankan Promise
+	Promise.all([a, b]).then(result => {
+		console.log('Fulfilled Promise unapproved Logbook');
+		$('.loadingAnimation').addClass('hidden');
+		$('.contentUnapproved').removeClass('hidden');
+	}).catch(e => {
+		console.log(e);
+	});
+}
+
+// Kosongkan data apabila modal logbook belum disetujui tertutup
+$('#detailLogbookUnapproved').on('hidden.bs.modal', function () {
+	$('.loadingAnimation').removeClass('hidden');
+	$('.contentUnapproved').addClass('hidden');
+	$('.logbookDetailUnapproved').empty();
+})

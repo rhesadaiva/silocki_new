@@ -150,7 +150,7 @@ class Admin_model extends CI_Model
     }
 
     //query pegawai yang belum divalidasi logbooknya
-    public function pegawainotvalidatedlogbook()
+    public function notValidatedLogbook()
     {
         $query = $this->db->query("SELECT `logbook`.periode, `logbook`.is_sent, `logbook`.is_approved, `user`.`nama`,
                                     count(nippegawai) as total
@@ -158,7 +158,6 @@ class Admin_model extends CI_Model
                                     join user on `logbook`.`nippegawai`=`user`.`nip`
                                     where `is_sent` = 1 and `is_approved` = 0 
                                     GROUP BY `nippegawai`, `periode` ORDER BY `periode`");
-
         return $query->result_array();
     }
 
@@ -224,22 +223,27 @@ class Admin_model extends CI_Model
         $this->db->delete('pengumuman');
     }
 
+    // Query detail Logbook yang telah disetujui
     public function detaillogbookdatadisetujui($nama, $periode)
     {
-        $query = $this->db->query("SELECT `user`.nama, `user`.nip, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.kodeiku, `indikatorkinerjautama`.namaiku, `indikatorkinerjautama`.nip, `logbook`.*
-        FROM `user` JOIN `indikatorkinerjautama` USING (nip)
-        JOIN `logbook` using (id_iku) WHERE `logbook`.is_approved = 1 
-        AND `user`.nama = '$nama' AND `logbook`.periode = '$periode'");
+        $query = $this->db->query("SELECT `user`.nama, `user`.nip, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.kodeiku, 
+                                    `indikatorkinerjautama`.namaiku, `indikatorkinerjautama`.nip, `logbook`.*
+                                    FROM `user` JOIN `indikatorkinerjautama` USING (nip)
+                                    JOIN `logbook` using (id_iku) WHERE `logbook`.is_approved = 1 
+                                    AND `user`.nama = '$nama' AND `logbook`.periode = '$periode'");
 
         return $query->result_array();
     }
 
-    public function detaillogbookdatabelumdisetujui($nama, $periode)
+    // Query detail Logbook yang belum disetujui
+    public function detailLogbookUnapproved($nama, $periode)
     {
-        $query = $this->db->query("SELECT `user`.nama, `user`.nip, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.kodeiku, `indikatorkinerjautama`.namaiku, `indikatorkinerjautama`.nip, `logbook`.*
-        FROM `user` JOIN `indikatorkinerjautama` USING (nip)
-        JOIN `logbook` using (id_iku) WHERE `logbook`.is_approved = 0
-        AND `user`.nama = '$nama' AND `logbook`.periode = '$periode'");
+        $query = $this->db->query("SELECT `user`.nama, `user`.nip, `indikatorkinerjautama`.id_iku, 
+                                    `indikatorkinerjautama`.kodeiku, `indikatorkinerjautama`.namaiku, 
+                                    `indikatorkinerjautama`.nip, `logbook`.*
+                                    FROM `user` JOIN `indikatorkinerjautama` USING (nip)
+                                    JOIN `logbook` using (id_iku) WHERE `logbook`.is_approved = 0
+                                    AND `user`.nama = '$nama' AND `logbook`.periode = '$periode'");
 
         return $query->result_array();
     }

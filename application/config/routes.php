@@ -56,6 +56,15 @@ $route['translate_uri_dashes'] = FALSE;
 // Route Admin
 $route['index-admin'] = 'admin/index';
 $route['manajemen-user'] = 'admin/manajemenUser';
+$route['config'] = 'admin/konfigurasiAplikasi';
+$route['unapproved'] = 'admin/unapprovedLogbook';
+$route['unapproved?m=(:any)'] = 'admin/filteredUnapproved?m=$1';
+
+// Route Pelaksana
+$route['index-pelaksana'] = 'pelaksana/index';
+
+// Route Pejabat
+$route['index-pejabat'] = 'pejabat/index';
 
 // Route Kontrak Kinerja
 $route['kontrak-kinerja'] = 'kontrakkinerja/index';

@@ -29,7 +29,7 @@
                         <tbody id="usersData">
                             <?php if ($role == 1) : ?>
                                 <?php $i = 1; ?>
-                                <?php foreach ($kontrakKinerjaAdmin as $kontrak) : ?>
+                                <?php foreach ($kontrakKinerja as $kontrak) : ?>
                                     <tr>
                                         <th scope="row"><?= $i; ?></th>
                                         <td><?= $kontrak['kontrakkinerjake'] ?></td>
@@ -74,7 +74,7 @@
                                     </tr>
                                     <?php $i++; ?>
                                 <?php endforeach; ?>
-                            <?php else : ?>
+                            <?php elseif ($getKontrak < 2 && $role > 1) : ?>
                                 <?php $i = 1; ?>
                                 <tr>
                                     <th scope="row"><?= $i; ?></th>

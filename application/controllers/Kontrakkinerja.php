@@ -25,7 +25,7 @@ class Kontrakkinerja extends CI_Controller
 
         // Jika login = admin, load semua Kontrak Kinerja
         if ($data['role'] == 1) {
-            $data['kontrakKinerjaAdmin'] = $this->Kontrak_model->getKontrak()->result_array();
+            $data['kontrakKinerja'] = $this->Kontrak_model->getKontrak()->result_array();
             $data['userList'] = $this->Global_model->getUserList();
             // Jika bukan admin
         } else {

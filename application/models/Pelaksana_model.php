@@ -7,7 +7,9 @@ class Pelaksana_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
 
-        $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `user`.nip, `user`.`pejabat_id` from kontrakkinerja join user using (nip) where nip = '$role' and is_validated = 2");
+        $query = $this->db->query("SELECT `kontrakkinerja`.id_kontrak, `user`.nama, `user`.nip, `user`.`pejabat_id` 
+                                    FROM kontrakkinerja JOIN user USING (nip) 
+                                    WHERE nip = '$role' AND is_validated = 2");
         if ($query->num_rows() > 0) {
             return $query->num_rows();
         } else {
@@ -19,7 +21,9 @@ class Pelaksana_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
 
-        $query = $this->db->query("SELECT `indikatorkinerjautama`.*, `user`.nama, `user`.nip, `user`.`pejabat_id` from indikatorkinerjautama join user using (nip) where user.nip = '$role' and iku_validated = 1");
+        $query = $this->db->query("SELECT `indikatorkinerjautama`.id_kontrak, `user`.nama, `user`.nip, `user`.`pejabat_id` 
+                                    FROM indikatorkinerjautama JOIN user USING (nip) 
+                                    WHERE `user`.`nip` = '$role' AND `iku_validated` = 1");
         if ($query->num_rows() > 0) {
             return $query->num_rows();
         } else {
@@ -31,10 +35,12 @@ class Pelaksana_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
 
-        $query = $this->db->query("SELECT `user`.`nama`, `user`.`nip`, `user`.`pejabat_id`, `kontrakkinerja`.`id_kontrak`, `kontrakkinerja`.`nip`, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.`nip`,`indikatorkinerjautama`.id_kontrak, `logbook`.* 
-                                    from `kontrakkinerja` right join `user` using (`nip`) 
-                                    join `indikatorkinerjautama` using (`id_kontrak`)
-                                    join `logbook` using (`id_iku`) where `is_sent` = 1 and `user`.nip = $role ");
+        $query = $this->db->query("SELECT `user`.`nama`, `user`.`nip`, `user`.`pejabat_id`, `kontrakkinerja`.`id_kontrak`, `kontrakkinerja`.`nip`, 
+                                    `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.`nip`,`indikatorkinerjautama`.id_kontrak, 
+                                    `logbook`.`id_logbook`
+                                    FROM `kontrakkinerja` RIGHT JOIN `user` USING (`nip`) 
+                                    JOIN `indikatorkinerjautama` USING (`id_kontrak`)
+                                    JOIN `logbook` USING (`id_iku`) WHERE `is_sent` = 1 AND `user`.nip = $role ");
         if ($query->num_rows() > 0) {
             return $query->num_rows();
         } else {

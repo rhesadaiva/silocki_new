@@ -13,12 +13,14 @@ class Pejabat extends CI_Controller
         $this->load->model('Pejabat_model');
         $this->load->model('Indikator_model');
         $this->load->model('Logbook_model');
+        $this->load->model('Global_model');
     }
 
     public function index()
     {
         $data['title'] = 'Home';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
+        $data['recentActivity'] = $this->Global_model->getLastActivity($this->session->userdata('nama'));
         $data['jumlahbawahan'] = $this->Pejabat_model->countBawahan();
         $data['kkbelumdiapprove'] = $this->Pejabat_model->countKKBawahanNotApproved();
         $data['ikubelumdiapprove'] = $this->Pejabat_model->countIKUBawahanNotApproved();

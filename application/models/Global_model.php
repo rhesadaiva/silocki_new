@@ -37,4 +37,9 @@ class Global_model extends CI_Model
         $query = $this->db->query('SELECT `nama`, `nip` FROM `user`');
         return $query->result_array();
     }
+
+    public function getBulanRef()
+    {
+        return $this->db->get('ref_Bulan')->result_array();
+    }
 }
