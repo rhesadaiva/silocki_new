@@ -10,7 +10,7 @@
                         <div class="profile-header">
                             <div class="overlay"></div>
                             <div class="profile-main">
-                                <img src="assets/img/default.jpg" class="img-circle" alt="Avatar">
+                                <a href="#" data-toggle="modal" data-target="#modalChangePhoto"><img src="assets/img/profile/<?= $user['img'] ?>" class="img-circle" alt="Avatar"></a>
                                 <h3 class="name"><?= strtoupper($user['nama']); ?></h3>
                                 <span><?= $user['nip']; ?></span>
                             </div>
