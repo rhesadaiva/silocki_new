@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
     <!-- ICONS -->
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.ico">
     <!-- DATATABLES CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.20/r-2.2.3/datatables.min.css" />
     <!-- BOOTSTRAP SELECTPICKER CSS -->
@@ -44,25 +44,10 @@
                 <div id="navbar-menu">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
-                                <i class="lnr lnr-alarm"></i>
-                                <span class="badge bg-danger">5</span>
-                            </a>
-                            <ul class="dropdown-menu notifications">
-                                <li><a href="#" class="notification-item"><span class="dot bg-warning"></span>System space is almost full</a></li>
-                                <li><a href="#" class="notification-item"><span class="dot bg-danger"></span>You have 9 unfinished tasks</a></li>
-                                <li><a href="#" class="notification-item"><span class="dot bg-success"></span>Monthly report is available</a></li>
-                                <li><a href="#" class="notification-item"><span class="dot bg-warning"></span>Weekly meeting in 1 hour</a></li>
-                                <li><a href="#" class="notification-item"><span class="dot bg-success"></span>Your request has been approved</a></li>
-                                <li><a href="#" class="more">See all notifications</a></li>
-                            </ul>
-                        </li>
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><?= $user['nama']; ?></span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="assets/img/profile/<?= $user['img'] ?>" class="img-circle" alt="Avatar"> <span><?= $user['nama']; ?></span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#"><i class="lnr lnr-user"></i> <span>My Profile</span></a></li>
-                                <li><a href="#"><i class="lnr lnr-envelope"></i> <span>Message</span></a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#modalChangePassword"><i class="lnr lnr-lock"></i> <span>Change Password</span></a></li>
                                 <li><a href="#"><i class="lnr lnr-cog"></i> <span>Settings</span></a></li>
                                 <li><a href="#" data-toggle="modal" data-target="#modalLogout"><i class="lnr lnr-exit"></i> <span>Logout</span></a></li>
                             </ul>
@@ -72,12 +57,13 @@
                 </div>
             </div>
         </nav>
+
         <!-- LOGOUT MODAL -->
         <div class="modal fade" id="modalLogout" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title text-primary" id="exampleModalLongTitle"><b>Keluar dari Aplikasi</b></h3>
+                        <h3 class="modal-title text-primary" id="exampleModalLongTitle"><b>Logout Aplikasi</b></h3>
                     </div>
                     <div class="modal-body">
                         Apakah anda yakin ingin keluar dari aplikasi ini?
@@ -86,6 +72,72 @@
                         <button type="button" class="btn btn-info" data-dismiss="modal">Batal</button>
                         <a class="btn btn-danger" href="<?= base_url('auth/logout'); ?>"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHANGE PASS MODAL -->
+        <div class="modal fade" id="modalChangePassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title text-primary" id="exampleModalLongTitle"><b>Ganti Password</b></h3>
+                    </div>
+                    <div class="modal-body">
+                        <span id="validation-alert">
+
+                        </span>
+                        <form class="form-horizontal" action="" id="formChangePass">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="passwordlama">Password Sekarang</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control" id="passwordlama" placeholder="Masukkan password anda yang sekarang">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="pwd">Password baru</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control" id="passwordbaru1" placeholder="Masukkan password baru anda minimal 5 karakter">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="pwd">Konfirmasi Password Baru</label>
+                                <div class="col-sm-8">
+                                    <input type="password" class="form-control" id="passwordbaru2" placeholder="Konfirmasi Password Baru">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                                <button class="btn btn-success" id="updatePasswordBtn"><i class="fas fa-fingerprint"></i> Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CHANGE PHOTO -->
+        <div class="modal fade" id="modalChangePhoto" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title text-primary" id="exampleModalLongTitle"><b>Update Foto Profil</b></h3>
+                    </div>
+                    <div class="modal-body">
+                        <form action="<?= base_url() . 'users/doUploadProfile' ?>" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="profilePhoto">File input</label>
+                                <div class="col-sm-5">
+                                    <input class="form-control-file" type="file" name="filefoto">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                                <button class="btn btn-primary" type="submit"><i class="fas fa-sign-out-alt"></i> Submit</button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
