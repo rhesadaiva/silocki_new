@@ -82,7 +82,7 @@ class Admin extends CI_Controller
         helper_log("delete", "Menghapus data pegawai (id-pegawai = $idPegawai)");
     }
 
-    //Halaman Logbook Belum Disetujui
+    // LOGBOOK BELUM DISETUJUI
     public function unapprovedLogbook()
     {
         $data['title'] = 'Logbook Yang Belum Disetujui';
@@ -98,54 +98,59 @@ class Admin extends CI_Controller
         $this->load->view('templates/main_footer');
     }
 
-    //Halaman Filter Logbook belum disetujui
-    public function filterlogbookbelumdisetujui()
+    // FILTER LOGBOOK BELUM DISETUJUI
+    public function filteredUnapproved()
     {
         $data['title'] = 'Logbook Yang Belum Disetujui';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        $data['periode'] = $this->input->get('periodepelaporan');
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
+        $data['refBulan'] = $this->Global_model->getBulanRef();
 
-        $data['belumlogbook'] = $this->Admin_model->filternotvalidatedlogbook($data['periode']);
+        // Ambil filter bulan
+        $periode = $this->input->get('m');
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar_admin');
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('admin/belumapprovelogbook', $data);
-        $this->load->view('templates/footer');
+        // Query data yang belum divalidasi
+        $data['notValidated'] = $this->Admin_model->filterNotValidatedLogbook($periode);
+
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/v_unapproved', $data);
+        $this->load->view('templates/main_footer');
         helper_log("access", "melakukan pencarian pada menu Logbook Yang Belum Disetujui");
     }
 
-    //Halaman Daftar Pegawai yang sudah rekam logbook
-    public function logbookselesai()
+    // LOGBOOK TELAH DISETUJUI
+    public function approvedLogbook()
     {
         $data['title'] = 'Logbook Yang Sudah Divalidasi';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        $data['periode'] = $this->input->get('periodepelaporan');
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
+        $data['refBulan'] = $this->Global_model->getBulanRef();
 
+        // Query data yang telah divalidasi
+        $data['validatedLogbook'] = $this->Admin_model->validatedLogbook();
 
-        $data['logbookclear'] = $this->Admin_model->logbookclear();
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar_admin');
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('admin/logbookselesai', $data);
-        $this->load->view('templates/footer');
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/v_approved', $data);
+        $this->load->view('templates/main_footer');
     }
 
-    // //Halaman Pencarian Pegawai yang belum rekam logbook
-    public function filterlogbookselesai()
+    // FILTER LOGBOOK YANG TELAH DISETUJUI
+    public function filteredApproved()
     {
         $data['title'] = 'Logbook Yang Sudah Divalidasi';
-        $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-        $data['periode'] = $this->input->get('periodepelaporan');
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
+        $data['refBulan'] = $this->Global_model->getBulanRef();
 
-        $data['logbookclear'] = $this->Admin_model->filterlogbookclear($data['periode']);
+        // Ambil filter bulan
+        $periode = $this->input->get('m');
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar_admin');
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('admin/logbookselesai', $data);
-        $this->load->view('templates/footer');
+        // Query data yang telah divalidasi
+        $data['validatedLogbook'] = $this->Admin_model->filterlogbookclear($periode);
+
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/v_approved', $data);
+        $this->load->view('templates/main_footer');
         helper_log("access", "melakukan pencarian pada menu Logbook Yang Sudah Divalidasi");
     }
 
@@ -182,16 +187,18 @@ class Admin extends CI_Controller
         redirect('admin/console');
     }
 
-    public function getDetailLogbookDisetujui()
+    // GET DETAIL LOGBOOK YANG TELAH DISETUJUI
+    public function getDetailLogbookApproved()
     {
         $nama = $this->input->get('nama');
         $periode = $this->input->get('periode');
 
-        $get_logbook = $this->Admin_model->detaillogbookdatadisetujui($nama, $periode);
+        $get_logbook = $this->Admin_model->detailLogbookApproved($nama, $periode);
         echo json_encode($get_logbook);
         exit();
     }
 
+    // GET DETAIL LOGBOOK YANG BELUM DISETUJUI
     public function getDetailLogbookUnapproved()
     {
         $nama = $this->input->get('nama');
@@ -200,31 +207,6 @@ class Admin extends CI_Controller
         $getLogbookUnapproved = $this->Admin_model->detailLogbookUnapproved($nama, $periode);
         echo json_encode($getLogbookUnapproved);
     }
-
-    // public function ketepatanwaktu()
-    // {
-    //     $data['user'] = $this->Admin_model->getLoggedUser($this->session->userdata('nip'));
-    //     $data['title'] = "Test Ketepatan Waktu";
-
-    //     $data['logbookall'] = $this->Admin_model->getAllLogbook();
-
-    //     foreach ($data['logbookall'] as $logbook) {
-    //         $wakturekam = $logbook['wakturekam'];
-    //         $tgl_approve = $logbook['tgl_approve'];
-
-    //         $selisih = selisihwkatu($wakturekam, $tgl_approve);
-    //         return $selisih;
-    //     }
-
-    //     var_dump($wakturekam);
-    //     die;
-
-    //     $this->load->view('templates/header', $data);
-    //     $this->load->view('templates/sidebar_admin');
-    //     $this->load->view('templates/topbar', $data);
-    //     $this->load->view('admin/ketepatanwaktu', $data);
-    //     $this->load->view('templates/footer');
-    // }
 
     // Konfigurasi Aplikasi
     public function konfigurasiAplikasi()
