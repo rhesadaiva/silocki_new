@@ -124,7 +124,10 @@
                         <h3 class="modal-title text-primary" id="exampleModalLongTitle"><b>Update Foto Profil</b></h3>
                     </div>
                     <div class="modal-body">
-                        <form action="<?= base_url() . 'users/doUploadProfile' ?>" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        <span id="upload-alert">
+
+                        </span>
+                        <form action="" method="POST" class="form-horizontal" enctype="multipart/form-data" id="uploadPhoto">
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="profilePhoto">File input</label>
                                 <div class="col-sm-5">
@@ -132,8 +135,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                                <button class="btn btn-primary" type="submit"><i class="fas fa-sign-out-alt"></i> Submit</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
+                                <button class="btn btn-primary" type="submit" id="btn_submit"><i class="fas fa-upload"></i> Upload</button>
                             </div>
                         </form>
                     </div>

@@ -932,7 +932,8 @@ function sendLogbook(idLogbook) {
 
 // Tampilkan PDF Logbook di Tab Baru
 function printLogbook(idLogbook) {
-	window.open('logbook/cetakLogbook/' + idLogbook, '_blank');
+	const newLocal = 'logbook/cetakLogbook/';
+	window.open(newLocal + idLogbook, '_blank');
 }
 
 // DataTables untuk Table Kontrak Kinerja Bawahan
@@ -1362,7 +1363,7 @@ function doRejectLogbook(idLogbook) {
 
 // Init DataTable Unapproved Logbook
 $(document).ready(function () {
-	$('#unapprovedTable').DataTable({
+	$('#unapprovedTable,#approvedTable').DataTable({
 		"ordering": false,
 		"lengthChange": false,
 		"searching": false
@@ -1370,7 +1371,7 @@ $(document).ready(function () {
 })
 
 // Promise mengambil owner Logbook
-function getOwnerUnapproved(nama, periode) {
+function getOwner(nama, periode) {
 	return new Promise(function (resolve, reject) {
 		let a = $('.pemilik').html(nama);
 		let b = $('.periode').html(periode);
@@ -1408,7 +1409,7 @@ function unapprovedLogbook(id) {
 	let nama = document.getElementById(id).getAttribute("data-nama");
 	let periode = document.getElementById(id).getAttribute("data-periode");
 
-	let a = getOwnerUnapproved(nama, periode);
+	let a = getOwner(nama, periode);
 	let b = getLogbookUnapproved(nama, periode);
 	// Jalankan Promise
 	Promise.all([a, b]).then(result => {
@@ -1425,4 +1426,125 @@ $('#detailLogbookUnapproved').on('hidden.bs.modal', function () {
 	$('.loadingAnimation').removeClass('hidden');
 	$('.contentUnapproved').addClass('hidden');
 	$('.logbookDetailUnapproved').empty();
+})
+
+// Promise mengambil detail approved
+function getLogbookApproved(nama, periode) {
+	return new Promise(function (resolve, reject) {
+		let url = 'admin/getDetailLogbookApproved?nama=' + nama + '&periode=' + periode;
+		$.getJSON(url, function (data) {
+			if (data) {
+				$.each(data, function (i, data) {
+					let detailUnapproved =
+						`<tr>
+							<td class="text-center">` + data.kodeiku + `</td>
+							<td class="text-justify">` + data.namaiku + `</td>
+							<td class="text-justify">` + data.perhitungan + `</td>
+							<td class="text-justify">` + data.realisasibulan + `</td>
+							<td class="text-justify">` + data.realisasiterakhir + `</td>
+							<td class="text-justify">` + data.ket + `</td>
+							<td class="text-center">` + moment(data.wakturekam).format('Do MMMM YYYY, HH:mm:ss') + `</td>
+						</tr>`
+					resolve($('.logbookDetailApproved').append(detailUnapproved))
+				})
+			}
+		});
+	})
+}
+
+// Tampilkan detail modal Logbook telah disetujui
+function approvedLogbook(id) {
+	$('#detailLogbookApproved').modal('show')
+	let nama = document.getElementById(id).getAttribute("data-nama");
+	let periode = document.getElementById(id).getAttribute("data-periode");
+
+	let a = getOwner(nama, periode);
+	let b = getLogbookApproved(nama, periode);
+	// Jalankan Promise
+	Promise.all([a, b]).then(result => {
+		console.log('Fulfilled Promise approved Logbook');
+		$('.loadingAnimation').addClass('hidden');
+		$('.contentApproved').removeClass('hidden');
+	}).catch(e => {
+		console.log(e);
+	});
+}
+
+// Kosongkan data apabila modal logbook yang telah disetujui tertutup
+$('#detailLogbookApproved').on('hidden.bs.modal', function () {
+	$('.loadingAnimation').removeClass('hidden');
+	$('.contentApproved').addClass('hidden');
+	$('.logbookDetailApproved').empty();
+})
+
+// Validating Password
+$('#updatePasswordBtn').click(function (e) {
+	e.preventDefault();
+
+	let passwordlama = $('#passwordlama').val();
+	let passwordbaru1 = $('#passwordbaru1').val();
+	let passwordbaru2 = $('#passwordbaru2').val();
+
+	// Jalankan AJAX Validasi
+	$.ajax({
+		url: 'change-password',
+		method: 'POST',
+		dataType: 'JSON',
+		data: {
+			passwordlama: passwordlama,
+			passwordbaru1: passwordbaru1,
+			passwordbaru2: passwordbaru2,
+		},
+		beforeSend: function () {
+			$('#updatePasswordBtn').html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled")
+		},
+		success: function (response) {
+			// Jika password error
+			if (response.error) {
+				$('#validation-alert').append(response.passwordlama_error);
+				$('#validation-alert').append(response.passwordbaru1_error);
+				$('#validation-alert').append(response.passwordbaru2_error);
+				$('#updatePasswordBtn').html('<i class="fas fa-fingerprint"></i> Update Password').removeAttr("disabled")
+
+				// Jika response password lama tidak sesuai dengan password diinput
+			} else if (response.notmatch) {
+				$('#validation-alert').append(response.notmatchalert);
+				$('#updatePasswordBtn').html('<i class="fas fa-fingerprint"></i> Update Password').removeAttr("disabled")
+
+				// Jika validasi sukses
+			} else if (response.success) {
+				$('#validation-alert').append(response.successalert);
+				$('#updatePasswordBtn').html('<i class="fas fa-fingerprint"></i> Update Password').removeAttr("disabled")
+			}
+		}
+	})
+})
+
+// Kosongkan form dan alert apabila modal ganti password ditutup
+$('#modalChangePassword').on('hidden-bs-modal', function () {
+	$('#passwordlama').val('');
+	$('#passwordbaru1').val('');
+	$('#passwordbaru2').val('');
+	$('#validation-alert').empty();
+})
+
+// AJAX upload foto profil
+$('#uploadPhoto').submit(function (e) {
+	e.preventDefault();
+
+	$.ajax({
+		url: 'upload-photo',
+		method: 'POST',
+		data: new FormData(this),
+		processData: false,
+		contentType: false,
+		cache: false,
+		beforeSend: function () {
+			$('#btn_submit').html('<i class="fa fa-cog fa-spin"></i> Proses Upload..').attr("disabled", "disabled");
+		},
+		success: function () {
+			$('#btn_submit').html('<i class="fas fa-upload"></i> Upload').removeAttr('disabled');
+			alert('Fotor berhasil diupload!')
+		}
+	})
 })

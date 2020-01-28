@@ -8,16 +8,18 @@ class Users extends CI_Controller
         is_logged_in();
     }
 
+    // Validasi untuk ganti password
     public function validateChangePass()
     {
         $data['title'] = 'Ganti Password';
         $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
 
+        // Set validasi
         $this->form_validation->set_rules('passwordlama', 'Password Lama', 'trim|required');
         $this->form_validation->set_rules('passwordbaru1', 'Password Baru', 'trim|required|min_length[5]');
         $this->form_validation->set_rules('passwordbaru2', 'Konfirmasi Password Baru', 'trim|required|matches[passwordbaru1]|min_length[5]');
 
-        // Jika hasil validasi = False
+        // Jika hasil validasi = False, ambil response alert untuk dikonversi ke JSON
         if ($this->form_validation->run() == FALSE) {
             $response = [
                 'error' => true,
@@ -55,7 +57,7 @@ class Users extends CI_Controller
             $passwordbaru = $this->input->post('passwordbaru1');
             $currentpass = $data['user']['password'];
 
-            //Jika input pada form Password Sekarang tidak match pada database
+            //Jika input pada form Password Sekarang tidak match pada database, ambil respon alert untuk dikonversi ke JSON
             if ($passwordlama != $currentpass) {
                 $response = [
                     'notmatch' => true,
@@ -66,6 +68,8 @@ class Users extends CI_Controller
                 ];
                 // Kembalikan response sebagai JSON
                 echo json_encode($response);
+
+                // Jika semua kondisi terpenuhi, update passwordnya
             } else {
                 // Update Passwordnya
                 $this->_updatePassword($passwordbaru);
@@ -76,7 +80,6 @@ class Users extends CI_Controller
                                         <i class="fa fa-check-circle"></i> Password berhasil diubah! Silahkan gunakan password baru anda pada saat login.
                                         </div>'
                 ];
-
                 // Kembalikan response sebagai JSON
                 echo json_encode($response);
                 helper_log("edit", "Mengubah password");
@@ -84,6 +87,7 @@ class Users extends CI_Controller
         }
     }
 
+    // Private function untuk update password ke database
     private function _updatePassword($passwordbaru)
     {
         // Convert to md5
@@ -95,6 +99,7 @@ class Users extends CI_Controller
         $this->db->update('user');
     }
 
+    // Melakukan update foto profil serta resize
     public function doUploadProfile()
     {
         $this->load->model('Global_model');
@@ -102,19 +107,22 @@ class Users extends CI_Controller
         $this->load->library('upload');
 
         // Config untuk library upload
-        $config['upload_path'] = './assets/img/profile'; //path folder
+        $config['upload_path'] = './assets/img/profile';
         $config['allowed_types'] = 'gif|jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
-        $config['file_name'] = $nip; //Enkripsi nama yang terupload
+        $config['file_name'] = $nip;
 
         $this->upload->initialize($config);
 
-        // Jika data ada
+        // Jika data tidak kosong
         if (!empty($_FILES['filefoto']['name'])) {
 
+            // Jika sudah upload
             if ($this->upload->do_upload('filefoto')) {
+
+                // Ambil array data upload
                 $pic = $this->upload->data();
 
-                // Compress Image
+                // Config untuk library Resize Image
                 $config['image_library'] = 'gd2';
                 $config['source_image'] = './assets/img/profile/' . $pic['file_name'];
                 $config['create_thumb'] = FALSE;
@@ -124,17 +132,20 @@ class Users extends CI_Controller
                 $config['height'] = 120;
                 $config['new_image'] = './assets/img/profile/' . $pic['file_name'];
 
-                // Do the compress
+                // Do the resize process
                 $this->load->library('image_lib', $config);
                 $this->image_lib->resize();
 
+                // Ambil nama filenya
                 $profilePicture = $pic['file_name'];
-                $this->Global_model->saveUpload($profilePicture, $nip);
-                echo "Image berhasil diupload!";
 
-                // Jika file kosong
+                // Insert ke Database
+                $updatePhoto =  $this->Global_model->saveUpload($profilePicture, $nip);
+                echo json_decode($updatePhoto);
             } else {
-                echo $this->upload->display_errors();
+                // Jika gagal
+                $errorMessage = $this->upload->display_errors();
+                echo $errorMessage;
             }
         }
     }
