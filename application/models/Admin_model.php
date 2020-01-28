@@ -7,7 +7,8 @@ class Admin_model extends CI_Model
     //Ambil data user
     public function getAllUsers()
     {
-        $query =  $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`pejabat_id`,`user`.`telegram`,
+        $query =  $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, 
+                                    `user`.`seksi`, `user`.`pejabat_id`,`user`.`telegram`,
                                     `user_role`.* , `pejabat`.`pejabat_id`, `pejabat`.`nama_pejabat`
                                     FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role` JOIN `pejabat` 
                                     ON `user`.`pejabat_id` = `pejabat`.`pejabat_id` ORDER BY `user`.`role_id` ASC");
@@ -15,25 +16,13 @@ class Admin_model extends CI_Model
         return $query->result_array();
     }
 
-    // Ambil status data login
-    // public function getLoggedUser($loggedNIP)
-    // {
-    //     $query = $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`pejabat_id`,`user`.`telegram`,
-    //                                 `user_role`.* , `pejabat`.`pejabat_id`, `pejabat`.`nama_pejabat`
-    //                                 FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role` JOIN `pejabat` 
-    //                                 ON `user`.`pejabat_id` = `pejabat`.`pejabat_id`
-    //                                 WHERE `user`.`nip` = '$loggedNIP'");
-
-    //     return $query->row_array();
-    // }
-
     // Ambil data pejabat
     public function getAllPejabat()
     {
         return $this->db->get('pejabat')->result_array();
     }
 
-    //Ammbil data pangkat
+    //Ambil data pangkat
     public function getPangkat()
     {
         return $this->db->get('pangkat')->result_array();
@@ -54,7 +43,8 @@ class Admin_model extends CI_Model
     //Ambil data user by ID
     public function getUserByID($id)
     {
-        $query = $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, `user`.`seksi`, `user`.`pejabat_id`,
+        $query = $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, 
+                                    `user`.`seksi`, `user`.`pejabat_id`,
                                     `user`.`telegram`, `user_role`.*, `pejabat`.`pejabat_id`, `pejabat`.`nama_pejabat`
                                     FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role`
                                     JOIN `pejabat` ON `user`.`pejabat_id` = `pejabat`.`pejabat_id`
@@ -119,6 +109,7 @@ class Admin_model extends CI_Model
             'seksi' => $this->input->post('organisasiPegawai'),
             'pejabat_id' => $this->input->post('atasanPegawai'),
             'telegram' => $this->input->post('telegramPegawai', true),
+            'img' => 'default.jpg',
 
         ];
         return $this->db->insert('user', $data);
@@ -153,37 +144,37 @@ class Admin_model extends CI_Model
     public function notValidatedLogbook()
     {
         $query = $this->db->query("SELECT `logbook`.periode, `logbook`.is_sent, `logbook`.is_approved, `user`.`nama`,
-                                    count(nippegawai) as total
-                                    from logbook 
-                                    join user on `logbook`.`nippegawai`=`user`.`nip`
-                                    where `is_sent` = 1 and `is_approved` = 0 
-                                    GROUP BY `nippegawai`, `periode` ORDER BY `periode`");
+                                    count(nippegawai) AS total
+                                    FROM logbook 
+                                    JOIN user ON `logbook`.`nippegawai`=`user`.`nip`
+                                    WHERE `is_sent` = 1 AND `is_approved` = 0 
+                                    GROUP BY `nippegawai`, `periode` ORDER BY `nama`");
         return $query->result_array();
     }
 
     //query filter data pegawai yang belum divalidasi logbooknya
-    public function filternotvalidatedlogbook($periode)
+    public function filterNotValidatedLogbook($periode)
     {
         $query = $this->db->query("SELECT `logbook`.*, `user`.`nama`,
-                                    count(nippegawai) as total
-                                    from logbook 
-                                    join user on `logbook`.`nippegawai`=`user`.`nip`
-                                    where `is_sent` = 1 and `is_approved` = 0 and `periode` = '$periode'
-                                    GROUP BY `nippegawai`, `periode` ORDER BY `periode`");
+                                    count(nippegawai) AS total
+                                    FROM logbook 
+                                    JOIN user ON `logbook`.`nippegawai`=`user`.`nip`
+                                    WHERE `is_sent` = 1 AND `is_approved` = 0 AND `periode` = '$periode'
+                                    GROUP BY `nippegawai`, `periode` ORDER BY `nama`");
 
         return $query->result_array();
         return $query->num_rows();
     }
 
     //query ambil data pegawai yang sudah punya logbook
-    public function logbookclear()
+    public function validatedLogbook()
     {
         $query = $this->db->query("SELECT `logbook`.*, `user`.`nama`,
-                                    count(nippegawai) as total
-                                    from logbook 
-                                    join user on `logbook`.`nippegawai`=`user`.`nip`
-                                    where `is_sent` = 1 and `is_approved` = 1 
-                                    group by `nippegawai`, `periode` Order BY `periode` ");
+                                    count(nippegawai) AS total
+                                    FROM logbook 
+                                    JOIN user ON `logbook`.`nippegawai`=`user`.`nip`
+                                    WHERE `is_sent` = 1 AND `is_approved` = 1 
+                                    GROUP BY `nippegawai`, `periode` ORDER BY `nama` ");
 
         return $query->result_array();
     }
@@ -192,11 +183,11 @@ class Admin_model extends CI_Model
     public function filterlogbookclear($periode)
     {
         $query = $this->db->query("SELECT `logbook`.*, `user`.`nama`,
-                                    count(nippegawai) as total
-                                    from logbook 
-                                    join user on `logbook`.`nippegawai`=`user`.`nip`
-                                    where `is_sent` = 1 and `is_approved` = 1 and `periode` =  '$periode'
-                                    group by `nippegawai`, `periode` Order BY `periode` ");
+                                    count(nippegawai) AS total
+                                    FROM logbook 
+                                    JOIN user ON `logbook`.`nippegawai`=`user`.`nip`
+                                    WHERE `is_sent` = 1 AND `is_approved` = 1 AND `periode` =  '$periode'
+                                    GROUP BY `nippegawai`, `periode` ORDER BY `periode` ");
 
         return $query->result_array();
     }
@@ -224,7 +215,7 @@ class Admin_model extends CI_Model
     }
 
     // Query detail Logbook yang telah disetujui
-    public function detaillogbookdatadisetujui($nama, $periode)
+    public function detailLogbookApproved($nama, $periode)
     {
         $query = $this->db->query("SELECT `user`.nama, `user`.nip, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.kodeiku, 
                                     `indikatorkinerjautama`.namaiku, `indikatorkinerjautama`.nip, `logbook`.*
