@@ -58,7 +58,12 @@ $route['index-admin'] = 'admin/index';
 $route['manajemen-user'] = 'admin/manajemenUser';
 $route['config'] = 'admin/konfigurasiAplikasi';
 $route['unapproved'] = 'admin/unapprovedLogbook';
-$route['unapproved?m=(:any)'] = 'admin/filteredUnapproved?m=$1';
+$route['f-unapproved']['get'] = 'admin/filteredUnapproved';
+$route['approved'] = 'admin/approvedLogbook';
+$route['f-approved']['get'] = 'admin/filteredApproved';
+
+// Route Change Password
+$route['change-password'] = 'users/validateChangePass';
 
 // Route Pelaksana
 $route['index-pelaksana'] = 'pelaksana/index';
