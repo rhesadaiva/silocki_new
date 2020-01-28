@@ -65,6 +65,9 @@ $route['f-approved']['get'] = 'admin/filteredApproved';
 // Route Change Password
 $route['change-password'] = 'users/validateChangePass';
 
+// Route Upload Foto
+$route['upload-photo'] = 'users/doUploadProfile';
+
 // Route Pelaksana
 $route['index-pelaksana'] = 'pelaksana/index';
 
