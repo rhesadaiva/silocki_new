@@ -79,50 +79,6 @@ class Auth extends CI_Controller
         $this->load->view('login/blocked');
     }
 
-    //Fitur Ganti Password
-    public function gantipassword()
-    {
-        $data['title'] = 'Ganti Password';
-        $data['user'] = $this->db->get_where('user', ['nip' => $this->session->userdata('nip')])->row_array();
-
-        $this->form_validation->set_rules('passwordlama', 'Password Lama', 'trim|required');
-        $this->form_validation->set_rules('passwordbaru1', 'Password Baru', 'trim|required|matches[passwordbaru2]|min_length[5]');
-        $this->form_validation->set_rules('passwordbaru2', 'Konfirmasi Password Baru', 'trim|required|matches[passwordbaru1]|min_length[5]');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->load->view('templates/header', $data);
-            cek_sidebar();
-            $this->load->view('templates/topbar', $data);
-            $this->load->view('login/gantipassword', $data);
-            $this->load->view('templates/footer');
-        } else {
-
-            $passwordlama = md5($this->input->post('passwordlama'));
-            $passwordbaru = $this->input->post('passwordbaru1');
-            $currentpass = $data['user']['password'];
-
-            //Jika input pada form Password Sekarang tidak match pada database
-            if ($passwordlama != $currentpass) {
-
-                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Password lama tidak sesuai dengan password sekarang!</div>');
-                redirect('auth/gantipassword');
-            } else {
-
-                //Password sudah OK
-                $newpassword = md5($passwordbaru);
-
-                $this->db->set('password', $newpassword);
-                $this->db->where('nip', $this->session->userdata('nip'));
-                $this->db->update('user');
-
-                helper_log("edit", "Mengubah password");
-
-                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Password berhasil diubah, silahkan gunakan password baru pada saat login kembali.</div>');
-                redirect('auth/gantipassword');
-            }
-        }
-    }
-
     public function lupapassword()
     {
         $this->form_validation->set_rules('nipforgot', 'NIP', 'trim|required');
@@ -138,10 +94,13 @@ class Auth extends CI_Controller
 
     private function _forgotpass()
     {
+        // Ambil data NIP dari inputan form
         $nipforgot = $this->input->post('nipforgot', true);
-        $user = $this->db->get_where('user', ['nip' => $nipforgot])->row_array();
 
         // Cek NIP apakah tersedia di database
+        $user = $this->db->get_where('user', ['nip' => $nipforgot])->row_array();
+
+        // Jika ada NIP
         if ($nipforgot == $user['nip']) {
 
             $data = [
@@ -149,10 +108,13 @@ class Auth extends CI_Controller
                 'nip'  => $nipforgot
             ];
 
+            // Update session
             $this->session->set_userdata($data);
 
+            // Set token
             $token = mt_rand(100000, 999999);
 
+            // Set data Token
             $user_token = [
                 'nama' => $user['nama'],
                 'nip' => $nipforgot,
@@ -161,8 +123,11 @@ class Auth extends CI_Controller
                 'is_sent' => 0
             ];
 
+            // Insert Token, dan redirect ke halaman ganti password
             $this->db->insert('user_token', $user_token);
             redirect('auth/resetpassword');
+
+            // Jika NIP tidak ditemukan
         } else {
             $this->session->set_flashdata('forgot', '<div class="alert alert-danger-sm" role="alert"><b class="alert-message">NIP atau Password tidak sesuai!</b></div>');
             redirect('auth/lupapassword');
@@ -176,28 +141,36 @@ class Auth extends CI_Controller
 
         $nipforgot = $this->session->userdata('nip');
 
-        $gettokendata = $this->db->get_where('user_token', ['nip' => $nipforgot, 'is_sent' => 1, 'is_used' => 0])->row_array();
-        $tokendata = $gettokendata['token'];
+        // Ambil data Token yang terkirim tapi belum digunakan
+        $getTokenData = $this->db->get_where('user_token', ['nip' => $nipforgot, 'is_sent' => 1, 'is_used' => 0])->row_array();
+        $tokendata = $getTokenData['token'];
 
         $this->form_validation->set_rules('resetpass', 'Form', 'trim|required');
         $this->form_validation->set_rules('konfirmresetpass', 'Form', 'trim|required');
         $this->form_validation->set_rules('token_number', 'trim|required');
 
-        if ($this->form_validation->run() == false) {
+        // Jika validasi gagal, kembali ke halaman resetpassword
+        if ($this->form_validation->run() == FALSE) {
             $this->load->view('templates/authv2_header');
             $this->load->view('login/resetpassword', $data);
             $this->load->view('templates/authv2_footer');
+
+            // Jika validasi sukses, ambil inputan token dan password
         } else {
             $tokeninput = $this->input->post('tokennumber');
             $resetpass = $this->input->post('resetpass');
 
+            // Jika token yang diinput != token yang ada di database, kembali ke halaman reset password
             if ($tokeninput != $tokendata) {
                 $this->session->set_flashdata('reset', '<div class="alert alert-danger-sm" role="alert"><b class="alert-message">TOKEN TIDAK SESUAI!</b></div>');
                 redirect('auth/resetpassword');
+
+                // Jika Password OK
             } else {
 
-                // Password OK
+                // Tetapkan password baru
                 $newpassreset = md5($resetpass);
+
                 // Insert New Password
                 $this->db->set('password', $newpassreset);
                 $this->db->where('nip', $nipforgot);
@@ -224,12 +197,13 @@ class Auth extends CI_Controller
         $namaforgot = $this->session->userdata('nama');
 
         // Ambil data token
-        $query = $this->db->query("SELECT `user_token`.*, `user`.`telegram` FROM `user_token` join `user`  using(nip) where `user_token`.`nip` = '$nipforgot' and `is_used` = 0 and `is_sent` = 0 ");
+        $query = $this->db->query("SELECT `user_token`.*, `user`.`telegram` 
+                                    FROM `user_token` JOIN `user`  USING(nip) 
+                                    WHERE `user_token`.`nip` = '$nipforgot' AND `is_used` = 0 AND `is_sent` = 0 ");
         $data['tokendata'] = $query->row_array();
 
         // Tetapkan data token
         $tokenid = $data['tokendata']['token'];
-        $tokenstatus = $data['tokendata']['is_sent'];
 
         // Ambil data untuk dikirim ke Telegram
         $telegramuser['nama'] = $this->db->get_where('user', ['nip' => $nipforgot])->row_array();
@@ -241,7 +215,6 @@ class Auth extends CI_Controller
         );
 
         // Update status pesan menjadi sudah terkirim
-
         $this->db->set('is_sent', 1);
         $this->db->where('token', $tokenid);
         $this->db->where('is_used', 0);
