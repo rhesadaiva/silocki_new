@@ -28,7 +28,7 @@
 						<div id="monitoring" class="collapse">
 							<ul class="nav">
 								<li><a href="unapproved" class="">Logbook yang Belum Disetujui</a></li>
-								<li><a href="#" class="">Logbook yang Telah Disetujui</a></li>
+								<li><a href="approved" class="">Logbook yang Telah Disetujui</a></li>
 							</ul>
 						</div>
 					</li>

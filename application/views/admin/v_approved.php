@@ -3,24 +3,24 @@
     <div class="main-content">
         <div class="container-fluid">
             <!-- Tabel -->
-            <div class="main-content unapproved">
-                <div class="panel panel-headline panel-primary" id="unapproved-content">
+            <div class="main-content approved">
+                <div class="panel panel-headline panel-primary" id="approved-content">
                     <div class="panel-heading panel-title">
                         <div class="col-sm">
                             <h3 style="margin-top: -10px; margin-bottom: -10px;"><?= $title; ?></h3>
                         </div>
                     </div>
                     <div class="panel-body">
-                        <form action="f-unapproved" method="GET" class="filter" style="margin-bottom: 20px; margin-top: 10px;">
+                        <form action="f-approved" method="GET" class="filter" style="margin-bottom: 20px; margin-top: 10px;">
                             <select class="selectpicker" name="m" data-width="fit" id="refBulan">
                                 <?php foreach ($refBulan as $Bulan) : ?>
                                     <option value="<?= $Bulan['Bulan_ket'] ?>"><?= $Bulan['Bulan_ket'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                             <button class="btn btn-primary btn-sm" type="submit">Filter</button>
-                            <a href="unapproved" class="btn btn-default btn-sm">Reset</a>
+                            <a href="approved" class="btn btn-default btn-sm">Reset</a>
                         </form>
-                        <table class="table table-striped table-hover table-bordered" id="unapprovedTable">
+                        <table class="table table-striped table-hover table-bordered" id="approvedTable">
                             <thead>
                                 <tr class="success">
                                     <th scope="col" class="text-center">#</th>
@@ -30,16 +30,16 @@
                                     <th scope="col" class="text-center">Detail</th>
                                 </tr>
                             </thead>
-                            <tbody id="unapproved-data">
+                            <tbody id="approved-data">
                                 <?php $i = 1; ?>
-                                <?php foreach ($notValidated as $unapproved) : ?>
+                                <?php foreach ($validatedLogbook as $approved) : ?>
                                     <tr>
                                         <th scope="row" class="text-center"><?= $i ?></th>
-                                        <td><?= $unapproved['nama'] ?></td>
-                                        <td class="text-center">Ada <b><?= $unapproved['total'] ?></b> Logbook yang belum disetujui</td>
-                                        <td class="text-center"><?= $unapproved['periode'] ?></td>
+                                        <td><?= $approved['nama'] ?></td>
+                                        <td class="text-center">Ada <b><?= $approved['total'] ?></b> Logbook yang telah disetujui oleh atasan</td>
+                                        <td class="text-center"><?= $approved['periode'] ?></td>
                                         <td class="text-center">
-                                            <button class="btn btn-primary btn-sm" onclick="unapprovedLogbook('<?= $i; ?>')" id="<?= $i ?>" data-nama="<?= $unapproved['nama'] ?>" data-periode="<?= $unapproved['periode'] ?>"><i class="fas fa-search"></i> Detail</button>
+                                            <button class="btn btn-primary btn-sm" onclick="approvedLogbook('<?= $i; ?>')" id="<?= $i ?>" data-nama="<?= $approved['nama'] ?>" data-periode="<?= $approved['periode'] ?>"><i class="fas fa-search"></i> Detail</button>
                                         </td>
                                     </tr>
                                     <?php $i++ ?>
@@ -54,7 +54,7 @@
     <!-- END MAIN CONTENT -->
 
     <!-- Detail Modal -->
-    <div id="detailLogbookUnapproved" class="modal fade" role="dialog">
+    <div id="detailLogbookApproved" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg" style="width: 1280px;">
             <!-- Modal content-->
             <div class="modal-content">
@@ -66,7 +66,7 @@
                         <h2><i class="fa fa-cog fa-spin"></i> Loading...</h2>
                     </div>
                     <!-- Detail Pemilik Logbook -->
-                    <div class="contentUnapproved hidden">
+                    <div class="contentApproved hidden">
                         <table class="table">
                             <tbody class="logbookOwner">
                                 <tr>
@@ -91,7 +91,7 @@
                                     <th scope="col" class="text-center">Waktu Rekam</th>
                                 </tr>
                             </thead>
-                            <tbody class="logbookDetailUnapproved">
+                            <tbody class="logbookDetailApproved">
 
                             </tbody>
                         </table>
