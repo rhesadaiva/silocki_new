@@ -135,8 +135,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
                                 <button class="btn btn-primary" type="submit" id="btn_submit"><i class="fas fa-upload"></i> Upload</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
                             </div>
                         </form>
                     </div>

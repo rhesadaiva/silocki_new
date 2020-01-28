@@ -145,7 +145,7 @@ class Users extends CI_Controller
             } else {
                 // Jika gagal
                 $errorMessage = $this->upload->display_errors();
-                echo $errorMessage;
+                echo json_encode($errorMessage);
             }
         }
     }
