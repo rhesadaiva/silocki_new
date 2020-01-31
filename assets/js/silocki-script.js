@@ -18,6 +18,13 @@ function loadPengumuman() {
 	});
 }
 
+// FUNGSI RELOAD PAGE (UNTUK UPDATE KK DAN IKU)
+function doReloadPage() {
+	setTimeout(function () {
+		window.location.reload()
+	}, 1000)
+};
+
 // MENJALANKAN FUNGSI LOADPENGUMUMAN
 $(".pengumumanDashboard").ready(function () {
 	loadPengumuman();
@@ -201,6 +208,7 @@ $("#btnNewKontrak").click(function () {
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+			doReloadPage();
 		}
 	})
 })
@@ -208,27 +216,33 @@ $("#btnNewKontrak").click(function () {
 // AJAX Delete Kontrak Kinerja Pegawai
 $('button[name="btnDeleteKontrak"]').click(function () {
 	let idKontrak = $(this).attr('kontrak-id');
+	let alertDeleteKontrak = confirm("Apakah anda ingin menghapus Kontrak Kinerja ini?")
 
-	$('.btnConfirmDeleteKontrak').click(function () {
-
+	if (alertDeleteKontrak) {
+		// Jalankan AJAX
 		$.ajax({
 			type: "POST",
 			url: 'delete-kontrak/' + idKontrak,
 			dataType: "JSON",
-			beforeSend: function () {
-				$('.btnConfirmDeleteKontrak').html('<i class="fa fa-cog fa-spin"></i> Proses hapus..').attr("disabled", "disabled");
+			beforeSend: function (data) {
+				toastr["info"]("Sedang proses menghapus data", "Menghapus data", {
+					"positionClass": "toast-top-right",
+					"showDuration": "300",
+					"hideDuration": "500",
+					"timeOut": "3000",
+				})
 			},
 			success: function () {
-				$('#deleteKontrakModal').modal('hide');
 				toastr["success"]("Kontrak Kinerja berhasil dihapus!", "Sukses", {
 					positionClass: "toast-top-right",
 					showDuration: "200",
 					hideDuration: "500",
 					timeOut: "3000",
 				});
+				doReloadPage();
 			}
 		})
-	})
+	}
 })
 
 // AJAX Get Kontrak By ID
@@ -286,15 +300,25 @@ $('.btnConfirmEditKontrak').click(function () {
 			$('.btnConfirmEditKontrak').html('<i class="fa fa-cog fa-spin"></i> Proses Update..').attr("disabled", "disabled");
 		},
 		success: function (data) {
-			$('#editUserModal').modal('hide');
+			$('#editKontrakModal').modal('hide');
 			toastr["success"]("Kontrak Kinerja berhasil diubah!", "Sukses", {
 				positionClass: "toast-top-right",
 				showDuration: "200",
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+			doReloadPage();
 		}
 	})
+})
+
+// Mengosongkan form edit Kontrak Kinerja pada saat Modal Edit Kontrak Kinerja ditutup
+$('#editKontrakModal').on('hidden.bs.modal', function () {
+	$('#idKontrakKinerja').val('');
+	$('#editSeriKontrakKinerja').selectpicker('val', 'Pertama');
+	$('#editNomorKontrakKinerja').val('');
+	$('#editTanggalAwalKontrak').val('');
+	$('#editTanggalAkhirKontrak').val('');
 })
 
 // DataTable IKU
@@ -331,6 +355,7 @@ $('#btnNewIKU').click(function () {
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+			doReloadPage();
 		}
 	})
 })
@@ -356,6 +381,7 @@ $('button[name="btnDeleteIKU"]').click(function () {
 					hideDuration: "500",
 					timeOut: "3000",
 				});
+				doReloadPage();
 			}
 		})
 	})
@@ -454,6 +480,7 @@ $('.btnConfirmEditIKU').click(function () {
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+			doReloadPage();
 		}
 	})
 })
@@ -555,8 +582,26 @@ $('.btnConfirmAddendumIKU').click(function () {
 			// Kembalikan ke tombol default
 			$('#btnConfirmEditIKU').removeClass('hidden');
 			$('#btnConfirmAddendumIKU').addClass('hidden');
+			doReloadPage();
 		}
 	})
+})
+
+$('#editIKUModal').on('hidden.bs.modal', function () {
+	$('#idIKU').val('');
+	$('#editKodeIKU').val('');
+	$('#editNamaIKU').val('');
+	$('#editFormulaIKU').val('');
+	$('#editTargetIKU').val('');
+	$('#editNilaiTertinggiIKU').val('');
+	$('#editSatuanPengukuranIKU').val('');
+	$('#editAspekTargetIKU').selectpicker('val', 'Kuantitas');
+	$('#editPenanggungJawabIKU').val('');
+	$('#editPenyediaDataIKU').val('');
+	$('#editSumberDataIKU').val('');
+	$('#editKonsolidasiPeriodeIKU').selectpicker('val', 'Sum');
+	$('#editPeriodePelaporanIKU').selectpicker('val', 'Bulanan');
+	$('#editKonversi120IKU').selectpicker('val', 'Tidak');
 })
 
 // Buat Objek Promise load IKU
@@ -1521,7 +1566,7 @@ $('#updatePasswordBtn').click(function (e) {
 })
 
 // Kosongkan form dan alert apabila modal ganti password ditutup
-$('#modalChangePassword').on('hidden-bs-modal', function () {
+$('#modalChangePassword').on('hidden.bs.modal', function () {
 	$('#passwordlama').val('');
 	$('#passwordbaru1').val('');
 	$('#passwordbaru2').val('');

@@ -40,7 +40,7 @@ class Pelaksana_model extends CI_Model
                                     `logbook`.`id_logbook`
                                     FROM `kontrakkinerja` RIGHT JOIN `user` USING (`nip`) 
                                     JOIN `indikatorkinerjautama` USING (`id_kontrak`)
-                                    JOIN `logbook` USING (`id_iku`) WHERE `is_sent` = 1 AND `user`.nip = $role ");
+                                    JOIN `logbook` USING (`id_iku`) WHERE `is_sent` = 1 AND `user`.nip = '$role' ");
         if ($query->num_rows() > 0) {
             return $query->num_rows();
         } else {

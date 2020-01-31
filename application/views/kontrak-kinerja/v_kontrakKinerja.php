@@ -26,13 +26,13 @@
                                 <th scope="col" class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="usersData">
+                        <tbody>
                             <?php if ($role == 1) : ?>
                                 <?php $i = 1; ?>
                                 <?php foreach ($kontrakKinerja as $kontrak) : ?>
                                     <tr>
                                         <th scope="row"><?= $i; ?></th>
-                                        <td><?= $kontrak['kontrakkinerjake'] ?></td>
+                                        <td class="text-center"><?= $kontrak['kontrakkinerjake'] ?></td>
                                         <?php if ($user['role_id'] == 1) : ?>
                                             <td><?= $kontrak['nama'] ?></td>
                                         <?php endif; ?>
@@ -41,7 +41,7 @@
                                         <td><?= $kontrak['validasi_ket'] ?></td>
                                         <td>
                                             <?php if ($kontrak['is_validated'] == 1) : ?>
-                                                <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editUserModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                                <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
                                                 <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
                                             <?php else : ?>
                                                 <button type="button" class="btn btn-warning"><i class="fas fa-fw fa-lock"></i> Kontrak Kinerja Terkunci</button>
@@ -56,7 +56,7 @@
                                 <?php foreach ($kontrakKinerja as $kontrak) : ?>
                                     <tr>
                                         <th scope="row"><?= $i; ?></th>
-                                        <td><?= $kontrak['kontrakkinerjake'] ?></td>
+                                        <td class="text-center"><?= $kontrak['kontrakkinerjake'] ?></td>
                                         <?php if ($user['role_id'] == 1) : ?>
                                             <td><?= $kontrak['nama'] ?></td>
                                         <?php endif; ?>
@@ -65,7 +65,7 @@
                                         <td><?= $kontrak['validasi_ket'] ?></td>
                                         <td>
                                             <?php if ($kontrak['is_validated'] == 1) : ?>
-                                                <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editUserModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                                <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
                                                 <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
                                             <?php else : ?>
                                                 <button type="button" class="btn btn-warning"><i class="fas fa-fw fa-lock"></i> Kontrak Kinerja Terkunci</button>
@@ -74,11 +74,11 @@
                                     </tr>
                                     <?php $i++; ?>
                                 <?php endforeach; ?>
-                            <?php elseif ($getKontrak < 2 && $role > 1) : ?>
+                            <?php elseif ($getKontrak == 1 && $role > 1) : ?>
                                 <?php $i = 1; ?>
                                 <tr>
                                     <th scope="row"><?= $i; ?></th>
-                                    <td><?= $kontrakKinerja['kontrakkinerjake'] ?></td>
+                                    <td class="text-center"><?= $kontrakKinerja['kontrakkinerjake'] ?></td>
                                     <?php if ($user['role_id'] == 1) : ?>
                                         <td><?= $kontrakKinerja['nama'] ?></td>
                                     <?php endif; ?>
@@ -87,12 +87,24 @@
                                     <td><?= $kontrakKinerja['validasi_ket'] ?></td>
                                     <td>
                                         <?php if ($kontrakKinerja['is_validated'] == 1) : ?>
-                                            <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editUserModal" kontrak-id="<?= $kontrakKinerja['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
+                                            <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editKontrakModal" kontrak-id="<?= $kontrakKinerja['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
                                             <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrakKinerja['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
                                         <?php else : ?>
                                             <button type="button" class="btn btn-warning"><i class="fas fa-fw fa-lock"></i> Kontrak Kinerja Terkunci</button>
                                         <?php endif; ?>
                                     </td>
+                                </tr>
+                            <?php elseif ($getKontrak < 1) : ?>
+                                <tr>
+                                    <th scope="row"></th>
+                                    <td></td>
+                                    <?php if ($user['role_id'] == 1) : ?>
+                                        <td></td>
+                                    <?php endif; ?>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -155,32 +167,15 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
-                                <button type="button" class="btn btn-success hidden" id="btnNewKontrak"><i class="fa fa-save"></i> Simpan Kontrak</button>
+                                <button type="button" class="btn btn-success hidden" id="btnNewKontrak"><i class="fa fa-save"></i> Simpan Kontrak Kinerja</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- MODAL CONFIRM DELETE KONTRAK -->
-        <div class="modal fade" id="deleteKontrakModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title text-primary" id="exampleModalLongTitle"><b>Konfirmasi hapus kontrak kinerja</b></h3>
-                    </div>
-                    <div class="modal-body">
-                        Apakah anda yakin ingin menghapus kontrak kinerja ini?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
-                        <button class="btn btn-danger btnConfirmDeleteKontrak"><i class="fas fa-fw fa-trash"></i> Hapus Kontrak</button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- MODAL EDIT KONTRAK -->
-        <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="editKontrakModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
