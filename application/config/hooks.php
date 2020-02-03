@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -11,3 +11,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	https://codeigniter.com/user_guide/general/hooks.html
 |
 */
+
+// Hooks Maintenance Mode
+$hook['pre_system'][] = array(
+    'class'    => 'maintenance_hook',
+    'function' => 'offline_check',
+    'filename' => 'maintenance_hook.php',
+    'filepath' => 'hooks'
+);
