@@ -1,5 +1,8 @@
 <!doctype html>
 <title>Site Maintenance</title>
+<?php
+date_default_timezone_set('Asia/Jakarta');
+?>
 <style>
     body {
         text-align: center;
