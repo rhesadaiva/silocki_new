@@ -68,7 +68,7 @@ class Logbook extends CI_Controller
 
         $data['cetaklogbook'] = $this->Logbook_model->printLogbook($idlogbook);
 
-        $this->load->library('pdf');
+        $this->load->library('Pdf');
 
         $foliopaper = array(0, 0, 612.00, 936.00);
         $this->pdf->setPaper($foliopaper, 'landscape');
