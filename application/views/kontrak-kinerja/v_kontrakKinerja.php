@@ -36,10 +36,10 @@
                                         <?php if ($user['role_id'] == 1) : ?>
                                             <td><?= $kontrak['nama'] ?></td>
                                         <?php endif; ?>
-                                        <td><?= $kontrak['nomorkk'] ?></td>
-                                        <td><?= indonesian_date3($kontrak['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrak['tanggalselesai']); ?></td>
+                                        <td class="text-center"><?= $kontrak['nomorkk'] ?></td>
+                                        <td class="text-center"><?= indonesian_date3($kontrak['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrak['tanggalselesai']); ?></td>
                                         <td><?= $kontrak['validasi_ket'] ?></td>
-                                        <td>
+                                        <td class="text-center">
                                             <?php if ($kontrak['is_validated'] == 1) : ?>
                                                 <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
                                                 <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
@@ -60,10 +60,10 @@
                                         <?php if ($user['role_id'] == 1) : ?>
                                             <td><?= $kontrak['nama'] ?></td>
                                         <?php endif; ?>
-                                        <td><?= $kontrak['nomorkk'] ?></td>
-                                        <td><?= indonesian_date3($kontrak['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrak['tanggalselesai']); ?></td>
-                                        <td><?= $kontrak['validasi_ket'] ?></td>
-                                        <td>
+                                        <td class="text-center"><?= $kontrak['nomorkk'] ?></td>
+                                        <td class="text-center"><?= indonesian_date3($kontrak['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrak['tanggalselesai']); ?></td>
+                                        <td class="text-center"><?= $kontrak['validasi_ket'] ?></td>
+                                        <td class="text-center">
                                             <?php if ($kontrak['is_validated'] == 1) : ?>
                                                 <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
                                                 <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrak['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
@@ -82,10 +82,10 @@
                                     <?php if ($user['role_id'] == 1) : ?>
                                         <td><?= $kontrakKinerja['nama'] ?></td>
                                     <?php endif; ?>
-                                    <td><?= $kontrakKinerja['nomorkk'] ?></td>
-                                    <td><?= indonesian_date3($kontrakKinerja['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrakKinerja['tanggalselesai']); ?></td>
-                                    <td><?= $kontrakKinerja['validasi_ket'] ?></td>
-                                    <td>
+                                    <td class="text-center"><?= $kontrakKinerja['nomorkk'] ?></td>
+                                    <td class="text-center"><?= indonesian_date3($kontrakKinerja['tanggalmulai']); ?> s.d <?= indonesian_date3($kontrakKinerja['tanggalselesai']); ?></td>
+                                    <td class="text-center"><?= $kontrakKinerja['validasi_ket'] ?></td>
+                                    <td class="text-center">
                                         <?php if ($kontrakKinerja['is_validated'] == 1) : ?>
                                             <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditKontrak" id="btnEditKontrak" data-toggle="modal" data-target="#editKontrakModal" kontrak-id="<?= $kontrakKinerja['id_kontrak'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
                                             <button class="btn btn-danger btn-xs btnDeleteKontrak" data-toggle="modal" data-target="#deleteKontrakModal" kontrak-id="<?= $kontrakKinerja['id_kontrak'] ?>" name="btnDeleteKontrak"><i class=" fas fa-fw fa-trash"></i> Hapus Data</button>
