@@ -49,8 +49,8 @@ class Indikator_model extends CI_Model
     {
         $role = $this->session->userdata('nip');
         $query =  $this->db->query("SELECT `kontrakkinerja`.id_kontrak, `kontrakkinerja`.nomorkk, `indikatorkinerjautama`.*
-                                    FROM `kontrakkinerja` JOIN `indikatorkinerjautama` using (id_kontrak) 
-                                    where `indikatorkinerjautama`.nip = $role");
+                                    FROM `kontrakkinerja` JOIN `indikatorkinerjautama` USING (id_kontrak) 
+                                    WHERE `indikatorkinerjautama`.nip = '$role'");
         return $query->result_array();
     }
 
