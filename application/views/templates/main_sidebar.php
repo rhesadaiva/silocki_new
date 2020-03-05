@@ -37,8 +37,8 @@
 						<div id="config" class="collapse">
 							<ul class="nav">
 								<li><a href="manajemen-user" class="">Manajemen User</a></li>
-								<li><a href="#" class="">Konfigurasi Aplikasi</a></li>
-								<li><a href="#" class="">Log Activity</a></li>
+								<li><a href="config" class="">Konfigurasi Aplikasi</a></li>
+								<li><a href="log-activity" class="">Log Activity</a></li>
 							</ul>
 						</div>
 					</li>
