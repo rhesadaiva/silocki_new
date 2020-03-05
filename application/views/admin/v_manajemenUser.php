@@ -34,7 +34,7 @@
                                     <td><?= $user['nip'] ?></td>
                                     <td><?= $user['pangkat'] ?></td>
                                     <td><?= $user['level'] ?></td>
-                                    <td><?= $user['seksi'] ?></td>
+                                    <td><?= $user['seksi_subseksi'] ?></td>
                                     <td><?= $user['nama_pejabat'] ?></td>
                                     <td>
                                         <button class="btn btn-primary btn-xs btnEditPegawai" name="btnEditPegawai" id="btnEditPegawaiModal" data-toggle="modal" data-target="#editUserModal" user-id="<?= $user['id'] ?>"><i class="fas fa-fw fa-edit"></i> Edit Data</button>
@@ -48,6 +48,7 @@
                 </div>
             </div>
         </div>
+
         <!-- MODAL ADD USER -->
         <div class="modal fade" id="newUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
@@ -94,7 +95,7 @@
                                 <div class="col-sm-8">
                                     <select class="selectpicker" name="organisasiPegawai" data-live-search="true" data-width="68%" id="organisasiPegawai">
                                         <?php foreach ($seksi as $unor) : ?>
-                                            <option value="<?= $unor['seksi/subseksi'] ?>"><?= $unor['seksi/subseksi'] ?></option>
+                                            <option value="<?= $unor['id_seksi_subseksi'] ?>"><?= $unor['seksi_subseksi'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -127,6 +128,7 @@
                 </div>
             </div>
         </div>
+
         <!-- MODAL CONFIRM DELETE USER -->
         <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -144,17 +146,17 @@
                 </div>
             </div>
         </div>
+
         <!-- MODAL EDIT USER -->
         <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title text-primary" id="myModalLabel"><b>Ubah Data Pegawai</b></h4>
-                        <input type="hidden" readonly name="" id="idPegawai">
                     </div>
                     <div class="modal-body">
                         <form class="form-horizontal" action="" id="editPegawaiForm" method="POST">
-                            <input type="hidden" name="" id="idPegawai">
+                            <input type="hidden" readonly name="idPegawai" id="idPegawai">
                             <div class="form-group">
                                 <label class="control-label col-sm-3" for="editNamaPegawai">Nama Pegawai</label>
                                 <div class="col-sm-8">
@@ -192,7 +194,7 @@
                                 <div class="col-sm-8">
                                     <select class="selectpicker" name="editOrganisasiPegawai" data-live-search="true" data-width="68%" id="editOrganisasiPegawai">
                                         <?php foreach ($seksi as $unor) : ?>
-                                            <option value="<?= $unor['seksi/subseksi'] ?>"><?= $unor['seksi/subseksi'] ?></option>
+                                            <option value="<?= $unor['id_seksi_subseksi'] ?>"><?= $unor['seksi_subseksi'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
