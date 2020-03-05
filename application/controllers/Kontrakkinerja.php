@@ -17,24 +17,68 @@ class Kontrakkinerja extends CI_Controller
         $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
         $data['role'] = $this->session->userdata('role_id');
 
-        // Ambil Jumlah Kontrak Kinerja dalam angka
-        $data['getKontrak'] = $this->Kontrak_model->getKontrakByNIP()->num_rows();
+        // Ambil konfigurasi aplikasi
+        $config = $this->Global_model->getConfigData();
 
-        // Masukkan array multidimensi ke variabel
-        $getKontrak = $data['getKontrak'];
+        // Ambil status konfigurasi tahun berjalan
+        // [0] merupakan urutan pertama pada database konfigurasi aplikasi yaitu is_active_year (index array pertama)
+        $state_config_year = $config[0]['config_is_active'];
 
-        // Jika login = admin, load semua Kontrak Kinerja
-        if ($data['role'] == 1) {
-            $data['kontrakKinerja'] = $this->Kontrak_model->getKontrak()->result_array();
-            $data['userList'] = $this->Global_model->getUserList();
-            // Jika bukan admin
-        } else {
-            // Jika jumlah Kontrak Kinerja > 1 tampilkan ke dalam result_array
-            if ($getKontrak > 1) {
-                $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIP()->result_array();
-                // Jika hanya 1, tampilkan ke dalam row_array()
+        // Jika Konfigurasi Tahun Berjalan diaktifkan (is_active = 1)
+        if ($state_config_year == 1) {
+
+            // Ambil nilai tahun berjalan dan tetapkan dalam variabel untuk filter pada model
+            $activeYear = $config[0]['config_value'];
+
+            // Ambil Jumlah Kontrak Kinerja dalam angka
+            $data['getKontrak'] = $this->Kontrak_model->getKontrakByNIPYear($activeYear)->num_rows();
+
+            // Masukkan array multidimensi ke variabel
+            $getKontrak = $data['getKontrak'];
+
+            // Jika login = admin, load semua Kontrak Kinerja
+            if ($data['role'] == 1) {
+                $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByYear($activeYear)->result_array();
+                $data['userList'] = $this->Global_model->getUserList();
+
+                // Jika bukan admin
             } else {
-                $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIP()->row_array();
+
+                // Jika jumlah Kontrak Kinerja > 1 tampilkan ke dalam result_array
+                if ($getKontrak > 1) {
+                    $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIPYear($activeYear)->result_array();
+
+                    // Jika hanya 1, tampilkan ke dalam row_array()
+                } else {
+                    $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIPYear($activeYear)->row_array();
+                }
+            }
+            // End of Jika Konfigurasi Tahun Berjalan diaktifkan
+
+            // Jika Konfigurasi Tahun Berjalan dinonaktifkan
+        } else {
+            // Ambil Jumlah Kontrak Kinerja dalam angka
+            $data['getKontrak'] = $this->Kontrak_model->getKontrakByNIP()->num_rows();
+
+            // Masukkan array multidimensi ke variabel
+            $getKontrak = $data['getKontrak'];
+
+            // Jika login = admin, load semua Kontrak Kinerja
+            if ($data['role'] == 1) {
+                $data['kontrakKinerja'] = $this->Kontrak_model->getKontrak()->result_array();
+                $data['userList'] = $this->Global_model->getUserList();
+
+                // Jika bukan admin
+            } else {
+
+                // Jika jumlah Kontrak Kinerja > 1 tampilkan ke dalam result_array
+                if ($getKontrak > 1) {
+                    $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIP()->result_array();
+
+                    // Jika hanya 1, tampilkan ke dalam row_array()
+                } else {
+                    $data['kontrakKinerja'] = $this->Kontrak_model->getKontrakByNIP()->row_array();
+                }
             }
         }
 

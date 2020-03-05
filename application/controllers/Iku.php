@@ -25,26 +25,71 @@ class Iku extends CI_Controller
         $data['refBulanLogbook'] = $this->Indikator_model->getBulan();
         $data['role'] = $this->session->userdata('role_id');
 
-        // Ambil Jumlah Kontrak Kinerja dalam angka
-        $data['getKontrak'] = $this->Indikator_model->getKontrakByNIP()->num_rows();
+        // Ambil konfigurasi aplikasi
+        $config = $this->Global_model->getConfigData();
 
-        // Masukkan array multidimensi ke variabel
-        $getKontrak = $data['getKontrak'];
+        // Ambil status konfigurasi tahun berjalan
+        // [0] merupakan urutan pertama pada database konfigurasi aplikasi yaitu is_active_year (index array pertama)
+        $state_config_year = $config[0]['config_is_active'];
 
-        // Jika Role = Admin, ambil semua data Kontrak Kinerja dan IKU
-        if ($data['role'] == 1) {
-            $data['kontrakKinerjaAdmin'] = $this->Indikator_model->getKontrak();
-            $data['listIKU'] = $this->Indikator_model->getIKU();
-        } else {
-            if ($getKontrak > 1) {
-                // Jika jumlah Kontrak Kinerja >= 1, tampilkan dalam bentuk result_array
-                $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP()->result_array();
+        // Jika Konfigurasi Tahun Berjalan diaktifkan (is_active = 1)
+        if ($state_config_year == 1) {
+
+            // Ambil nilai tahun berjalan dan tetapkan dalam variabel untuk filter pada model
+            $activeYear = $config[0]['config_value'];
+
+            // Ambil Jumlah Kontrak Kinerja dalam angka
+            $data['getKontrak'] = $this->Indikator_model->getKontrakByNIPYear($activeYear)->num_rows();
+
+            // Masukkan array multidimensi ke variabel
+            $getKontrak = $data['getKontrak'];
+
+            // Jika Role = Admin, ambil semua data Kontrak Kinerja dan IKU
+            if ($data['role'] == 1) {
+                $data['kontrakKinerjaAdmin'] = $this->Indikator_model->getKontrakByYear($activeYear);
+                $data['listIKU'] = $this->Indikator_model->getIKUByYear($activeYear);
             } else {
-                // Jika hanya 1, tampilkan ke dalam row_array()
-                $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP()->row_array();
+
+                // Ambil data IKU dengan parameter NIP
+                $data['listIKU'] = $this->Indikator_model->getIKUByNIPYear($activeYear);
+
+                if ($getKontrak > 1) {
+                    // Jika jumlah Kontrak Kinerja >= 1, tampilkan dalam bentuk result_array
+                    $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIPYear($activeYear)->result_array();
+                } else {
+                    // Jika hanya 1, tampilkan ke dalam row_array()
+                    $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIPYear($activeYear)->row_array();
+                }
             }
-            $data['listIKU'] = $this->Indikator_model->getIKUbyNIP();
+            // End of Ambil data IKU berdasarkan Tahun Berjalan
+
+            // Apabila Konfigurasi Tahun Berjalan dinonaktifkan
+        } else {
+            // Ambil Jumlah Kontrak Kinerja dalam angka
+            $data['getKontrak'] = $this->Indikator_model->getKontrakByNIP()->num_rows();
+
+            // Masukkan array multidimensi ke variabel
+            $getKontrak = $data['getKontrak'];
+
+            // Jika Role = Admin, ambil semua data Kontrak Kinerja dan IKU
+            if ($data['role'] == 1) {
+                $data['kontrakKinerjaAdmin'] = $this->Indikator_model->getKontrak();
+                $data['listIKU'] = $this->Indikator_model->getIKU();
+            } else {
+
+                // Ambil data IKU dengan parameter NIP
+                $data['listIKU'] = $this->Indikator_model->getIKUbyNIP();
+
+                if ($getKontrak > 1) {
+                    // Jika jumlah Kontrak Kinerja >= 1, tampilkan dalam bentuk result_array
+                    $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP()->result_array();
+                } else {
+                    // Jika hanya 1, tampilkan ke dalam row_array()
+                    $data['kontrakKinerja'] = $this->Indikator_model->getKontrakByNIP()->row_array();
+                }
+            }
         }
+
         $this->load->view('templates/main_header', $data);
         $this->load->view('templates/main_sidebar');
         $this->load->view('iku/v_iku', $data);
