@@ -61,6 +61,11 @@ $route['unapproved'] = 'admin/unapprovedLogbook';
 $route['f-unapproved']['get'] = 'admin/filteredUnapproved';
 $route['approved'] = 'admin/approvedLogbook';
 $route['f-approved']['get'] = 'admin/filteredApproved';
+$route['log-activity'] = 'admin/logActivity';
+$route['get-log-activity'] = 'admin/getLogActivity';
+$route['config'] = 'admin/configMenu';
+$route['config-detail']['get'] = 'admin/getConfigDetail';
+$route['update-config'] = 'admin/updateConfigDetail';
 
 // Route Change Password
 $route['change-password'] = 'users/validateChangePass';
