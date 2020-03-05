@@ -1,4 +1,7 @@
 <?php
+
+use phpDocumentor\Reflection\Types\This;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Admin extends CI_Controller
@@ -208,15 +211,51 @@ class Admin extends CI_Controller
         echo json_encode($getLogbookUnapproved);
     }
 
-    // Konfigurasi Aplikasi
-    public function konfigurasiAplikasi()
+    // MENU LOG AKTIFITAS
+    public function logActivity()
     {
-        $data['title'] = 'Home';
+        $data['title'] = 'Log Aktivitas';
         $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
 
         $this->load->view('templates/main_header', $data);
         $this->load->view('templates/main_sidebar');
-        $this->load->view('admin/index', $data);
+        $this->load->view('admin/v_logActivity', $data);
         $this->load->view('templates/main_footer');
+    }
+
+    // GET LOG ACTIVITY
+    public function getLogActivity()
+    {
+        $this->load->library("datatables");
+        $this->datatables->select("*");
+        $this->datatables->from("tabel_log");
+        return print_r($this->datatables->generate());
+    }
+
+    // MENU KONFIGURASI
+    public function configMenu()
+    {
+        $data['title'] = 'Konfigurasi Aplikasi';
+        $data['user'] = $this->Global_model->getLoggedUser($this->session->userdata('nip'));
+        $data['config'] = $this->Global_model->getConfigData();
+
+        $this->load->view('templates/main_header', $data);
+        $this->load->view('templates/main_sidebar');
+        $this->load->view('admin/v_config', $data);
+        $this->load->view('templates/main_footer');
+    }
+
+    // AMBIL DETAIL KONFIGURASI
+    public function getConfigDetail()
+    {
+        $idConfig = $this->input->get('id');
+        $configData = $this->Global_model->getConfigByID($idConfig);
+        echo json_encode($configData);
+    }
+
+    public function updateConfigDetail()
+    {
+        $updateConfig = $this->Global_model->editConfig();
+        echo json_encode($updateConfig);
     }
 }
