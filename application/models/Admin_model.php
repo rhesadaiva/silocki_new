@@ -7,11 +7,17 @@ class Admin_model extends CI_Model
     //Ambil data user
     public function getAllUsers()
     {
-        $query =  $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, 
-                                    `user`.`seksi`, `user`.`pejabat_id`,`user`.`telegram`,
-                                    `user_role`.* , `pejabat`.`pejabat_id`, `pejabat`.`nama_pejabat`
-                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role` JOIN `pejabat` 
-                                    ON `user`.`pejabat_id` = `pejabat`.`pejabat_id` ORDER BY `user`.`role_id` ASC");
+        $this->db->select('user.id, user.nama, user.nip, user.pangkat,user.role_id, user.seksi, user.pejabat_id, user.telegram, 
+                           user_role.*, 
+                           pejabat.pejabat_id, pejabat.nama_pejabat,
+                           seksi_subseksi.*');
+        $this->db->from('user');
+        $this->db->join('user_role', 'user.role_id = user_role.id_role');
+        $this->db->join('pejabat', 'user.pejabat_id = pejabat.pejabat_id');
+        $this->db->join('seksi_subseksi', 'user.seksi = seksi_subseksi.id_seksi_subseksi');
+        $this->db->order_by('user.role_id', 'ASC');
+
+        $query = $this->db->get();
 
         return $query->result_array();
     }
@@ -37,19 +43,22 @@ class Admin_model extends CI_Model
     //Ambil data seksi
     public function getSeksi()
     {
-        return $this->db->get('seksi/subseksi')->result_array();
+        return $this->db->get('seksi_subseksi')->result_array();
     }
 
     //Ambil data user by ID
     public function getUserByID($id)
     {
-        $query = $this->db->query("SELECT `user`.id, `user`.nama, `user`.nip, `user`.pangkat, `user`.`role_id`, 
-                                    `user`.`seksi`, `user`.`pejabat_id`,
-                                    `user`.`telegram`, `user_role`.*, `pejabat`.`pejabat_id`, `pejabat`.`nama_pejabat`
-                                    FROM `user` JOIN `user_role` ON `user`.`role_id` = `user_role`.`id_role`
-                                    JOIN `pejabat` ON `user`.`pejabat_id` = `pejabat`.`pejabat_id`
-                                    WHERE `user`.`id` = '$id'");
+        $this->db->select('user.id, user.nama, user.nip, user.pangkat, user.role_id, user.seksi, user.pejabat_id, user.telegram,
+                            user_role.*, pejabat.pejabat_id, pejabat.nama_pejabat, 
+                            seksi_subseksi.*');
+        $this->db->from('user');
+        $this->db->join('user_role', 'user.role_id = user_role.id_role');
+        $this->db->join('pejabat', 'user.pejabat_id = pejabat.pejabat_id');
+        $this->db->join('seksi_subseksi', 'user.seksi = seksi_subseksi.id_seksi_subseksi');
+        $this->db->where('user.id', $id);
 
+        $query = $this->db->get();
         return $query->row_array();
     }
 
@@ -239,6 +248,7 @@ class Admin_model extends CI_Model
         return $query->result_array();
     }
 
+    // Ambil semua data Logbook
     public function getAllLogbook()
     {
         return $this->db->get('logbook')->result_array();

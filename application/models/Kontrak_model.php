@@ -7,30 +7,71 @@ class Kontrak_model extends CI_Model
     //Ambil data user
     public function getUserList()
     {
-        $query = $this->db->query('SELECT `nama`, `nip` FROM `user`');
+        $this->db->select('nama,nip');
+        $this->db->from('user');
+
+        $query = $this->db->get();
         return $query->result_array();
     }
 
     //Ambil semua KK (khusus admin)
     public function getKontrak()
     {
-        $query = $this->db->query('SELECT `kontrakkinerja`.*, `user`.nama, `ref_validasiKK`.* 
-                                    FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
-                                    WHERE `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` 
-                                    ORDER BY `kontrakkinerja`.`is_validated` ASC');
+        $this->db->select('kontrakkinerja.*, user.nama, ref_validasiKK.*');
+        $this->db->from('kontrakkinerja');
+        $this->db->join('user', 'user.nip = kontrakkinerja.nip');
+        $this->db->join('ref_validasiKK', 'kontrakkinerja.is_validated = ref_validasiKK.validasi_id');
+        $this->db->order_by('kontrakkinerja.is_validated', "ASC");
+
+        $query = $this->db->get();
+        return $query;
+    }
+
+    // Ambil kontrak berdasarkan tahun (apabila Konfigurasi Tahun berjalan  diaktifkan)
+    public function getKontrakByYear($activeYear)
+    {
+        $this->db->select('kontrakkinerja.*, user.nama, ref_validasiKK.*');
+        $this->db->from('kontrakkinerja');
+        $this->db->join('user', 'user.nip = kontrakkinerja.nip');
+        $this->db->join('ref_validasiKK', 'kontrakkinerja.is_validated = ref_validasiKK.validasi_id');
+        $this->db->where('kontrakkinerja.tahun_kontrak', $activeYear);
+        $this->db->order_by('kontrakkinerja.is_validated', "ASC");
+
+        $query = $this->db->get();
         return $query;
     }
 
     //Ambil KK berdasarkan NIP login
     public function getKontrakByNIP()
     {
-        $role = $this->session->userdata('nip');
-        $query = $this->db->query("SELECT `kontrakkinerja`.*, `user`.nama, `ref_validasiKK`.* 
-                                    FROM `kontrakkinerja` JOIN `user` USING(nip) JOIN `ref_validasiKK` 
-                                    ON `kontrakkinerja`.`is_validated` = `ref_validasiKK`.`validasi_id` WHERE nip='$role' ");
+        $nip = $this->session->userdata('nip');
 
+        $this->db->select('kontrakkinerja.*, user.nama, ref_validasiKK.*');
+        $this->db->from('kontrakkinerja');
+        $this->db->join('user', 'user.nip = kontrakkinerja.nip');
+        $this->db->join('ref_validasiKK', 'kontrakkinerja.is_validated = ref_validasiKK.validasi_id');
+        $this->db->where('kontrakkinerja.nip', $nip);
+
+        $query = $this->db->get();
         return $query;
     }
+
+    // Ambil KK berdasarkan NIP Login dan tahun berjalan (jika setting tahun berjalan diaktifkan)
+    public function getKontrakByNIPYear($activeYear)
+    {
+        $nip = $this->session->userdata('nip');
+
+        $this->db->select('kontrakkinerja.*, user.nama, ref_validasiKK.*');
+        $this->db->from('kontrakkinerja');
+        $this->db->join('user', 'user.nip = kontrakkinerja.nip');
+        $this->db->join('ref_validasiKK', 'kontrakkinerja.is_validated = ref_validasiKK.validasi_id');
+        $this->db->where('kontrakkinerja.nip', $nip);
+        $this->db->where('kontrakkinerja.tahun_kontrak', $activeYear);
+
+        $query = $this->db->get();
+        return $query;
+    }
+
 
     //ambil KK berdasarkan ID
     public function getKontrakbyID($id)
@@ -45,12 +86,18 @@ class Kontrak_model extends CI_Model
         $login = $this->session->userdata('nama');
 
         // Ambil Nama Atasan
-        $queryAtasan = $this->db->query("SELECT `user`.nip, `user`.pejabat_id, `pejabat`.`nama_pejabat`, `pejabat`.`pejabat_id` FROM `user` 
-                                        JOIN `pejabat` USING (pejabat_id) WHERE `user`.nip = '$role'")->row_array();
+        $this->db->select('user.nip, user.pejabat_id, pejabat.nama_pejabat, pejabat.pejabat_id');
+        $this->db->from('user');
+        $this->db->join('pejabat', 'user.pejabat_id = pejabat.pejabat_id');
+        $this->db->where('user.nip', $role);
+
+        $query = $this->db->get();
+        $queryAtasan = $query->row_array();
+
         $namaAtasan = $queryAtasan['nama_pejabat'];
 
         // Ambil ID Telegram Atasan dari nama
-        $telegramAtasan = $this->db->query("SELECT `user`.nama, `user`.telegram FROM `user` where `user`.nama = '$namaAtasan'")->row_array();
+        $telegramAtasan = $this->db->get_where('user', ['nama' => $namaAtasan])->row_array();
 
         $data = [
             'id_kontrak' => uniqid(),
@@ -63,16 +110,17 @@ class Kontrak_model extends CI_Model
             'tahun_kontrak' => date("Y")
         ];
 
+        // Insert kontrak kinerja
         $this->db->insert('kontrakkinerja', $data);
 
-        $nomorKontrak = $this->input->post('nomorKontrakKinerja');
+        // Ambil nomor KK untuk diinput ke telegram
+        $nomorKontrak = $data['nomorkk'];
 
         // Send Notif ke Telegram
         $this->_telegram(
             $telegramAtasan['telegram'],
             "Halo, *" . $telegramAtasan['nama'] . "*. \n\nBawahan anda: *" . $login . "* telah mengajukan Kontrak Kinerja dengan data sebagai berikut: \n\n*Nomor Kontrak Kinerja*: " . $nomorKontrak . "\n\nMohon diperiksa dan diberikan persetujuan apabila data sudah benar, terima kasih."
         );
-        return $data;
     }
 
     //Hapus KK 

@@ -38,6 +38,8 @@ class Logbook_model extends CI_Model
         $this->db->insert('logbook', $data);
     }
 
+    /* DEPRECATED FUNCTION
+
     // Ambil data logbook yang sudah dikirim
     public function getsentlogbook($idiku)
     {
@@ -45,6 +47,8 @@ class Logbook_model extends CI_Model
         $query = $this->db->query("SELECT indikatorkinerjautama.*, logbook.* FROM indikatorkinerjautama JOIN logbook using(id_iku) where logbook.id_iku='$idiku' and is_sent = 1");
         return $query->result_array();
     }
+
+    */
 
     // Hapus Logbook
     public function deleteLogbook($idLogbook)
@@ -83,17 +87,25 @@ class Logbook_model extends CI_Model
         $idLogbook = $this->input->post('idLogbook');
 
         // Ambil data Login
-        $role = $this->session->userdata('nip');
+        $nip = $this->session->userdata('nip');
         $login = $this->session->userdata('nama');
 
         // Ambil Nama Atasan
-        $queryAtasan = $this->db->query("SELECT `user`.nip, `user`.pejabat_id, `pejabat`.`nama_pejabat`, `pejabat`.`pejabat_id` FROM `user` 
-                                        JOIN `pejabat` USING (pejabat_id) WHERE `user`.nip = '$role'")->row_array();
+        // Ambil Nama Atasan
+        $this->db->select('user.nip, user.pejabat_id, pejabat.nama_pejabat, pejabat.pejabat_id');
+        $this->db->from('user');
+        $this->db->join('pejabat', 'user.pejabat_id = pejabat.pejabat_id');
+        $this->db->where('user.nip', $nip);
+
+        $query = $this->db->get();
+        $queryAtasan = $query->row_array();
+
         $namaAtasan = $queryAtasan['nama_pejabat'];
 
         // Ambil ID Telegram Atasan dari nama
-        $telegramAtasan = $this->db->query("SELECT `user`.nama, `user`.telegram FROM `user` WHERE `user`.nama = '$namaAtasan'")->row_array();
+        $telegramAtasan = $this->db->get_where('user', ['nama' => $namaAtasan])->row_array();
 
+        // Update status logbook menjadi terkirim
         $data = [
             'is_sent' => 1
         ];
@@ -101,9 +113,14 @@ class Logbook_model extends CI_Model
         $this->db->update('logbook', $data);
 
         // Query data IKU untuk dikirim ke Telegram
-        $dataIKU = $this->db->query("SELECT `logbook`.id_iku, `logbook`.id_logbook, `logbook`.periode, `indikatorkinerjautama`.id_iku, `indikatorkinerjautama`.kodeiku, 
-                                    `indikatorkinerjautama`.namaiku FROM `logbook` JOIN `indikatorkinerjautama` 
-                                    USING (id_iku) WHERE `logbook`.id_logbook = '$idLogbook'")->row_array();
+        $this->db->select('logbook.id_iku, logbook_id_logbook, logbook.periode, indikatorkinerjautama.id_iku, 
+                            indikatorkinerjautama.kode_iku, indikatorkinerjautama.namaiku');
+        $this->db->from('logbook');
+        $this->db->join('indikatorkinerjautama', 'logbook.id_iku = indikatorkinerjautama.id_iku');
+        $this->db->where('logbook.id_logbook', $idLogbook);
+
+        $query = $this->db->get();
+        $dataIKU = $query->row_array();
 
         // Send Notif ke Telegram
         $this->_telegram(
@@ -114,17 +131,21 @@ class Logbook_model extends CI_Model
 
     public function printLogbook($idlogbook)
     {
-        $idlogbook = $this->uri->segment(3);
+        $this->db->select('user.nama, user.nip, user.seksi, user.role_id,
+                   user_role.id_role, user_role.level,
+                   indikatorkinerjautama.id_iku, indikatorkinerjautama.nip,
+                   indikatorkinerjautama.namaiku, indikatorkinerjautama.formulaiku,
+                   indikatorkinerjautama.targetiku,
+                   logbook.periode, logbook.perhitungan, logbook.realisasibulan,
+                   logbook.realisasiterakhir, logbook.ket, logbook.tgl_approve, logbook.tahun_logbook');
 
-        $query = $this->db->query("SELECT `user`.`nama`, `user`.`nip`, `user`.`seksi`, `user`.`role_id`, `user_role`.`id_role`, `user_role`.`level`, 
-                                    `indikatorkinerjautama`.`id_iku`, `indikatorkinerjautama`.`nip`, `indikatorkinerjautama`.`namaiku`, `indikatorkinerjautama`.`formulaiku`, 
-                                    `indikatorkinerjautama`.`targetiku`, 
-                                    `logbook`.`periode`, `logbook`.`perhitungan`, `logbook`.`realisasibulan`, `logbook`.`realisasiterakhir`, 
-                                    `logbook`.`ket`, `logbook`.`tgl_approve`, `logbook`.`tahun_logbook`
-                                    FROM user JOIN user_role ON `user`.`role_id` = `user_role`.`id_role`
-                                    JOIN `indikatorkinerjautama` USING (`nip`)
-                                    JOIN `logbook` USING (id_iku) WHERE `logbook`.`id_logbook` = '$idlogbook'");
+        $this->db->from('user');
+        $this->db->join('user_role', 'user.role_id = user_role.id_role');
+        $this->db->join('indikatorkinerjautama', 'user.nip = indikatorkinerjautama.nip');
+        $this->db->join('logbook', 'logbook.id_iku = indikatorkinerjautama.id_iku');
+        $this->db->where('logbook.id_logbook', $idlogbook);
 
+        $query = $this->db->get();
         return $query->row_array();
     }
 
