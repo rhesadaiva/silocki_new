@@ -127,7 +127,7 @@ $('button[name="btnEditPegawai"]').click(function () {
 			$('#editNIPPegawai').val(data.nip);
 			$('#editPangkatPegawai').selectpicker('val', data.pangkat);
 			$('#editLevelPegawai').selectpicker('val', data.role_id);
-			$('#editOrganisasiPegawai').selectpicker('val', data.seksi);
+			$('#editOrganisasiPegawai').selectpicker('val', data.id_seksi_subseksi);
 			$('#editAtasanPegawai').selectpicker('val', data.pejabat_id);
 			$('#editTelegramPegawai').val(data.telegram);
 		}
@@ -170,6 +170,9 @@ $('.btnConfirmEditPegawai').click(function () {
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+
+			// console.log(seksiPegawai);
+			// console.log(u)
 		}
 	})
 })
@@ -735,7 +738,6 @@ $('button[name="btnCreateLogbook"]').click(function () {
 		let realisasiBulanPelaporanLogbook = $('#realisasiBulanPelaporanLogbook').val();
 		let realisasiTerakhirLogbook = $('#realisasiTerakhirLogbook').val();
 		let keteranganLogbook = $('#keteranganLogbook').val()
-		console.log(idIKU);
 
 		// Jalankan AJAX Save Logbook
 		$.ajax({
@@ -758,6 +760,7 @@ $('button[name="btnCreateLogbook"]').click(function () {
 			success: function () {
 				// Enable tombol save
 				$('.saveNewLogbook').html('<i class="fas fa-fw fa-save"></i> Simpan Logbook').removeAttr("disabled");
+
 				// Jalankan notifikasi
 				toastr["success"]("Berhasil menambahkan Logbook, data Logbook akan muncul dibawah", "Sukses", {
 					positionClass: "toast-top-right",
@@ -1589,7 +1592,93 @@ $('#uploadPhoto').submit(function (e) {
 		},
 		success: function () {
 			$('#btn_submit').html('<i class="fas fa-upload"></i> Upload').removeAttr('disabled');
-			alert('Fotor berhasil diupload!')
+			alert('Foto berhasil diupload!')
+		}
+	})
+})
+
+// DataTable Server Side untuk Log Aktifitas
+$(document).ready(function () {
+	$("#logActivityTable").DataTable({
+		"processing": true,
+		"serverSide": true,
+		"ordering": false,
+		"searching": false,
+		// "lengthChange": false,
+		"order": [],
+
+		// Load data konten table menggunakan AJAX
+		"ajax": {
+			"url": "get-log-activity",
+			"type": "POST"
+		},
+
+		// Definisikan Kolom
+		"columns": [{
+				"data": "log_user",
+				width: 70,
+			},
+			{
+				"data": "log_desc",
+				width: 100
+			},
+			{
+				"data": "log_time",
+				width: 80
+			}
+		],
+	});
+})
+
+// Ambil data konfigurasi
+$('.btnConfigData').click(function () {
+	let idConfig = $(this).attr('cnfg');
+	let url = 'config-detail?id=' + idConfig;
+
+	$.getJSON(url, function (data) {
+		if (data) {
+			$('.modal-title').append("Detail Konfigurasi: <b>" + data.config_params + "</b>")
+			$('.configId').val(data.config_id);
+			$('.configDesc').val(data.config_desc)
+			$('.configParams').val(data.config_params)
+			$('.configValue').val(data.config_value)
+			$('.configActive').val(data.config_is_active)
+		}
+	})
+})
+
+//  Update Config
+$('.saveConfig').click(function () {
+	let url = 'update-config';
+
+	let configId = $('.configId').val();
+	let configValue = $('.configValue').val();
+	let configActive = $('.configActive').val();
+
+	$.ajax({
+		url: url,
+		method: "POST",
+		dataType: "JSON",
+		data: {
+			configId: configId,
+			configValue: configValue,
+			configActive: configActive
+		},
+		beforeSend: function () {
+			$(this).html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled");
+		},
+		success: function () {
+			$(this).html('Simpan Konfigurasi').removeAttr('disabled');
+
+			toastr["success"]("Data Konfigurasi berhasil disimpan", "Konfigurasi Aplikasi", {
+				"positionClass": "toast-top-right",
+				"showDuration": "300",
+				"hideDuration": "500",
+				"timeOut": "3000",
+			});
+
+			$('.configModal').modal('hide');
+			doReloadPage();
 		}
 	})
 })
