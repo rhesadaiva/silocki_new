@@ -40,7 +40,7 @@
 												<h3 style="margin-top: -10px; margin-bottom: -10px;"><b>UNIT ORGANISASI</b></h3>
 											</div>
 											<div class="panel-body">
-												<h4><?= $user['level']; ?> pada <?= $user['seksi'] ?></h4>
+												<h4><?= $user['level']; ?> pada <?= $user['seksi_subseksi'] ?></h4>
 											</div>
 										</div>
 										<!-- Atasan -->
