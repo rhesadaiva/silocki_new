@@ -21,3 +21,7 @@
 #### 05 Maret 2020
 - **Fix:** Menghapus metode **getSentLogbook** pada **Logbook_model**  
 - **Fix:** Memperbaiki query manual pada **Logbook_model** dengan mengubah sesuai standar *Query Builder*.
+
+#### 27 Mei 2020
+- **Fix:** Memperbaiki bug double entry pada perekaman logbook  
+- **New** Merubah render form via javascript

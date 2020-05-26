@@ -14,7 +14,7 @@ class Indikator_model extends CI_Model
     //Ambil data kontrak khusus admin
     public function getKontrak()
     {
-        $this->db->select('kontrakkkinerja.id_kontrak, kontrakkinerja.nomorkk, kontrakkinerja.nip, user.nama');
+        $this->db->select('kontrakkinerja.id_kontrak, kontrakkinerja.nomorkk, kontrakkinerja.nip, user.nama');
         $this->db->from('kontrakkinerja');
         $this->db->join('user', 'kontrakkinerja.nip = user.nip');
 

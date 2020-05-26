@@ -137,4 +137,11 @@ class Iku extends CI_Controller
         helper_log("edit", "addendum IKU (id-iku = $idIKU)");
         echo json_encode($editIKU);
     }
+
+    // Fungsi ambil data referensi bulan dalam bentuk JSON
+    public function refBulan()
+    {
+        $month = $this->Indikator_model->getBulan();
+        echo json_encode($month);
+    }
 }

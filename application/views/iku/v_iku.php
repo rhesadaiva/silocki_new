@@ -341,6 +341,7 @@
                 </div>
             </div>
         </div>
+
         <!-- MODAL LOGBOOK -->
         <div class="modal fade" id="createLogbookModal" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
             <div class="modal-dialog modal-lg" role="document" style="width: 1366px;">
@@ -353,6 +354,7 @@
                             <h2><i class="fa fa-cog fa-spin"></i> Loading...</h2>
                         </div>
                         <div class="ikuLogbookContent">
+
                             <!-- PANEL MASTER IKU -->
                             <div class="panel panel-default panel-primary" id="panelIKU" style="margin-bottom: 20px;">
                                 <div class="panel-heading">
@@ -374,46 +376,8 @@
                                         <h3 class="panel-title newLogbookTitle" style="margin-top: -10px; margin-bottom: -10px;"><b>Rekam Logbook</b></h3>
                                         <h3 class="panel-title hidden editLogbookTitle" style="margin-top: -10px; margin-bottom: -10px;"><b>Edit Logbook</b></h3>
                                     </div>
-                                    <div class="panel-body">
-                                        <form class="form-horizontal" action="" method="POST" id="newLogbookForm">
-                                            <div class="form-group">
-                                                <label for="periodePelaporanLogbook" class="col-md-3 control-label">Periode Pelaporan</label>
-                                                <div class="col-md-8">
-                                                    <select class="selectpicker" name="periodePelaporanLogbook" data-live-search="true" id="periodePelaporanLogbook">
-                                                        <?php foreach ($refBulanLogbook as $bulanPelaporan) : ?>
-                                                            <option value="<?= $bulanPelaporan['Bulan_ket'] ?>"><?= $bulanPelaporan['Bulan_ket'] ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="perhitunganLogbook" class="col-md-3 control-label">Perhitungan</label>
-                                                <div class="col-md-8">
-                                                    <textarea class="form-control" id="perhitunganLogbook" rows="3" placeholder="Perhitungan Logbook"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="realisasiBulanPelaporanLogbook" class="col-md-3 control-label">Realisasi pada Bulan Pelaporan</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" id="realisasiBulanPelaporanLogbook" placeholder="Realisasi pada Bulan Pelaporan">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="realisasiTerakhirLogbook" class="col-md-3 control-label">Realisasi s.d Bulan Pelaporan</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control" id="realisasiTerakhirLogbook" placeholder="Realisasi s.d Bulan Pelaporan">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="keteranganLogbook" class="col-md-3 control-label">Keterangan</label>
-                                                <div class="col-md-8">
-                                                    <textarea class="form-control" id="keteranganLogbook" rows="3" placeholder="Keterangan Logbook"></textarea>
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-default pull-right closeFormLogbook"><i class="fas fa-undo-alt"></i> Tutup Form</button>
-                                            <button type="button" class="btn btn-info pull-right ml-2 saveNewLogbook"><i class="fas fa-fw fa-save"></i> Simpan Logbook</button>
-                                            <button type="button" class="btn btn-info pull-right ml-2 btnConfirmEditLogbook hidden"><i class="fas fa-fw fa-save"></i> Simpan Perubahan Logbook</button>
-                                        </form>
+                                    <div class="panel-body contentFormLogbook">
+
                                     </div>
                                 </div>
                             </div>
@@ -423,24 +387,9 @@
                                     <h3 class="panel-title" style="margin-top: -10px; margin-bottom: -10px;"><b>Data Logbook Pegawai</b></h3>
                                     <a type="button" class="btn btn-success btn-sm pull-right" id="btnOpenFormLogbook" style="margin-top: -15px;"><i class="fas fa-fw fa-chart-line"></i> Rekam Logbook</a>
                                 </div>
-                                <div class="panel-body">
+                                <div class="panel-body contentLogbook">
                                     <!-- Logbook -->
-                                    <table class="table table-striped table-hover table-bordered">
-                                        <thead>
-                                            <tr class="success">
-                                                <th scope="col" class="text-center">Periode Pelaporan</th>
-                                                <th scope="col" class="text-center">Perhitungan</th>
-                                                <th scope="col" class="text-center">Realisasi Periode Pelaporan</th>
-                                                <th scope="col" class="text-center">Realisasi s.d Periode Pelaporan</th>
-                                                <th scope="col" class="text-center">Keterangan</th>
-                                                <th scope="col" class="text-center" style="width:10%;">Waktu Rekam</th>
-                                                <th scope="col" class="text-center" style="width:10%;">Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="logbookData">
 
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>

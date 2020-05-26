@@ -636,7 +636,83 @@ function loadIKU(idIKU) {
 	})
 }
 
-// Buat Objek Promise load logbook
+// Load kepala tabel logbook
+function loadHeaderTable(idIKU) {
+	return new Promise(function (resolve, reject) {
+		let headerLogbook = ` <table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr class="success">
+				<th scope="col" class="text-center">Periode Pelaporan</th>
+				<th scope="col" class="text-center">Perhitungan</th>
+				<th scope="col" class="text-center">Realisasi Periode Pelaporan</th>
+				<th scope="col" class="text-center">Realisasi s.d Periode Pelaporan</th>
+				<th scope="col" class="text-center">Keterangan</th>
+				<th scope="col" class="text-center" style="width:10%;">Waktu Rekam</th>
+				<th scope="col" class="text-center" style="width:10%;">Aksi</th>
+			</tr>
+		</thead>
+		<tbody class="logbookData` + idIKU + `"></tbody></table>`
+
+		resolve($('.contentLogbook').html(headerLogbook));
+	})
+}
+
+// Function membuat form pengisian logbook
+function renderFormNewLogbook(idIKU) {
+
+	let form = ` <form class="form-horizontal" action="" method="POST" id="newLogbookForm">
+						<div class="form-group">
+							<label for="periodePelaporanLogbook" class="col-md-3 control-label">Periode Pelaporan</label>
+							<div class="col-md-8">
+								<select class="" name="periodePelaporanLogbook" data-live-search="true" id="periodePelaporanLogbook">
+								<option value="Januari">Januari</option>	
+								<option value="Februari">Februari</option>	
+								<option value="Maret">Maret</option>	
+								<option value="April">April</option>	
+								<option value="Mei">Mei</option>	
+								<option value="Juni">Juni</option>	
+								<option value="Juli">Juli</option>	
+								<option value="Agustus">Agustus</option>	
+								<option value="September">September</option>	
+								<option value="Oktober">Oktober</option>	
+								<option value="November">November</option>	
+								<option value="Desember">Desember</option>	
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="perhitunganLogbook" class="col-md-3 control-label">Perhitungan</label>
+							<div class="col-md-8">
+								<textarea class="form-control" id="perhitunganLogbook" rows="3" placeholder="Perhitungan Logbook"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="realisasiBulanPelaporanLogbook" class="col-md-3 control-label">Realisasi pada Bulan Pelaporan</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="realisasiBulanPelaporanLogbook" placeholder="Realisasi pada Bulan Pelaporan">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="realisasiTerakhirLogbook" class="col-md-3 control-label">Realisasi s.d Bulan Pelaporan</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="realisasiTerakhirLogbook" placeholder="Realisasi s.d Bulan Pelaporan">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="keteranganLogbook" class="col-md-3 control-label">Keterangan</label>
+							<div class="col-md-8">
+								<textarea class="form-control" id="keteranganLogbook" rows="3" placeholder="Keterangan Logbook"></textarea>
+							</div>
+						</div>
+						<button type="button" class="btn btn-default pull-right" id="closeFormLogbook" onclick="tutupFormLogbook('` + idIKU + `');"><i class="fas fa-undo-alt"></i> Tutup Form</button>
+						<button type="button" class="btn btn-info pull-right ml-2 saveNewLogbook" onclick="createNewLogbook('` + idIKU + `')"><i class="fas fa-fw fa-save"></i> Simpan Logbook</button>
+						<button type="button" class="btn btn-info pull-right ml-2 btnConfirmEditLogbook hidden"><i class="fas fa-fw fa-save"></i> Simpan Perubahan Logbook</button>
+					</form>`
+
+	$('.contentFormLogbook').html(form)
+}
+
+// Fungsi load Logbook dalam bentuk promise
 function loadLogbook(idIKU) {
 	return new Promise(function (resolve, reject) {
 		let urlLogbook = "logbook/getLogbook?id-iku=" + idIKU
@@ -659,7 +735,7 @@ function loadLogbook(idIKU) {
 								<button class = "btn btn-danger btn-sm" onclick = "deleteLogbook('` + data.id_logbook + `');" > <i class ="fas fa-trash"> </i> Hapus Logbook</button>
 							</td>
 						</tr>`
-						resolve($('#logbookData').append(masterLogbook))
+						resolve($('.logbookData' + idIKU).append(masterLogbook))
 					} else {
 						// Jika logbook sudah dikirim
 						let masterLogbook =
@@ -674,18 +750,18 @@ function loadLogbook(idIKU) {
 									<button class="btn btn-success btn-sm" onclick="printLogbook('` + data.id_logbook + `');"><i class="fas fa-print"></i> Cetak Logbook</button>
 								</td>
 							</tr>`
-						resolve($('#logbookData').append(masterLogbook))
+						resolve($('.logbookData' + idIKU).append(masterLogbook))
 					}
 				})
 			} else {
 				// Jika tidak ada logbook
-				resolve($('#logbookData').html(''))
+				resolve($('.logbookData' + idIKU).html(''))
 			}
 		})
 	})
 }
 
-// Ketika tombol Create Logbook diklik
+// Ketika tombol Create Logbook diklik, ini tombol untuk menampilkan modal Logbook
 $('button[name="btnCreateLogbook"]').click(function () {
 
 	let idIKU = $(this).attr('iku-id')
@@ -694,99 +770,116 @@ $('button[name="btnCreateLogbook"]').click(function () {
 	// Munculkan animasi loading dan sembunyikan content
 	$('.loadingAnimation').removeClass('hidden');
 	$('.ikuLogbookContent').addClass('hidden');
+	$('.ikuLogbookContent').attr('id-iku', idIKU);
 
-	let a = loadIKU(idIKU);
-	let b = loadLogbook(idIKU);
+	// Set variabel setiap fungsi untuk eksekusi promise
+	let a = loadHeaderTable(idIKU);
+	let b = loadIKU(idIKU);
+	let c = loadLogbook(idIKU);
 
 	// Jalankan Promise
-	Promise.all([a, b]).then(hasil => {
+	Promise.all([a, b, c]).then(hasil => {
 		// Hasil Promise
 		console.log("Fulfilled promise!")
-		// Nonaktifkan animasi loading dan munculkan content
 		$('.loadingAnimation').addClass('hidden');
 		$('.ikuLogbookContent').removeClass('hidden');
 	}).catch(e => {
 		console.log(e);
 	});
 
-	// Aksi tutup modal Logbook
-	$('#closeIKUModal').click(function () {
-		$('#createLogbookModal').modal('hide')
-	})
-	// Apabila modal tertutup, sembunyikan content, hapus isi content, dan munculkan animasi loading
-	$('#createLogbookModal').on('hidden.bs.modal', function () {
-		$('.ikuLogbookContent').addClass('hidden');
-		$('.loadingAnimation').removeClass('hidden');
-		$('#logbookData').empty();
-		$(".formLogbook").addClass("hidden");
-	})
-
 	// Tampilkan form Logbook
 	$('#btnOpenFormLogbook').click(function () {
+		renderFormNewLogbook(idIKU);
 		$(".formLogbook").removeClass("hidden");
-	})
-
-	// Tutup Form Logbook
-	$('.closeFormLogbook').click(function () {
-		$(".formLogbook").addClass("hidden");
-	})
-
-	// Fungsi Save Logbook
-	$('.saveNewLogbook').click(function () {
-		let periodeLogbook = $('#periodePelaporanLogbook').val();
-		let perhitunganLogbook = $('#perhitunganLogbook').val();
-		let realisasiBulanPelaporanLogbook = $('#realisasiBulanPelaporanLogbook').val();
-		let realisasiTerakhirLogbook = $('#realisasiTerakhirLogbook').val();
-		let keteranganLogbook = $('#keteranganLogbook').val()
-
-		// Jalankan AJAX Save Logbook
-		$.ajax({
-			type: "POST",
-			url: 'save-logbook',
-			dataType: "JSON",
-			data: {
-				idIKU: idIKU,
-				periodeLogbook: periodeLogbook,
-				perhitunganLogbook: perhitunganLogbook,
-				realisasiBulanPelaporanLogbook: realisasiBulanPelaporanLogbook,
-				realisasiTerakhirLogbook: realisasiTerakhirLogbook,
-				keteranganLogbook: keteranganLogbook
-			},
-			// Ketika request dijalankan, disable tombol save
-			beforeSend: function () {
-				$('.saveNewLogbook').html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled");
-			},
-			// Setelah request dijalankan
-			success: function () {
-				// Enable tombol save
-				$('.saveNewLogbook').html('<i class="fas fa-fw fa-save"></i> Simpan Logbook').removeAttr("disabled");
-
-				// Jalankan notifikasi
-				toastr["success"]("Berhasil menambahkan Logbook, data Logbook akan muncul dibawah", "Sukses", {
-					positionClass: "toast-top-right",
-					showDuration: "200",
-					hideDuration: "500",
-					timeOut: "3000",
-				});
-				// Hide form new Logbook
-				$(".formLogbook").addClass("hidden");
-
-				// Kembalikan form ke posisi awal
-				$('#periodePelaporanLogbook').selectpicker('val', 'Januari');
-				$('#periodePelaporanLogbook').val('');
-				$('#perhitunganLogbook').val('');
-				$('#realisasiBulanPelaporanLogbook').val('');
-				$('#realisasiTerakhirLogbook').val('');
-				$('#keteranganLogbook').val('');
-
-				// Kosongkan data Logbook
-				$('#logbookData').html('')
-				// Ambil data Logbook
-				loadLogbook(idIKU)
-			}
-		})
+		$('#periodePelaporanLogbook').addClass('selectpicker');
+		$('#periodePelaporanLogbook').selectpicker('render');
+		$('#btnOpenFormLogbook').addClass("hidden");
 	})
 })
+
+// Aksi tutup modal Logbook
+$('#closeIKUModal').click(function () {
+	$('#createLogbookModal').modal('hide')
+})
+
+// Apabila modal tertutup, sembunyikan content, hapus isi content, dan munculkan animasi loading
+$('#createLogbookModal').on('hidden.bs.modal', function () {
+	$('.ikuLogbookContent').addClass('hidden');
+	$('.loadingAnimation').removeClass('hidden');
+	$('.contentLogbook').empty();
+	// formLogbook untuk menampung header dan body panel, contentFormLogbook untuk menampung isi form saja
+	$(".formLogbook").addClass("hidden");
+	$(".contentFormLogbook").empty();
+	$('#btnOpenFormLogbook').removeClass("hidden");
+})
+
+// Fungsi Save Logbook
+function createNewLogbook(idIKU) {
+	let periodeLogbook = $('#periodePelaporanLogbook').val();
+	let perhitunganLogbook = $('#perhitunganLogbook').val();
+	let realisasiBulanPelaporanLogbook = $('#realisasiBulanPelaporanLogbook').val();
+	let realisasiTerakhirLogbook = $('#realisasiTerakhirLogbook').val();
+	let keteranganLogbook = $('#keteranganLogbook').val()
+
+	// Jalankan AJAX Save Logbook
+	$.ajax({
+		type: "POST",
+		url: 'save-logbook',
+		dataType: "JSON",
+		data: {
+			idIKU: idIKU,
+			periodeLogbook: periodeLogbook,
+			perhitunganLogbook: perhitunganLogbook,
+			realisasiBulanPelaporanLogbook: realisasiBulanPelaporanLogbook,
+			realisasiTerakhirLogbook: realisasiTerakhirLogbook,
+			keteranganLogbook: keteranganLogbook
+		},
+		// Ketika request dijalankan, disable tombol save
+		beforeSend: function () {
+			$('.saveNewLogbook').html('<i class="fa fa-cog fa-spin"></i> Proses Simpan..').attr("disabled", "disabled");
+
+			// Kosongkan data Logbook
+			$('.logbookData' + idIKU).html('')
+		},
+		// Setelah request dijalankan
+		success: function (data) {
+
+			// Enable tombol save
+			$('.saveNewLogbook').html('<i class="fas fa-fw fa-save"></i> Simpan Logbook').removeAttr("disabled");
+
+			// Jalankan notifikasi
+			toastr["success"]("Berhasil menambahkan Logbook, data Logbook akan muncul dibawah", "Sukses", {
+				positionClass: "toast-top-right",
+				showDuration: "200",
+				hideDuration: "500",
+				timeOut: "3000",
+			});
+			// Hide form new Logbook
+			$(".formLogbook").addClass("hidden");
+
+			// Kembalikan form ke posisi awal
+			$('#periodePelaporanLogbook').selectpicker('val', 'Januari');
+			$('#periodePelaporanLogbook').val('');
+			$('#perhitunganLogbook').val('');
+			$('#realisasiBulanPelaporanLogbook').val('');
+			$('#realisasiTerakhirLogbook').val('');
+			$('#keteranganLogbook').val('');
+
+			// Ambil data Logbook
+			loadLogbook(idIKU)
+
+			// Tampilkan button rekam logbook
+			$('#btnOpenFormLogbook').removeClass("hidden");
+		}
+	})
+}
+
+// Fungsi tutup form Logbook
+function tutupFormLogbook(idIKU) {
+	$(".formLogbook").addClass("hidden");
+	$(".contentFormLogbook").html('');
+	$('#btnOpenFormLogbook').removeClass("hidden");
+}
 
 // Fungsi untuk menghapus Logbook
 function deleteLogbook(idLogbook) {
@@ -809,6 +902,8 @@ function deleteLogbook(idLogbook) {
 					"hideDuration": "500",
 					"timeOut": "3000",
 				})
+				// Kosongkan data Logbook
+				$('.logbookData' + idIKU).html('')
 			},
 			// Proses hapus berhasil dilaksanakan
 			success: function () {
@@ -818,8 +913,6 @@ function deleteLogbook(idLogbook) {
 					hideDuration: "500",
 					timeOut: "3000",
 				});
-				// Kosongkan data Logbook
-				$('#logbookData').html('')
 				// Ambil data Logbook
 				loadLogbook(idIKU)
 			}
@@ -844,19 +937,23 @@ function getLogbook(idLogbook) {
 			})
 		},
 		success: function (data) {
+
+			// Notifikasi
 			toastr["success"]("Data berhasil diambil!", "Sukses", {
 				positionClass: "toast-top-right",
 				showDuration: "200",
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+
 			// Sembunyikan title new Logbook dan ganti dengan title edit Logbook
 			$('.newLogbookTitle').addClass("hidden");
 			$('.editLogbookTitle').removeClass("hidden");
 
 			// Sembunyikan button save Logbook dan ganti dengan tombol edit
-			$('.saveNewLogbook').addClass("hidden");
-			$('.btnConfirmEditLogbook').removeClass("hidden").attr("id-logbook", data.id_logbook);
+			$('.saveNewLogbook' + idIKU).addClass("hidden");
+			// $('.btnConfirmEditLogbook' + idIKU).removeClass("hidden").attr("id-logbook", data.id_logbook);
+			$('.btnConfirmEditLogbook').removeClass("hidden").attr("onclick", `confirmEditLogbook('` + idLogbook + `')`);
 
 			// Isi Form Perubahan
 			$('#periodePelaporanLogbook').selectpicker("val", data.periode);
@@ -872,13 +969,12 @@ function getLogbook(idLogbook) {
 }
 
 // AJAX Update Logbook
-$('.btnConfirmEditLogbook').click(function () {
+function confirmEditLogbook(idLogbook) {
 
 	// Ambil ID IKU
 	let idIKU = $('#idIKULogbook').val();
 
 	// Tetapkan nilai form
-	let idLogbook = $(this).attr("id-logbook");
 	let periodeLogbook = $('#periodePelaporanLogbook').val();
 	let perhitunganLogbook = $('#perhitunganLogbook').val();
 	let realisasiBulanPelaporanLogbook = $('#realisasiBulanPelaporanLogbook').val();
@@ -900,15 +996,20 @@ $('.btnConfirmEditLogbook').click(function () {
 		},
 		beforeSend: function () {
 			$('.btnConfirmEditLogbook').html('<i class="fa fa-cog fa-spin"></i> Proses Update..').attr("disabled", "disabled");
+
+			// Kosongkan data Logbook
+			$('.logbookData').html('')
 		},
 		success: function () {
 			$('.btnConfirmEditLogbook').html('<i class="fas fa-fw fa-save"></i> Simpan Perubahan Logbook').removeAttr("disabled");
+
 			toastr["success"]("Logbook berhasil diubah!", "Sukses", {
 				positionClass: "toast-top-right",
 				showDuration: "200",
 				hideDuration: "500",
 				timeOut: "3000",
 			});
+
 			// Hide form new Logbook
 			$(".formLogbook").addClass("hidden");
 
@@ -924,18 +1025,16 @@ $('.btnConfirmEditLogbook').click(function () {
 			$('#realisasiTerakhirLogbook').val('');
 			$('#keteranganLogbook').val('');
 
-			// Kosongkan data Logbook
-			$('#logbookData').html('')
-
 			// Ambil data Logbook
 			loadLogbook(idIKU)
 		}
 	})
-})
+}
 
 // AJAX Kirim Logbook ke Atasan
 function sendLogbook(idLogbook) {
-	// Ambil ID IKU untuk refresh table logbook
+
+	// Ambil ID IKU untuk refresh tabel logbook
 	let idIKU = $('#idIKULogbook').val();
 
 	// Konfirmasi kirim Logbook ke atasan
@@ -969,7 +1068,7 @@ function sendLogbook(idLogbook) {
 				})
 
 				// Kosongkan data Logbook
-				$('#logbookData').html('');
+				$('.logbookData' + idIKU).html('');
 
 				// Ambil data Logbook
 				loadLogbook(idIKU);

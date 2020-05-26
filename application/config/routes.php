@@ -91,6 +91,7 @@ $route['save-iku'] = 'iku/createIKU';
 $route['delete-iku/(:any)'] = 'iku/deleteIKU/$1';
 $route['update-iku'] = 'iku/updateIKU';
 $route['addendum-iku'] = 'iku/addendumIKU';
+$route['ref-bulan'] = 'iku/refBulan';
 
 // Route Logbook
 $route['save-logbook'] = 'logbook/createLogbook';
